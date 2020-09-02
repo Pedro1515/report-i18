@@ -1,0 +1,35 @@
+{
+  "name": "report-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@types/react-table": "^7.0.22",
+    "autoprefixer": "^9.8.6",
+    "axios": "^0.20.0",
+    "classnames": "^2.2.6",
+    "date-fns": "^2.16.0",
+    "framer-motion": "^2.6.5",
+    "js-cookie": "^2.2.1",
+    "next": "9.5.2",
+    "postcss-import": "^12.0.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-hook-form": "^6.6.0",
+    "react-icons": "^3.11.0",
+    "react-table": "^7.5.0",
+    "swr": "^0.3.1",
+    "tailwindcss": "^1.7.5",
+    "typeface-inter": "^3.15.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/custom-forms": "^0.2.1",
+    "@types/node": "^14.6.1",
+    "@types/react": "^16.9.48",
+    "typescript": "^4.0.2"
+  }
+}
