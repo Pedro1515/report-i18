@@ -10,3 +10,4 @@ export * from "./portal";
 export * from "./pop-over";
 export * from "./no-account";
 export * from "./input";
+export * from "./modal";

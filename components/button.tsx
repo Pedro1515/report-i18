@@ -20,16 +20,18 @@ export function Button({
     "hover:text-gray-100",
     `active:bg-${color}-100`,
     `active:text-${color}-800`,
-    `hover:bg-${color}-500`
+    `hover:bg-${color}-500`,
+    `focus:border-${color}-300`
   );
 
   const secondary = classNames(
     "border-gray-300",
     "bg-white",
-    "text-gray-900",
-    "hover:text-gray-700",
+    "text-gray-700",
+    "hover:text-gray-500",
     "active:bg-gray-50",
-    "active:text-gray-800"
+    "active:text-gray-800",
+    "focus:border-blue-300"
   );
 
   return (
@@ -48,7 +50,6 @@ export function Button({
         "leading-5",
         "font-medium",
         "focus:outline-none",
-        "focus:border-blue-300",
         "focus:shadow-outline-blue",
         "transition",
         "ease-in-out",

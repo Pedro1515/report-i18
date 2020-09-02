@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import classNames from "classnames";
 import { format } from "date-fns";
 import { useTable } from "react-table";
@@ -11,28 +10,33 @@ import {
   Divider,
   Badge,
   IconButton,
-  Portal,
+  Modal,
+  PopOver,
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
+import { useAlert } from "context";
 import { useModal, useOnClickOutside } from "utils/hooks";
 
-const PopOver = React.forwardRef((props, ref: React.Ref<HTMLDivElement>) => {
-  const variants = {
-    visible: { opacity: 1, scale: 1 },
-    hidden: { opacity: 0, scale: 0.95 },
-  };
+function DotsVerticalIconButton() {
+  const popover = useModal();
+  const { show } = useAlert();
 
   return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate="visible"
-      variants={variants}
-      transition={{ duration: 0.1, ease: "easeOut" }}
-      className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg z-10"
-      {...props}
-    >
-      <div className="rounded-md bg-white shadow-xs">
+    <div className="relative inline-block">
+      <IconButton
+        active={popover.visibility}
+        onClick={popover.toggle}
+        IconComponent={
+          <div className="h-5 w-5">
+            <DotsVerticalIcon />
+          </div>
+        }
+      />
+      <PopOver
+        visible={popover.visibility}
+        onClose={popover.toggle}
+        className="origin-top-right right-0 mt-2"
+      >
         <MenuItemGroup
           aria-orientation="vertical"
           aria-labelledby="options-menu"
@@ -42,30 +46,21 @@ const PopOver = React.forwardRef((props, ref: React.Ref<HTMLDivElement>) => {
         </MenuItemGroup>
         <Divider />
         <MenuItemGroup>
-          <MenuItem label="Eliminar" />
+          <MenuItem
+            label="Eliminar"
+            onClick={() => {
+              popover.toggle();
+              show({
+                title: "Estas seguro que quieres eliminar el proyecto?",
+                body:
+                  "Broadside pressgang Spanish Main gaff jury mast gally trysail shrouds sloop reef sails.",
+                onConfirm: () => console.log("ale"),
+                action: "Eliminar",
+              });
+            }}
+          />
         </MenuItemGroup>
-      </div>
-    </motion.div>
-  );
-});
-
-function DotsVerticalIconButton() {
-  const { toggle, visibility } = useModal();
-  const ref = useRef<HTMLDivElement>(null);
-  useOnClickOutside(ref, toggle);
-
-  return (
-    <div className="relative inline-block">
-      <IconButton
-        active={visibility}
-        onClick={toggle}
-        IconComponent={
-          <div className="h-5 w-5">
-            <DotsVerticalIcon />
-          </div>
-        }
-      />
-      {visibility ? <PopOver ref={ref} /> : null}
+      </PopOver>
     </div>
   );
 }
