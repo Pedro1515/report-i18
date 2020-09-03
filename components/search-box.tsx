@@ -45,10 +45,10 @@ export function SearchBox({
       </div>
       {value && (
         <div
-          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
           onClick={onClear}
         >
-          <div className="w-5 h-5 text-gray-500 hover:text-gray-600">
+          <div className="w-5 h-5 text-gray-500 hover:text-gray-600 transition-colors duration-100">
             <CrossIcon />
           </div>
         </div>

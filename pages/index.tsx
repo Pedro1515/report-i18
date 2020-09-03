@@ -12,6 +12,7 @@ import {
   IconButton,
   PopOver,
   SearchBox,
+  RCPagination,
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
@@ -257,6 +258,86 @@ export default function Home() {
       builds: 15,
       tests: 2,
     },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "cypress",
+      members: ["Juan Manuel Spoleti", "Victor Hugo Quiroz"],
+      status: "Pass",
+      created: new Date(),
+      builds: 25,
+      tests: 24,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "cypress",
+      members: ["Juan Manuel Spoleti", "Victor Hugo Quiroz"],
+      status: "Pass",
+      created: new Date(),
+      builds: 25,
+      tests: 24,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
+    {
+      name: "React",
+      members: ["Leandro Dragani"],
+      status: "Fail",
+      created: new Date(),
+      builds: 15,
+      tests: 2,
+    },
   ];
 
   return (
@@ -278,7 +359,12 @@ export default function Home() {
         </span>
         <Search onSearch={(search) => console.log(search)} />
       </div>
-      <Table {...{ columns, data }} />
+      <div className="flex flex-1 overflow-y-auto">
+        <Table {...{ columns, data }} />
+      </div>
+      <div className="flex justify-end items-end py-6 px-4">
+        <RCPagination total={50} />
+      </div>
     </Layout>
   );
 }

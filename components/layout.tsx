@@ -31,12 +31,7 @@ function Header() {
 function Main({ children }) {
   return (
     <main
-      className={classNames(
-        "h-full",
-        "pb-16",
-        "overflow-y-auto",
-        "overflow-x-hidden"
-      )}
+      className={classNames("flex", "flex-col", "h-full", "overflow-hidden")}
     >
       {children}
     </main>
