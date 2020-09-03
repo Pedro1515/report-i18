@@ -44,7 +44,7 @@ function Alert({
           />
         </span>
         <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-          <Button variant="secondary" label="Cancelar" onClick={onClose} />
+          <Button variant="white" label="Cancelar" onClick={onClose} />
         </span>
       </ModalFooter>
     </Modal>

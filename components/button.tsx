@@ -1,9 +1,9 @@
 import React from "react";
 import classNames from "classnames";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
-  variant: "primary" | "secondary";
+  variant: "primary" | "white";
   color?: string;
 }
 
@@ -24,7 +24,7 @@ export function Button({
     `focus:border-${color}-300`
   );
 
-  const secondary = classNames(
+  const white = classNames(
     "border-gray-300",
     "bg-white",
     "text-gray-700",
@@ -54,7 +54,7 @@ export function Button({
         "transition",
         "ease-in-out",
         "duration-150",
-        variant === "primary" ? primary : secondary
+        variant === "primary" ? primary : white
       )}
       id="options-menu"
       aria-haspopup="true"

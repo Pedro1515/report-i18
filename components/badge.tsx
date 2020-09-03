@@ -1,6 +1,6 @@
 import classNames from "classnames";
 
-interface BadgeProps {
+export interface BadgeProps {
   label: string;
   color: string;
 }

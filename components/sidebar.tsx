@@ -20,15 +20,15 @@ export function SidebarItem({
         "flex",
         "items-center",
         "p-2",
-        "hover:bg-gray-200",
+        { "hover:bg-gray-200": !active },
         "rounded",
-        { "bg-gray-200": active },
+        { "bg-gray-300": active },
         "text-sm"
       )}
     >
       <div
-        className={classNames("w-5", "h-5", "text-gray-600", {
-          "text-gray-700": active,
+        className={classNames("w-5", "h-5", "text-gray-500", {
+          "text-gray-600": active,
         })}
       >
         {IconComponent}
@@ -36,7 +36,7 @@ export function SidebarItem({
       <span
         className={classNames(
           "ml-4",
-          "text-gray-800",
+          "text-gray-700",
           "font-medium",
           "text-sm",
           {
@@ -73,7 +73,7 @@ export function Sidebar() {
           alt="lippia"
         />
         <Avatar name="Juan Spoleti" role="ADMIN" />
-        <div className="space-y-4">
+        <div className="space-y-3">
           <SidebarItem active label="Home" IconComponent={<HomeIcon />} />
           <SidebarItem
             label="Gestionar usuarios"

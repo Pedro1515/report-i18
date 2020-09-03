@@ -12,6 +12,7 @@ import {
   IconButton,
   Modal,
   PopOver,
+  SearchBox,
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
@@ -51,9 +52,9 @@ function DotsVerticalIconButton() {
             onClick={() => {
               popover.toggle();
               show({
-                title: "Estas seguro que quieres eliminar el proyecto?",
+                title: "Eliminar proyecto",
                 body:
-                  "Broadside pressgang Spanish Main gaff jury mast gally trysail shrouds sloop reef sails.",
+                  "Estas seguro que quieres eliminar el proyecto? Se perderan todos los datos asociados.",
                 onConfirm: () => console.log("ale"),
                 action: "Eliminar",
               });
@@ -73,7 +74,7 @@ function Table({ columns, data }) {
 
   return (
     <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
-      <thead>
+      <thead className="border-b">
         {headerGroups.map((headerGroup) => (
           <TableRow {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
@@ -241,6 +242,25 @@ export default function Home() {
 
   return (
     <Layout>
+      <div className="px-6 py-4 border-b">
+        <span
+          className={classNames(
+            "py-3",
+            "text-left",
+            "text-xs",
+            "leading-4",
+            "font-medium",
+            "text-gray-500",
+            "uppercase",
+            "tracking-wider"
+          )}
+        >
+          FILTROS
+        </span>
+        <div className="py-4">
+          <SearchBox placeholder="Buscar el morcilla, varano" className="w-1/4" />
+        </div>
+      </div>
       <Table {...{ columns, data }} />
     </Layout>
   );
