@@ -16,7 +16,7 @@ import {
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
-import { useModal, useOnClickOutside } from "utils/hooks";
+import { useModal } from "utils/hooks";
 
 function DotsVerticalIconButton() {
   const popover = useModal();
@@ -258,7 +258,7 @@ export default function Home() {
           FILTROS
         </span>
         <div className="py-4">
-          <SearchBox placeholder="Buscar el morcilla, varano" className="w-1/4" />
+          <SearchBox placeholder="Buscar" className="md:w-2/3 xl:w-1/4" />
         </div>
       </div>
       <Table {...{ columns, data }} />
