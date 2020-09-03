@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classNames from "classnames";
 import { format } from "date-fns";
 import { useTable } from "react-table";
@@ -10,13 +10,12 @@ import {
   Divider,
   Badge,
   IconButton,
-  Modal,
   PopOver,
   SearchBox,
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
-import { useModal } from "utils/hooks";
+import { useModal, useInputValue } from "utils/hooks";
 
 function DotsVerticalIconButton() {
   const popover = useModal();
@@ -161,6 +160,26 @@ function TableCell({
   );
 }
 
+function Search({ onSearch }) {
+  const search = useInputValue("");
+
+  useEffect(() => {
+    onSearch(search.value);
+  }, [search.value]);
+
+  return (
+    <div className="py-4 w-full md:w-2/3 xl:w-1/4">
+      <SearchBox
+        placeholder="Buscar"
+        value={search.value}
+        fullWidth
+        onChange={search.onChange}
+        onClear={search.clear}
+      />
+    </div>
+  );
+}
+
 export default function Home() {
   const columns = React.useMemo(
     () => [
@@ -257,9 +276,7 @@ export default function Home() {
         >
           FILTROS
         </span>
-        <div className="py-4">
-          <SearchBox placeholder="Buscar" className="md:w-2/3 xl:w-1/4" />
-        </div>
+        <Search onSearch={(search) => console.log(search)} />
       </div>
       <Table {...{ columns, data }} />
     </Layout>
