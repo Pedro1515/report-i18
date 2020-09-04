@@ -6,7 +6,7 @@ function Wrapper({ children }) {
   return <div className="flex flex-col flex-1">{children}</div>;
 }
 
-function Header() {
+export function LayoutHeader({ children }) {
   return (
     <header
       className={classNames(
@@ -18,17 +18,21 @@ function Header() {
         "border-gray-300"
       )}
     >
-      <div className="flex items-center justify-between px-6">
-        <span className="font-medium text-lg">Proyectos</span>
-        <div>
-          <Button label="Crear proyecto" variant="primary" color="indigo" />
-        </div>
+      <div
+        className={classNames(
+          "flex",
+          "items-center",
+          "justify-between",
+          "px-6"
+        )}
+      >
+        {children}
       </div>
     </header>
   );
 }
 
-function Main({ children }) {
+export function LayoutContent({ children }) {
   return (
     <main
       className={classNames("flex", "flex-col", "h-full", "overflow-hidden")}
@@ -42,10 +46,7 @@ export function Layout({ children }) {
   return (
     <div className="flex h-screen bg-white overflow-hidden">
       <Sidebar />
-      <Wrapper>
-        <Header />
-        <Main>{children}</Main>
-      </Wrapper>
+      <Wrapper>{children}</Wrapper>
     </div>
   );
 }

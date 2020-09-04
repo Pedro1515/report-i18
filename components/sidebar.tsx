@@ -1,52 +1,53 @@
+import { useRouter } from "next/router";
+import Link from "next/link";
 import classNames from "classnames";
 import { Avatar } from "components";
-import { HomeIcon, UsersIcon } from "components/icons";
+import { ArchiveIcon, UsersIcon } from "components/icons";
 
 export interface SidebarItemsProps {
-  active?: boolean;
+  href: string;
   label: string;
   IconComponent?: React.ReactNode;
 }
 
-export function SidebarItem({
-  active,
-  label,
-  IconComponent,
-}: SidebarItemsProps) {
+export function SidebarItem({ href, label, IconComponent }: SidebarItemsProps) {
+  const router = useRouter();
+  const active = router.pathname === href;
   return (
-    <a
-      href="#"
-      className={classNames(
-        "flex",
-        "items-center",
-        "p-2",
-        { "hover:bg-gray-200": !active },
-        "rounded",
-        { "bg-gray-300": active },
-        "text-sm"
-      )}
-    >
-      <div
-        className={classNames("w-5", "h-5", "text-gray-500", {
-          "text-gray-600": active,
-        })}
-      >
-        {IconComponent}
-      </div>
-      <span
+    <Link {...{ href }}>
+      <a
         className={classNames(
-          "ml-4",
-          "text-gray-700",
-          "font-medium",
-          "text-sm",
-          {
-            "text-gray-900": active,
-          }
+          "flex",
+          "items-center",
+          "p-2",
+          { "hover:bg-gray-200": !active },
+          "rounded",
+          { "bg-gray-300": active },
+          "text-sm"
         )}
       >
-        {label}
-      </span>
-    </a>
+        <div
+          className={classNames("w-5", "h-5", "text-gray-500", {
+            "text-gray-600": active,
+          })}
+        >
+          {IconComponent}
+        </div>
+        <span
+          className={classNames(
+            "ml-4",
+            "text-gray-700",
+            "font-medium",
+            "text-sm",
+            {
+              "text-gray-900": active,
+            }
+          )}
+        >
+          {label}
+        </span>
+      </a>
+    </Link>
   );
 }
 
@@ -74,8 +75,9 @@ export function Sidebar() {
         />
         <Avatar name="Juan Spoleti" role="ADMIN" />
         <div className="space-y-3">
-          <SidebarItem active label="Home" IconComponent={<HomeIcon />} />
+          <SidebarItem href="/projects" label="Proyectos" IconComponent={<ArchiveIcon />} />
           <SidebarItem
+            href="/users"
             label="Gestionar usuarios"
             IconComponent={<UsersIcon />}
           />

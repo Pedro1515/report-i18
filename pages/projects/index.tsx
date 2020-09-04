@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { useTable } from "react-table";
 import {
   Layout,
+  LayoutHeader,
+  LayoutContent,
   Members,
   MenuItemGroup,
   MenuItem,
@@ -13,6 +15,7 @@ import {
   PopOver,
   SearchBox,
   RCPagination,
+  Button,
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
@@ -342,29 +345,37 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="px-6 py-4 border-b">
-        <span
-          className={classNames(
-            "py-3",
-            "text-left",
-            "text-xs",
-            "leading-4",
-            "font-medium",
-            "text-gray-500",
-            "uppercase",
-            "tracking-wider"
-          )}
-        >
-          FILTROS
-        </span>
-        <Search onSearch={(search) => console.log(search)} />
-      </div>
-      <div className="flex flex-1 overflow-y-auto">
-        <Table {...{ columns, data }} />
-      </div>
-      <div className="flex justify-end items-end py-6 px-4">
-        <RCPagination total={50} />
-      </div>
+      <LayoutHeader>
+        <span className="font-medium text-lg">Proyectos</span>
+        <div>
+          <Button label="Crear proyecto" variant="primary" color="indigo" />
+        </div>
+      </LayoutHeader>
+      <LayoutContent>
+        <div className="px-6 py-4 border-b">
+          <span
+            className={classNames(
+              "py-3",
+              "text-left",
+              "text-xs",
+              "leading-4",
+              "font-medium",
+              "text-gray-500",
+              "uppercase",
+              "tracking-wider"
+            )}
+          >
+            FILTROS
+          </span>
+          <Search onSearch={(search) => console.log(search)} />
+        </div>
+        <div className="flex flex-1 overflow-y-auto">
+          <Table {...{ columns, data }} />
+        </div>
+        <div className="flex justify-end items-end p-6">
+          <RCPagination total={50} />
+        </div>
+      </LayoutContent>
     </Layout>
   );
 }

@@ -40,7 +40,7 @@ function Alert({
             variant="primary"
             color="red"
             label={action ? action : "Aceptar"}
-            onClick={onClose}
+            onClick={onConfirm}
           />
         </span>
         <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">

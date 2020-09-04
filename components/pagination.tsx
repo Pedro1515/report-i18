@@ -30,7 +30,6 @@ export function RCPagination({ ...props }: PaginationProps) {
     <Pagination
       className="relative z-0 inline-flex shadow-sm"
       itemRender={(page, type) => {
-        console.log(type);
         if (type === "prev") {
           return (
             <a

@@ -44,7 +44,7 @@ export function Avatar({ name, role }) {
       >
         <MenuItemGroup>
           <MenuItem label="Configuracion de cuenta" />
-          <MenuItem label="Habilitar modo oscuro" />
+          <MenuItem label="Modo oscuro" />
           <MenuItem label="Soporte" />
         </MenuItemGroup>
         <Divider />

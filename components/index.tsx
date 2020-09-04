@@ -13,3 +13,4 @@ export * from "./input";
 export * from "./modal";
 export * from "./search-box";
 export * from "./pagination";
+export * from "./notification";
