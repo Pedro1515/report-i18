@@ -1,0 +1,54 @@
+import {
+  IconButton,
+  PopOver,
+  MenuItemGroup,
+  MenuItem,
+  Divider,
+  MenuItemProps,
+} from "components";
+import { DotsVerticalIcon } from "components/icons";
+import { useModal } from "utils/hooks";
+
+export interface MenuIconProps {
+  items: MenuItemProps[][];
+}
+
+export function MenuIcon({ items }: MenuIconProps) {
+  const popover = useModal();
+
+  return (
+    <div className="relative inline-block">
+      <IconButton
+        active={popover.visibility}
+        onClick={popover.toggle}
+        IconComponent={
+          <div className="h-5 w-5">
+            <DotsVerticalIcon />
+          </div>
+        }
+      />
+      <PopOver
+        visible={popover.visibility}
+        onClose={popover.toggle}
+        className="origin-top-right right-0 mt-2"
+      >
+        {items.map((group, index, arr) => {
+          return (
+            <>
+              <MenuItemGroup
+                key={index}
+                aria-orientation="vertical"
+                aria-labelledby="options-menu"
+              >
+                {group.map(({ label, ...props }) => (
+                  <MenuItem key={label} {...{ label }} {...props} />
+                ))}
+              </MenuItemGroup>
+              {arr[index] ? <Divider /> : null}
+            </>
+          );
+        })}
+      </PopOver>
+    </div>
+  );
+}

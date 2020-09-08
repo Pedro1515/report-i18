@@ -12,7 +12,7 @@ export interface SidebarItemsProps {
 
 export function SidebarItem({ href, label, IconComponent }: SidebarItemsProps) {
   const router = useRouter();
-  const active = router.pathname === href;
+  const active = router.pathname.includes(href);
   return (
     <Link {...{ href }}>
       <a

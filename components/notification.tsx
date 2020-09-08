@@ -114,7 +114,8 @@ export function Notification({
               "border",
               "top-0",
               "right-0",
-              "m-4"
+              "m-4",
+              "z-50"
             )}
             initial="hidden"
             animate="visible"

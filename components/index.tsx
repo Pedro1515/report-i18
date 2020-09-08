@@ -14,3 +14,7 @@ export * from "./modal";
 export * from "./search-box";
 export * from "./pagination";
 export * from "./notification";
+export * from "./title";
+export * from "./card";
+export * from "./table";
+export * from "./menu-icon";

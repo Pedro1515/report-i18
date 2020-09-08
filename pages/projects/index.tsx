@@ -7,52 +7,39 @@ import {
   LayoutHeader,
   LayoutContent,
   Members,
-  MenuItemGroup,
-  MenuItem,
-  Divider,
   Badge,
-  IconButton,
-  PopOver,
   SearchBox,
   RCPagination,
   Button,
+  TableCell,
+  TableRow,
+  TableHeader,
+  MenuIcon,
 } from "components";
-import { DotsVerticalIcon } from "components/icons";
 import { useAlert } from "context";
 import { useModal, useInputValue } from "utils/hooks";
 
-function DotsVerticalIconButton() {
+function MenuIconButton() {
   const popover = useModal();
   const { show } = useAlert();
 
   return (
-    <div className="relative inline-block">
-      <IconButton
-        active={popover.visibility}
-        onClick={popover.toggle}
-        IconComponent={
-          <div className="h-5 w-5">
-            <DotsVerticalIcon />
-          </div>
-        }
-      />
-      <PopOver
-        visible={popover.visibility}
-        onClose={popover.toggle}
-        className="origin-top-right right-0 mt-2"
-      >
-        <MenuItemGroup
-          aria-orientation="vertical"
-          aria-labelledby="options-menu"
-        >
-          <MenuItem label="Agregar usuarios" />
-          <MenuItem label="Configuracion" />
-        </MenuItemGroup>
-        <Divider />
-        <MenuItemGroup>
-          <MenuItem
-            label="Eliminar"
-            onClick={() => {
+    <MenuIcon
+      items={[
+        [
+          {
+            label: "Agregar usuarios",
+            onClick: () => console.log("Agregar Usuarios"),
+          },
+          {
+            label: "Configuracion",
+            onClick: () => console.log("config"),
+          },
+        ],
+        [
+          {
+            label: "Eliminar",
+            onClick: () => {
               popover.toggle();
               show({
                 title: "Eliminar proyecto",
@@ -61,15 +48,15 @@ function DotsVerticalIconButton() {
                 onConfirm: () => console.log("ale"),
                 action: "Eliminar",
               });
-            }}
-          />
-        </MenuItemGroup>
-      </PopOver>
-    </div>
+            },
+          },
+        ],
+      ]}
+    />
   );
 }
 
-function Table({ columns, data }) {
+function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -81,7 +68,7 @@ function Table({ columns, data }) {
         {headerGroups.map((headerGroup) => (
           <TableRow {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map((column) => (
-              <TableHeader {...column.getHeaderProps()}>
+              <TableHeader {...column.getHeaderProps()} {...{ sticky }}>
                 {column.render("Header")}
               </TableHeader>
             ))}
@@ -92,7 +79,7 @@ function Table({ columns, data }) {
         {rows.map((row, i) => {
           prepareRow(row);
           return (
-            <TableRow {...row.getRowProps()}>
+            <TableRow {...row.getRowProps()} hover>
               {row.cells.map((cell) => {
                 return (
                   <TableCell {...cell.getCellProps()}>
@@ -105,62 +92,6 @@ function Table({ columns, data }) {
         })}
       </tbody>
     </table>
-  );
-}
-
-function TableHeader({ children, ...props }) {
-  return (
-    <th
-      className={classNames(
-        "px-6",
-        "py-3",
-        "bg-gray-100",
-        "text-left",
-        "text-xs",
-        "leading-4",
-        "font-medium",
-        "text-gray-500",
-        "uppercase",
-        "tracking-wider"
-      )}
-      {...props}
-    >
-      {children}
-    </th>
-  );
-}
-
-function TableRow({
-  children,
-  hover,
-  ...props
-}: {
-  children: React.ReactNode;
-  hover?: boolean;
-}) {
-  return (
-    <tr className={classNames({ "hover:bg-gray-100": hover })} {...props}>
-      {children}
-    </tr>
-  );
-}
-
-function TableCell({
-  children,
-  className,
-  ...props
-}: {
-  children: React.ReactNode;
-  hover?: boolean;
-  className?: string;
-}) {
-  return (
-    <td
-      className={classNames("px-6", "py-4", "whitespace-no-wrap", className)}
-      {...props}
-    >
-      {children}
-    </td>
   );
 }
 
@@ -230,7 +161,7 @@ export default function Home() {
       {
         Header: () => null,
         id: "edit",
-        Cell: ({ row }) => <DotsVerticalIconButton />,
+        Cell: ({ row }) => <MenuIconButton />,
       },
     ],
     []
@@ -370,7 +301,7 @@ export default function Home() {
           <Search onSearch={(search) => console.log(search)} />
         </div>
         <div className="flex flex-1 overflow-y-auto">
-          <Table {...{ columns, data }} />
+          <Table {...{ columns, data, sticky: true }} />
         </div>
         <div className="flex justify-end items-end p-6">
           <RCPagination total={50} />
