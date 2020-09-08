@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Link from "next/link";
 import classNames from "classnames";
 import { format } from "date-fns";
 import { useTable } from "react-table";
@@ -124,9 +125,11 @@ export default function Home() {
         Cell: ({ row }) => (
           <div className="flex items-center">
             <div>
-              <div className="text-sm leading-5 font-medium text-gray-900">
-                {row.original.name}
-              </div>
+              <Link href="/projects/1">
+                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                  {row.original.name}
+                </a>
+              </Link>
               <div className="text-sm leading-8 text-gray-600">
                 {row.original.builds} Builds &middot; {row.original.tests} Tests
               </div>
