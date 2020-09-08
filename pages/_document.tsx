@@ -18,7 +18,7 @@ class MyDocument extends Document {
         <Head />
         <body className="font-sans antialiased text-gray-900">
           <Main />
-          <div id="portal" />
+          <div id="portal" className="z-50" />
           <NextScript />
         </body>
       </Html>

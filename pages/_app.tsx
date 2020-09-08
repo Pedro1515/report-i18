@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import { SWRConfig } from "swr";
-import { AlertProvider } from "context";
+import { AlertProvider, NotificationProvider } from "context";
 import { fetcher } from "utils/axios";
 import "typeface-inter";
 import "styles/tailwind.css";
@@ -13,9 +13,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         fetcher,
       }}
     >
-      <AlertProvider>
-        <Component {...pageProps} />
-      </AlertProvider>
+      <NotificationProvider>
+        <AlertProvider>
+          <Component {...pageProps} />
+        </AlertProvider>
+      </NotificationProvider>
     </SWRConfig>
   );
 }

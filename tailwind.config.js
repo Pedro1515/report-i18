@@ -8,6 +8,9 @@ module.exports = {
       boxShadow: {
         solid: "0 0 0 2px currentColor",
       },
+      spacing: {
+        7: "1.75rem",
+      },
     },
   },
   variants: {
