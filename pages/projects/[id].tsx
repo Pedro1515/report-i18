@@ -1,7 +1,8 @@
 import React from "react";
 import useSWR from "swr";
 import { VictoryPie } from "victory";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
 import { useTable } from "react-table";
 import {
   Layout,
@@ -100,6 +101,7 @@ export default function Project() {
           <span className="text-sm leading-5 text-gray-500" title={row.original.created}>
             {formatDistanceToNow(row.original.created, {
               addSuffix: true,
+              locale: es
             })}
           </span>
         ),
