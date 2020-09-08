@@ -1,7 +1,7 @@
 import React from "react";
 import useSWR from "swr";
 import { VictoryPie } from "victory";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { useTable } from "react-table";
 import {
   Layout,
@@ -97,8 +97,10 @@ export default function Project() {
         Header: "Creado",
         id: "created",
         Cell: ({ row }) => (
-          <span className="text-sm leading-5 text-gray-500">
-            {format(row.original.created, "MM/dd/yyyy")}
+          <span className="text-sm leading-5 text-gray-500" title={row.original.created}>
+            {formatDistanceToNow(row.original.created, {
+              addSuffix: true,
+            })}
           </span>
         ),
       },
