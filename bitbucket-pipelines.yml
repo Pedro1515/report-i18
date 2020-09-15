@@ -9,4 +9,4 @@ pipelines:
              variables:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
-               COMMAND: "ls"
+               COMMAND: "cd lippia-report-server-front && docker-compose up --quiet-pull"
