@@ -7,4 +7,4 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
-          ssh root@vps2.crowdaronline.com ls
+          - ssh root@vps2.crowdaronline.com ls
