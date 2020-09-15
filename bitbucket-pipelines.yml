@@ -1,10 +1,12 @@
-# This is a sample build configuration for Docker.
-# Check our guides at https://confluence.atlassian.com/x/O1toN for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
 pipelines:
   default:
-    - step:
-        script: 
-          - ssh root@vps2.crowdaronline.com "$(ls)"
+     - step:
+         name: Deploy to production
+         deployment: production
+         script:
+           - echo "Deploying to production environment"
+           - pipe: atlassian/ssh-run:0.2.2
+             variables:
+               SSH_USER: 'root'
+               SERVER: '144.217.240.139'
+               COMMAND: "ls"
