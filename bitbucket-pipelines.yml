@@ -5,8 +5,11 @@ pipelines:
            - docker
          script:
            - export IMAGE_NAME=crowdar/report-server-front:$BITBUCKET_COMMIT
-           - docker build -t $IMAGE_NAME .
            - docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PASSWORD
+           - docker build -t $IMAGE_NAME .
+           - docker push $IMAGE_NAME
+           - export IMAGE_NAME=crowdar/report-server-front:latest
+           - docker build -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
      - step:
          name: Deploy to production
