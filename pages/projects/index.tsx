@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useTable } from "react-table";
+import useSWR from "swr";
 import classNames from "classnames";
 import { format } from "date-fns";
-import { useTable } from "react-table";
+import { Response, Project } from "api";
 import {
   Layout,
   LayoutHeader,
@@ -17,7 +19,7 @@ import {
   TableHeader,
   MenuIcon,
 } from "components";
-import { useAlert } from "context";
+import { ProtectRoute, useAlert } from "context";
 import { useModal, useInputValue } from "utils/hooks";
 
 function MenuIconButton() {
@@ -116,8 +118,10 @@ function Search({ onSearch }) {
   );
 }
 
-export default function Home() {
-  const columns = React.useMemo(
+export function Home() {
+  // const { data } = useSWR<Response<Project[]>>("/rest/projects/q");
+  const data = [];
+  const columns = useMemo(
     () => [
       {
         Header: "Nombre",
@@ -170,113 +174,6 @@ export default function Home() {
     []
   );
 
-  const data = [
-    {
-      name: "cucumber4-Adapter-Stress",
-      members: ["Leandro Dragani", "Juan Manuel Spoleti", "Victor Hugo Quiroz"],
-      status: "Pass",
-      created: new Date(),
-      builds: 5,
-      tests: 234,
-    },
-    {
-      name: "cypress",
-      members: ["Juan Manuel Spoleti", "Victor Hugo Quiroz"],
-      status: "Pass",
-      created: new Date(),
-      builds: 25,
-      tests: 24,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "cypress",
-      members: ["Juan Manuel Spoleti", "Victor Hugo Quiroz"],
-      status: "Pass",
-      created: new Date(),
-      builds: 25,
-      tests: 24,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "cypress",
-      members: ["Juan Manuel Spoleti", "Victor Hugo Quiroz"],
-      status: "Pass",
-      created: new Date(),
-      builds: 25,
-      tests: 24,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-    {
-      name: "React",
-      members: ["Leandro Dragani"],
-      status: "Fail",
-      created: new Date(),
-      builds: 15,
-      tests: 2,
-    },
-  ];
-
   return (
     <Layout>
       <LayoutHeader>
@@ -313,3 +210,5 @@ export default function Home() {
     </Layout>
   );
 }
+
+export default ProtectRoute(Home);

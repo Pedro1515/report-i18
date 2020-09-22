@@ -18,3 +18,4 @@ export * from "./title";
 export * from "./card";
 export * from "./table";
 export * from "./menu-icon";
+export * from "./spinner";
