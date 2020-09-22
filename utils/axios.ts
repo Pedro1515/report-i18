@@ -3,6 +3,10 @@ import Cookies from "js-cookie";
 
 export const apiInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_HOST_URL,
+  headers: {
+    "Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json",
+  },
 });
 
 apiInstance.interceptors.request.use(function (config) {
