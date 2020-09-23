@@ -1,68 +1,58 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
+import useSWR from "swr";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { apiInstance } from "utils/axios";
+import { login as apiLogin, User } from "api";
+import { useNotification } from "context";
+import { Spinner } from "components";
 
 export interface AuthProviderValue {
-  isAuthenticated: boolean;
-  user: any;
   login: (username: string, password: string) => void;
   loading: boolean;
   logout: () => void;
+  isAuthenticated: boolean;
+  user: User;
 }
 
 const AuthContext = createContext<AuthProviderValue>(undefined);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { data: user } = useSWR<User>("/rest/user/me");
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
-
-  useEffect(() => {
-    async function loadUserFromCookies() {
-      const token = Cookies.get("token");
-      if (token) {
-        console.log("Got a token in the cookies, let's see if it is valid");
-        apiInstance.defaults.headers.Authorization = `Bearer ${token}`;
-        const { data: user } = await apiInstance.get("users/me");
-        if (user) setUser(user);
-      }
-      setLoading(false);
-    }
-    loadUserFromCookies();
-  }, []);
+  const { show } = useNotification();
+  const isAuthenticated = !!user;
 
   const login = async (username: string, password: string) => {
-    const { data } = await apiInstance.post("auth/login", undefined, {
-      auth: {
-        username,
-        password,
-      },
-    });
+    try {
+      setLoading(true);
+      const { data } = await apiLogin(username, password);
+      const { jwt, expires } = data;
 
-    const { token } = data;
+      if (jwt) {
+        Cookies.set("token", jwt, { expires });
+        router.push("/");
+      }
 
-    if (token) {
-      console.log("Got token");
-      Cookies.set("token", token, { expires: 60 });
-      apiInstance.defaults.headers.Authorization = `Bearer ${token}`;
-      const { data: user } = await apiInstance.get("users/me");
-      setUser(user);
-      console.log("Got user", user);
+      setLoading(false);
+    } catch (error) {
+      show({
+        type: "error",
+        title: "Error",
+        message: "Ha ocurrido un error al intentar iniciar sesion",
+      });
+      setLoading(false);
     }
-
-    return data;
   };
 
   const logout = () => {
     Cookies.remove("token");
-    setUser(null);
     router.push("/login");
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated: !!user, user, login, loading, logout }}
+      value={{ isAuthenticated, login, loading, logout, user }}
     >
       {children}
     </AuthContext.Provider>
@@ -77,4 +67,23 @@ export function useAuth() {
   }
 
   return context;
+}
+
+export function ProtectRoute(Component) {
+  return () => {
+    const { isAuthenticated, loading } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+      if (!isAuthenticated && !loading) {
+        router.replace("/login");
+      }
+    }, [loading, isAuthenticated]);
+
+    if (loading) {
+      return <Spinner />;
+    }
+
+    return <Component {...arguments} />;
+  };
 }
