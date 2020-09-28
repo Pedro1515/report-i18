@@ -1,11 +1,14 @@
 import classNames from "classnames";
 import { PopOver } from "components";
+import { useAuth, useUser } from "context";
 import { SelectorIcon } from "components/icons";
 import { useModal } from "utils/hooks";
 import { MenuItemGroup, MenuItem, Divider } from "./menu-item";
 
 export function Avatar({ name, role }) {
   const { visibility, toggle } = useModal();
+  const { logout } = useAuth();
+
   return (
     <div className="my-8">
       <div
@@ -49,7 +52,7 @@ export function Avatar({ name, role }) {
         </MenuItemGroup>
         <Divider />
         <MenuItemGroup>
-          <MenuItem label="Cerrar sesion" />
+          <MenuItem label="Cerrar sesion" onClick={logout} />
         </MenuItemGroup>
       </PopOver>
     </div>
