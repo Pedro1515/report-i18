@@ -1,5 +1,4 @@
 import { Layout, LayoutHeader, LayoutContent, Button } from "components";
-import { useNotification } from "context";
 import { useRouter } from "next/router";
 
 export default function Users() {
