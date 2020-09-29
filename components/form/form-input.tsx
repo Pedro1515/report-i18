@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 export interface FormInputProps extends HTMLAttributes<HTMLInputElement> {}
 
-export const FormInput = React.forwardRef((props: InputProps, ref) => (
+export const FormInput = React.forwardRef((props: FormInputProps, ref) => (
   <input
     className={classNames(
       "shadow-sm",
