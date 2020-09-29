@@ -18,6 +18,8 @@ import {
   TableRow,
   TableHeader,
   MenuIcon,
+  Spinner,
+  FilterLabel
 } from "components";
 import { ProtectRoute, useAlert } from "context";
 import { useModal, useInputValue } from "utils/hooks";
@@ -59,7 +61,13 @@ function MenuIconButton() {
   );
 }
 
-function Table({ columns, data, sticky }) {
+interface TableProps {
+  columns: any;
+  data?: Project[];
+  sticky?: boolean;
+}
+
+function Table({ columns, data, sticky }: TableProps) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
@@ -119,32 +127,35 @@ function Search({ onSearch }) {
 }
 
 export function Home() {
-  // const { data } = useSWR<Response<Project[]>>("/rest/projects/q");
-  const data = [];
+  const { data: projects } = useSWR<Response<Project[]>>("/rest/projects/q");
+
   const columns = useMemo(
     () => [
       {
         Header: "Nombre",
         accessor: "name",
-        Cell: ({ row }) => (
-          <div className="flex items-center">
-            <div>
-              <Link href="/projects/1">
-                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
-                  {row.original.name}
-                </a>
-              </Link>
-              <div className="text-sm leading-8 text-gray-600">
-                {row.original.builds} Builds &middot; {row.original.tests} Tests
+        Cell: ({ row }) => {
+          const { name, builds, tests, id } = row.original;
+          return (
+            <div className="flex items-center">
+              <div>
+                <Link href={`/projects/${id}`}>
+                  <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                    {name}
+                  </a>
+                </Link>
+                <div className="text-sm leading-8 text-gray-600">
+                  {builds} Builds &middot; {tests} Tests
+                </div>
               </div>
             </div>
-          </div>
-        ),
+          );
+        },
       },
       {
         Header: "Usuarios",
         id: "members",
-        Cell: ({ row }) => <Members members={row.original.members} />,
+        Cell: ({ row }) => <Members members={row.original.users} />,
       },
       {
         Header: "Ultimo build",
@@ -161,7 +172,7 @@ export function Home() {
         id: "created",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
-            {format(row.original.created, "MM/dd/yyyy")}
+            {format(new Date(row.original.createdAt), "dd/MM/yyyy HH:ss")}
           </span>
         ),
       },
@@ -174,6 +185,13 @@ export function Home() {
     []
   );
 
+  const {
+    content,
+    totalElements,
+    totalPages,
+    // pageable: { pageNumber },
+  } = projects ?? {};
+
   return (
     <Layout>
       <LayoutHeader>
@@ -184,28 +202,25 @@ export function Home() {
       </LayoutHeader>
       <LayoutContent>
         <div className="px-6 py-4 border-b">
-          <span
-            className={classNames(
-              "py-3",
-              "text-left",
-              "text-xs",
-              "leading-4",
-              "font-medium",
-              "text-gray-500",
-              "uppercase",
-              "tracking-wider"
-            )}
-          >
-            FILTROS
-          </span>
+          <FilterLabel>
+            filtros
+          </FilterLabel>
           <Search onSearch={(search) => console.log(search)} />
         </div>
         <div className="flex flex-1 overflow-y-auto">
-          <Table {...{ columns, data, sticky: true }} />
+          {!projects ? (
+            <div className="flex items-center justify-center flex-1">
+              <Spinner className="h-10 w-10 text-gray-500" />
+            </div>
+          ) : (
+            <Table {...{ columns, data: content }} sticky />
+          )}
         </div>
-        <div className="flex justify-end items-end p-6">
-          <RCPagination total={50} />
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-end items-end p-6">
+            <RCPagination total={totalElements} />
+          </div>
+        )}
       </LayoutContent>
     </Layout>
   );

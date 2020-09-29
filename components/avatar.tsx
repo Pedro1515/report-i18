@@ -1,11 +1,15 @@
 import classNames from "classnames";
 import { PopOver } from "components";
+import { useAuth, useUser } from "context";
 import { SelectorIcon } from "components/icons";
 import { useModal } from "utils/hooks";
 import { MenuItemGroup, MenuItem, Divider } from "./menu-item";
 
-export function Avatar({ name, role }) {
+export function Avatar() {
   const { visibility, toggle } = useModal();
+  const { logout } = useAuth();
+  const { user } = useUser({});
+
   return (
     <div className="my-8">
       <div
@@ -29,8 +33,8 @@ export function Avatar({ name, role }) {
         <div className="flex items-center">
           <img src="/assets/avatar.png" className="rounded-full h-10" />
           <div className="flex flex-col text-sm truncate ml-4">
-            <span className="font-medium leading-7">{name}</span>
-            <span className="text-gray-500 text-xs uppercase">{role}</span>
+            <span className="font-medium leading-7">{user?.name}</span>
+            <span className="text-gray-500 text-xs uppercase">{user?.role}</span>
           </div>
         </div>
         <div className="w-5 h-5 text-gray-500">
@@ -49,7 +53,7 @@ export function Avatar({ name, role }) {
         </MenuItemGroup>
         <Divider />
         <MenuItemGroup>
-          <MenuItem label="Cerrar sesion" />
+          <MenuItem label="Cerrar sesion" onClick={logout} />
         </MenuItemGroup>
       </PopOver>
     </div>

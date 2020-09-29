@@ -16,13 +16,10 @@ export default function Login() {
           Recuperar contraseña
         </h2>
         <p className="mt-5 text-sm leading-5 text-center text-gray-600">
-          Ingresa tu email y te enviaremos un link para que cambies tu contraseña.
+          Ingresa tu email y te enviaremos un link para que cambies tu
+          contraseña.
         </p>
-        <form
-          className="mt-5"
-          action="https://tailwindui.com/login"
-          method="POST"
-        >
+        <form className="mt-5">
           <div className="rounded-md shadow-sm">
             <div>
               <Input

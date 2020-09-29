@@ -2,58 +2,72 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import useSWR from "swr";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import { login as apiLogin, User } from "api";
+import { getCurrentUser, login as apiLogin, User } from "api";
 import { useNotification } from "context";
 import { Spinner } from "components";
 
 export interface AuthProviderValue {
-  login: (username: string, password: string) => void;
+  login: (username: string, password: string) => Promise<User>;
   loading: boolean;
   logout: () => void;
-  isAuthenticated: boolean;
-  user: User;
 }
 
 const AuthContext = createContext<AuthProviderValue>(undefined);
 
-export function AuthProvider({ children }) {
-  const { data: user } = useSWR<User>("/rest/user/me");
-  const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const { show } = useNotification();
-  const isAuthenticated = !!user;
+interface UseUserProps {
+  redirectTo?: string;
+  redirectIfFound?: boolean;
+}
 
+export function useUser({ redirectTo, redirectIfFound }: UseUserProps) {
+  const { data: user, mutate: mutateUser } = useSWR<User>("/rest/user/me");
+  const isAuthenticated = !!user;
+  const router = useRouter();
+  const hasToken = Cookies.get("token");
+
+  useEffect(() => {
+    if ((!redirectTo || !user) && hasToken) return;
+    if (
+      (redirectTo && !redirectIfFound && !isAuthenticated) ||
+      (redirectIfFound && isAuthenticated)
+    ) {
+      router.replace(redirectTo);
+    }
+  }, [user, redirectIfFound, redirectTo, isAuthenticated, hasToken]);
+
+  return { user, mutateUser };
+}
+
+export function AuthProvider({ children }) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const { mutateUser } = useUser({ redirectTo: "/login" });
   const login = async (username: string, password: string) => {
     try {
+      let current;
       setLoading(true);
       const { data } = await apiLogin(username, password);
       const { jwt, expires } = data;
 
       if (jwt) {
         Cookies.set("token", jwt, { expires });
-        router.push("/");
+        current = await getCurrentUser();
       }
 
       setLoading(false);
+      return current;
     } catch (error) {
-      show({
-        type: "error",
-        title: "Error",
-        message: "Ha ocurrido un error al intentar iniciar sesion",
-      });
       setLoading(false);
+      throw error;
     }
   };
 
   const logout = () => {
     Cookies.remove("token");
-    router.push("/login");
+    mutateUser(null);
   };
 
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, login, loading, logout, user }}
-    >
+    <AuthContext.Provider value={{ login, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -70,20 +84,13 @@ export function useAuth() {
 }
 
 export function ProtectRoute(Component) {
-  return () => {
-    const { isAuthenticated, loading } = useAuth();
-    const router = useRouter();
+  return (args) => {
+    const { user } = useUser({ redirectTo: "/login" });
 
-    useEffect(() => {
-      if (!isAuthenticated && !loading) {
-        router.replace("/login");
-      }
-    }, [loading, isAuthenticated]);
-
-    if (loading) {
-      return <Spinner />;
+    if (!user) {
+      return null;
     }
 
-    return <Component {...arguments} />;
+    return <Component {...args} />;
   };
 }

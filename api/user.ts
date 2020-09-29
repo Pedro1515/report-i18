@@ -1,4 +1,5 @@
 import { apiInstance } from "utils/axios";
+import Cookies from "js-cookie";
 
 type Roles = "ROLE_USER";
 
@@ -30,7 +31,10 @@ export interface JWT {
   role: Roles[];
 }
 
+export const getCurrentUser = async () =>
+  await apiInstance.get<User>("/rest/user/me");
+
 export const login = async (username: string, password: string) =>
-  await apiInstance.post<JWT>(
-    `/user/authenticate?username=${username}&password=${password}`
-  );
+  await apiInstance.post<JWT>(`/user/authenticate`, null, {
+    params: { username, password },
+  });

@@ -32,9 +32,11 @@ export function Member({ name, index }: MemberProps) {
 export function Members({ members }: MembersProps) {
   return (
     <div className="flex overflow-hidden">
-      {members.map((name, index) => (
-        <Member key={name} {...{ name, index }} />
-      ))}
+      {!members
+        ? "-"
+        : members.map((name, index) => (
+            <Member key={name} {...{ name, index }} />
+          ))}
     </div>
   );
 }
