@@ -1,7 +1,7 @@
-import React, { HTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from "react";
 import classNames from "classnames";
 
-export interface FormInputProps extends HTMLAttributes<HTMLInputElement> {}
+export interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 export const FormInput = React.forwardRef((props: FormInputProps, ref) => (
   <input
