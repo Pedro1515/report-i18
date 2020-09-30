@@ -23,9 +23,10 @@ import {
 } from "components/icons";
 import { config } from "utils/tailwind";
 import { useProject, useRuns } from "utils/hooks";
-import { customFormatDuration } from "utils/date";
+import { customFormatDuration, sum } from "utils";
 import { useRouter } from "next/router";
-import { ProtectRoute } from "context";
+import { ProtectRoute, useAlert } from "context";
+import format from "date-fns/format";
 
 function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -70,6 +71,17 @@ function Project() {
   const { query } = useRouter();
   const { project } = useProject(query.id as string);
   const { runs, isLoading: isLoadingRuns } = useRuns(query.id as string);
+  const { show } = useAlert();
+
+  const handleDeleteRun = ({ name, id }) => (e) => {
+    show({
+      title: `Eliminar ${name}`,
+      body:
+        "Estas seguro que quieres eliminarlo? Se perderan todos los datos asociados.",
+      onConfirm: () => console.log("ale"),
+      action: "Eliminar",
+    });
+  };
 
   const columns = React.useMemo(
     () => [
@@ -118,37 +130,40 @@ function Project() {
             className="text-sm leading-5 text-gray-500"
             title={row.original.created}
           >
-            {row.original.startTime}
-            {/* {formatDistanceToNow(row.original.created, {
-              addSuffix: true,
-              locale: es,
-            })} */}
+            {format(new Date(row.original.startTime), "dd/MM/yyyy HH:ss")}
           </span>
         ),
       },
       {
         Header: "Total features",
         id: "total_features",
-        Cell: ({ row }) => (
-          <span
-            className="text-sm leading-5 text-gray-500"
-            title={row.original.created}
-          >
-            {row.original.parentLength}
-          </span>
-        ),
+        Cell: ({ row }) => {
+          const { parentLength } = row.original;
+          return (
+            <span
+              className="text-sm leading-5 text-gray-500"
+              title={row.original.created}
+            >
+              {sum([parentLength])}
+            </span>
+          );
+        },
       },
       {
         Header: "Total scenarios",
         id: "total_scenarios",
-        Cell: ({ row }) => (
-          <span
-            className="text-sm leading-5 text-gray-500"
-            title={row.original.created}
-          >
-            {row.original.childLength}
-          </span>
-        ),
+        Cell: ({ row }) => {
+          const { parentLength, childLength } = row.original;
+
+          return (
+            <span
+              className="text-sm leading-5 text-gray-500"
+              title={row.original.created}
+            >
+              {sum([childLength, parentLength])}
+            </span>
+          );
+        },
       },
       {
         Header: "Passed",
@@ -188,7 +203,9 @@ function Project() {
         id: "edit",
         Cell: ({ row }) => (
           <MenuIcon
-            items={[[{ label: "Eliminar", onClick: () => console.log("asd") }]]}
+            items={[
+              [{ label: "Eliminar", onClick: handleDeleteRun(row.original) }],
+            ]}
           />
         ),
       },

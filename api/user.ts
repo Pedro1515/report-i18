@@ -1,4 +1,4 @@
-import { apiInstance } from "utils/axios";
+import { apiInstance } from "utils";
 import Cookies from "js-cookie";
 
 type Roles = "ROLE_USER";
