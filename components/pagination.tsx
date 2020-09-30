@@ -2,6 +2,8 @@ import Pagination, { PaginationProps } from "rc-pagination";
 import { ChevronLeftIcon, ChevronRightIcon } from "components/icons";
 import classNames from "classnames";
 
+export type RCPaginationProps = PaginationProps;
+
 export function RCPagination({ ...props }: PaginationProps) {
   const style = classNames(
     "relative",

@@ -1,3 +1,4 @@
+import React from "react";
 import {
   IconButton,
   PopOver,
@@ -34,7 +35,7 @@ export function MenuIcon({ items }: MenuIconProps) {
       >
         {items.map((group, index, arr) => {
           return (
-            <>
+            <React.Fragment key={index}>
               <MenuItemGroup
                 key={index}
                 aria-orientation="vertical"
@@ -45,7 +46,7 @@ export function MenuIcon({ items }: MenuIconProps) {
                 ))}
               </MenuItemGroup>
               {arr[index] ? <Divider /> : null}
-            </>
+            </React.Fragment>
           );
         })}
       </PopOver>
