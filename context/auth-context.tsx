@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { getCurrentUser, login as apiLogin, User } from "api";
@@ -20,20 +20,24 @@ interface UseUserProps {
 }
 
 export function useUser({ redirectTo, redirectIfFound }: UseUserProps) {
-  const { data: user, mutate: mutateUser } = useSWR<User>("/rest/user/me");
+  const { data: user, mutate: mutateUser, error } = useSWR<User>(
+    "/rest/user/me"
+  );
   const isAuthenticated = !!user;
   const router = useRouter();
   const hasToken = Cookies.get("token");
 
   useEffect(() => {
-    if ((!redirectTo || !user) && hasToken) return;
+    if ((!redirectTo || !user) && hasToken && !error) {
+      return;
+    }
     if (
       (redirectTo && !redirectIfFound && !isAuthenticated) ||
       (redirectIfFound && isAuthenticated)
     ) {
       router.replace(redirectTo);
     }
-  }, [user, redirectIfFound, redirectTo, isAuthenticated, hasToken]);
+  }, [user, redirectIfFound, redirectTo, isAuthenticated, hasToken, error]);
 
   return { user, mutateUser };
 }
@@ -41,6 +45,7 @@ export function useUser({ redirectTo, redirectIfFound }: UseUserProps) {
 export function AuthProvider({ children }) {
   const [loading, setLoading] = useState<boolean>(false);
   const { mutateUser } = useUser({ redirectTo: "/login" });
+
   const login = async (username: string, password: string) => {
     try {
       let current;
