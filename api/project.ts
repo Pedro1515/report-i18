@@ -1,3 +1,5 @@
+import { Run } from "./runs";
+
 export type ProjectError =
   | "Product Bug"
   | "Automation Code Bug"
@@ -9,6 +11,9 @@ export interface Project {
   name: string;
   createdAt: string;
   levelSetting: number;
-  users: null;
+  users: string[];
   errorState: ProjectError[];
+  runQuantity: number;
+  testQuantity: number;
+  lastRun: Run;
 }

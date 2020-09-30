@@ -18,15 +18,9 @@ import {
 } from "components";
 import { ArchiveIcon, HomeIcon } from "components/icons";
 import { config } from "utils/tailwind";
-
-// function useProject(id) {
-//   const { data, error } = useSWR(`/rest/projects/select/${id}`, fetcher);
-//   return {
-//     user: data,
-//     isLoading: !error && !data,
-//     isError: error,
-//   };
-// }
+import { useProject, useRuns } from "utils/hooks";
+import { useRouter } from "next/router";
+import { Project } from "api";
 
 function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -68,6 +62,10 @@ function Table({ columns, data, sticky }) {
 }
 
 export default function Project() {
+  const { query } = useRouter();
+  const { project } = useProject(query.id as string);
+  const { runs } = useRuns(query.id as string);
+
   const columns = React.useMemo(
     () => [
       {
@@ -98,10 +96,13 @@ export default function Project() {
         Header: "Creado",
         id: "created",
         Cell: ({ row }) => (
-          <span className="text-sm leading-5 text-gray-500" title={row.original.created}>
+          <span
+            className="text-sm leading-5 text-gray-500"
+            title={row.original.created}
+          >
             {formatDistanceToNow(row.original.created, {
               addSuffix: true,
-              locale: es
+              locale: es,
             })}
           </span>
         ),

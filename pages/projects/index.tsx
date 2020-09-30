@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo } from "react";
-import Link from "next/link";
 import { useTable } from "react-table";
-import useSWR from "swr";
-import classNames from "classnames";
 import { format } from "date-fns";
-import { Response, Project } from "api";
+import { useRouter } from "next/router";
+import { Project } from "api";
 import {
   Layout,
   LayoutHeader,
@@ -19,10 +17,15 @@ import {
   TableHeader,
   MenuIcon,
   Spinner,
-  FilterLabel
+  FilterLabel,
 } from "components";
 import { ProtectRoute, useAlert } from "context";
-import { useModal, useInputValue } from "utils/hooks";
+import {
+  useModal,
+  useInputValue,
+  useProjects,
+  usePagination,
+} from "utils/hooks";
 
 function MenuIconButton() {
   const popover = useModal();
@@ -127,8 +130,12 @@ function Search({ onSearch }) {
 }
 
 export function Home() {
-  const { data: projects } = useSWR<Response<Project[]>>("/rest/projects/q");
-
+  const { projects, isLoading } = useProjects();
+  const { PaginationComponent, currentPage } = usePagination<Project[]>({
+    paginatedObject: projects,
+  });
+  console.log(currentPage)
+  const router = useRouter();
   const columns = useMemo(
     () => [
       {
@@ -139,11 +146,14 @@ export function Home() {
           return (
             <div className="flex items-center">
               <div>
-                <Link href={`/projects/${id}`}>
-                  <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
-                    {name}
-                  </a>
-                </Link>
+                <a
+                  onClick={() =>
+                    router.push({ pathname: "/project/[id]", query: { id } })
+                  }
+                  className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline"
+                >
+                  {name}
+                </a>
                 <div className="text-sm leading-8 text-gray-600">
                   {builds} Builds &middot; {tests} Tests
                 </div>
@@ -185,13 +195,6 @@ export function Home() {
     []
   );
 
-  const {
-    content,
-    totalElements,
-    totalPages,
-    // pageable: { pageNumber },
-  } = projects ?? {};
-
   return (
     <Layout>
       <LayoutHeader>
@@ -202,25 +205,19 @@ export function Home() {
       </LayoutHeader>
       <LayoutContent>
         <div className="px-6 py-4 border-b">
-          <FilterLabel>
-            filtros
-          </FilterLabel>
+          <FilterLabel>filtros</FilterLabel>
           <Search onSearch={(search) => console.log(search)} />
         </div>
         <div className="flex flex-1 overflow-y-auto">
-          {!projects ? (
+          {isLoading ? (
             <div className="flex items-center justify-center flex-1">
               <Spinner className="h-10 w-10 text-gray-500" />
             </div>
           ) : (
-            <Table {...{ columns, data: content }} sticky />
+            <Table {...{ columns, data: projects?.content }} sticky />
           )}
         </div>
-        {totalPages > 1 && (
-          <div className="flex justify-end items-end p-6">
-            <RCPagination total={totalElements} />
-          </div>
-        )}
+        {PaginationComponent}
       </LayoutContent>
     </Layout>
   );
