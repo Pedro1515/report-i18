@@ -73,7 +73,7 @@ export function Sidebar() {
           src="/assets/logo_lippia_final_color.png"
           alt="lippia"
         />
-        <Avatar name="Juan Spoleti" role="ADMIN" />
+        <Avatar />
         <div className="space-y-3">
           <SidebarItem href="/projects" label="Proyectos" IconComponent={<ArchiveIcon />} />
           <SidebarItem

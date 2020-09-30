@@ -1,10 +1,17 @@
 module.exports = {
-  purge: ["./pages/**/*.{js,ts,jsx,tsx}"],
+  future: {
+    removeDeprecatedGapUtilities: true,
+  },
+  purge: [
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./context/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
-    fontFamily: {
-      sans: ["Inter", "sans-serif"],
-    },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+      },
       boxShadow: {
         solid: "0 0 0 2px currentColor",
       },
