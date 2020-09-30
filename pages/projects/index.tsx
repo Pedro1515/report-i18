@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { useTable } from "react-table";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { Project } from "api";
 import {
   Layout,
@@ -134,8 +135,6 @@ export function Home() {
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
-  console.log(currentPage)
-  const router = useRouter();
   const columns = useMemo(
     () => [
       {
@@ -146,14 +145,11 @@ export function Home() {
           return (
             <div className="flex items-center">
               <div>
-                <a
-                  onClick={() =>
-                    router.push({ pathname: "/project/[id]", query: { id } })
-                  }
-                  className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline"
-                >
-                  {name}
-                </a>
+                <Link href={`/projects/${id}`}>
+                  <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                    {name}
+                  </a>
+                </Link>
                 <div className="text-sm leading-8 text-gray-600">
                   {builds} Builds &middot; {tests} Tests
                 </div>

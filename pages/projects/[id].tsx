@@ -20,7 +20,6 @@ import { ArchiveIcon, HomeIcon } from "components/icons";
 import { config } from "utils/tailwind";
 import { useProject, useRuns } from "utils/hooks";
 import { useRouter } from "next/router";
-import { Project } from "api";
 
 function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
