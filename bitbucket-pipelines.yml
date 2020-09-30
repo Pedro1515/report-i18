@@ -1,6 +1,7 @@
 pipelines:
   default:
      - step:
+         name: Generate docker image
          services:
            - docker
          script:
@@ -12,12 +13,11 @@ pipelines:
            - docker build -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
      - step:
-         name: Deploy to production
+         name: Deploy
          deployment: production
          script:
-           - echo "Deploying to production environment"
            - pipe: atlassian/ssh-run:0.2.2
              variables:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
-               COMMAND: "cd lippia-report-server-front && docker-compose up --quiet-pull -d"
+               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose up -d"
