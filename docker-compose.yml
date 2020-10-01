@@ -8,12 +8,12 @@ services:
     volumes:
       - .:/usr/src/app
     tty: true
-  api_rs_report:
-    image: crowdar/report-server-backend:3.2.1.1
-    environment:
-      - DB_URI=mongodb://root:Crowdar2019@vps2.crowdaronline.com:27017/admin
-      - REDIS_ACTIVE=false
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    ports:
-      - 8083:80
+  # api_rs_report:
+  #   image: crowdar/report-server-backend:3.2.1.1
+  #   environment:
+  #     - DB_URI=mongodb://root:Crowdar2019@vps2.crowdaronline.com:27017/admin
+  #     - REDIS_ACTIVE=false
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   ports:
+  #     - 8083:80
