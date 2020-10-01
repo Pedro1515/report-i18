@@ -21,4 +21,4 @@ pipelines:
              variables:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
-               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up --build"
+               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up -d --build"
