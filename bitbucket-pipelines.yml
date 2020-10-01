@@ -1,6 +1,7 @@
 pipelines:
-  default:
-     - step:
+  branches:
+    master:
+      - step:
          name: Generate docker image
          services:
            - docker
@@ -12,7 +13,7 @@ pipelines:
            - export IMAGE_NAME=crowdar/report-server-front:latest
            - docker build -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
-     - step:
+      - step:
          name: Deploy
          deployment: production
          script:
