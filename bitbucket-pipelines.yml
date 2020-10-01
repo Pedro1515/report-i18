@@ -1,18 +1,19 @@
 pipelines:
-  default:
-     - step:
+  branches:
+    master:
+      - step:
          name: Generate docker image
          services:
            - docker
          script:
            - export IMAGE_NAME=crowdar/report-server-front:$BITBUCKET_COMMIT
            - docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PASSWORD
-           - docker build -t $IMAGE_NAME .
+           - docker build -f Dockerfile.production -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
            - export IMAGE_NAME=crowdar/report-server-front:latest
            - docker build -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
-     - step:
+      - step:
          name: Deploy
          deployment: production
          script:
@@ -20,4 +21,4 @@ pipelines:
              variables:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
-               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.prod.yml up --build"
+               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up --build"
