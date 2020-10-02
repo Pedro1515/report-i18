@@ -4,6 +4,7 @@ module.exports = {
   },
   purge: {
     mode: "conservative",
+    enabled: false,
     content: [
       "./components/**/*.{js,ts,jsx,tsx}",
       "./pages/**/*.{js,ts,jsx,tsx}",

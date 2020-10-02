@@ -50,6 +50,7 @@ interface LabelWrapperProps {
 
 const CustomTooltip = ({ active, payload, label, ...props }) => {
   const [data] = payload;
+  // @ts-ignore
   const { payload: { name, value, color } = {} } = data ?? {};
   console.log({ active, payload, label, ...props });
   if (active) {
@@ -376,10 +377,16 @@ function Project() {
     name,
     createdAt,
     lastRun: {
+      // TODO: fix this
+      // @ts-ignore
       childLength,
+      // @ts-ignore
       parentLength,
+      // @ts-ignore
       startTime,
+      // @ts-ignore
       status,
+      // @ts-ignore
       categoryNameList,
     } = {},
   } = project ?? {};
@@ -400,7 +407,7 @@ function Project() {
                 Creado el{" "}
                 {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
               </div>
-              <div className="flex flex-wrap 3 mt-4 space-x-10">
+              <div className="flex flex-wrap 3 mt-4 justify-between">
                 <div className="flex flex-col my-3 xs:w-full">
                   <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
                     Runs
