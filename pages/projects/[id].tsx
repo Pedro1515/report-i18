@@ -1,5 +1,4 @@
 import React from "react";
-import { VictoryPie } from "victory";
 import { useTable } from "react-table";
 import {
   Layout,
@@ -13,20 +12,181 @@ import {
   Badge,
   MenuIcon,
   Spinner,
+  Dot,
 } from "components";
-import {
-  ArchiveIcon,
-  HomeIcon,
-  ClockIcon,
-  TagIcon,
-  ExclamationIcon,
-} from "components/icons";
+import { ClockIcon, TagIconSolid, ExclamationIcon } from "components/icons";
+import classNames from "classnames";
 import { config } from "utils/tailwind";
 import { useProject, useRuns } from "utils/hooks";
-import { customFormatDuration, sum } from "utils";
+import { customFormatDuration, sum, percentage } from "utils";
 import { useRouter } from "next/router";
 import { ProtectRoute, useAlert } from "context";
 import format from "date-fns/format";
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+
+const { green, red, yellow } = config.theme.colors;
+
+const data1 = [
+  { name: "Pass", value: 100, color: "green" },
+  { name: "Fail", value: 30, color: "red" },
+  { name: "Skip", value: 10, color: "yellow" },
+];
+
+interface LabelWrapperProps {
+  className?: string;
+  children: React.ReactNode;
+}
+
+const CustomTooltip = ({ active, payload, label, ...props }) => {
+  const [data] = payload;
+  // @ts-ignore
+  const { payload: { name, value, color } = {} } = data ?? {};
+  console.log({ active, payload, label, ...props });
+  if (active) {
+    return (
+      <div className="flex px-3 py-2 bg-gray-800 text-xs rounded-md shadow-sm items-center opacity-90">
+        <Dot {...{ color }} className="mr-2" />
+        <div className="text-gray-400 font-medium">{name}:</div>
+        <div className="ml-2 font-semibold text-gray-100">{value}</div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+function LegendWrapper({ className, ...props }: LabelWrapperProps) {
+  return (
+    <div
+      className={classNames(
+        "flex",
+        "flex-col",
+        "justify-end",
+        "text-md",
+        "text-xs",
+        "divide-y",
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function Legend({ label, value, percentage, color }) {
+  return (
+    <div
+      className={classNames("flex", "items-center", "justify-between", "py-3")}
+    >
+      <div className="flex items-center w-1/3">
+        <Dot className="mr-3" {...{ color }} />
+        <div className="truncate">{label}</div>
+      </div>
+      <div className="w-1/3 font-medium text-right">{value}</div>
+      <div className="w-1/3 text-right text-gray-500">{percentage}%</div>
+    </div>
+  );
+}
+
+function PieCharts() {
+  return (
+    <div className="flex flex-col flex-1 w-full">
+      <div style={{ height: 250 }}>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data1}
+              innerRadius={60}
+              outerRadius={90}
+              fill="#8884d8"
+              paddingAngle={2}
+              dataKey="value"
+            >
+              {data1.map((entry, index) => {
+                console.log(entry);
+                return (
+                  <Cell
+                    key={`cell-${index}`}
+                    className={`text-${entry.color}-500`}
+                    fill="currentColor"
+                  />
+                );
+              })}
+            </Pie>
+            <Tooltip content={(props) => <CustomTooltip {...props} />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <LegendWrapper>
+        {data1.map(({ color, name, value }) => (
+          <Legend
+            key={name}
+            label={name}
+            {...{ color, value }}
+            percentage={percentage(value, sum(data1.map((x) => x.value)))}
+          />
+        ))}
+      </LegendWrapper>
+    </div>
+  );
+}
+
+const data = [
+  {
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    uv: 3000,
+  },
+  {
+    name: "Page C",
+    uv: 2000,
+  },
+  {
+    name: "Page D",
+    uv: 2780,
+  },
+  {
+    name: "Page E",
+    uv: 1890,
+  },
+  {
+    name: "Page F",
+    uv: 2390,
+  },
+  {
+    name: "Page G",
+    uv: 3490,
+  },
+];
+
+function AreaCharts() {
+  return (
+    <ResponsiveContainer width="100%" height={350}>
+      <AreaChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
 
 function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -117,7 +277,7 @@ function Project() {
         id: "status",
         Cell: ({ row }) => (
           <Badge
-            label={row.original.status.toUpperCase()}
+            label={row.original.status}
             color={row.original.status === "pass" ? "green" : "red"}
           />
         ),
@@ -213,6 +373,24 @@ function Project() {
     []
   );
 
+  const {
+    name,
+    createdAt,
+    lastRun: {
+      // TODO: fix this
+      // @ts-ignore
+      childLength,
+      // @ts-ignore
+      parentLength,
+      // @ts-ignore
+      startTime,
+      // @ts-ignore
+      status,
+      // @ts-ignore
+      categoryNameList,
+    } = {},
+  } = project ?? {};
+
   return (
     <Layout>
       <LayoutHeader>
@@ -220,47 +398,121 @@ function Project() {
           <span className="font-medium text-lg">{project?.name}</span>
         </div>
       </LayoutHeader>
-      <LayoutContent>
-        <div className="px-6 py-4 border-b">
-          <Title>resumen</Title>
-          <div className="grid grid-cols-4 gap-12 mt-4 grid-flow-row">
-            <Card IconComponent={<ArchiveIcon />} label="Builds" value={1} />
-            <Card IconComponent={<HomeIcon />} label="Tests" value={13} />
-            <Card
-              IconComponent={<ArchiveIcon />}
-              label="Builds ejecutados hoy"
-              value={0}
-            />
-            <Card
-              IconComponent={<HomeIcon />}
-              label="Tests ejecutados hoy"
-              value={5}
-            />
-          </div>
-          <div>
-            <div className="w-64">
-              <VictoryPie
-                padding={50}
-                colorScale={[
-                  config.theme.colors.green[600],
-                  config.theme.colors.red[600],
-                ]}
-                data={[
-                  { x: "PASS", y: 6 },
-                  { x: "FAIL", y: 5 },
-                ]}
-                style={{
-                  labels: {
-                    fill: config.theme.colors.gray[600],
-                    fontSize: 20,
-                    fontWeight: "bold",
-                  },
-                }}
+      <LayoutContent scrollable>
+        <div className="flex border-b">
+          <Card className="flex-col w-1/3 border-r divide-y">
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">General</Title>
+              <div className="mt-1 text-xs text-gray-500 font-medium">
+                Creado el{" "}
+                {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
+              </div>
+              <div className="flex flex-wrap 3 mt-4 justify-between">
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Runs
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    2
+                  </div>
+                </div>
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Features
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    8
+                  </div>
+                </div>
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Tests
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    30
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">Tags</Title>
+              <div className="flex flex-wrap space-x-4 mt-4">
+                {categoryNameList?.map((tag) => (
+                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagIconSolid />
+                    </div>
+                    <span className="text-gray-800 font-medium text-xs">
+                      {tag}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">Excepciones</Title>
+              <div className="flex flex-wrap space-x-4 mt-4">
+                {categoryNameList?.map((tag) => (
+                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagIconSolid />
+                    </div>
+                    <span className="text-gray-800 font-medium text-xs">
+                      {tag}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Card>
+          <Card className="flex-col w-1/3 border-r p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <Title className="text-gray-700 font-semibold">
+                  Ultimo run
+                </Title>
+                <div className="mt-1 text-xs text-gray-500 font-medium">
+                  Iniciado el{" "}
+                  {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
+                </div>
+              </div>
+              <Badge
+                label={status}
+                color={status === "pass" ? "green" : "red"}
               />
             </div>
-          </div>
+            <div className="flex flex-wrap mt-4 justify-between">
+              <div className="flex flex-col my-3 xs:w-full">
+                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                  Total features
+                </div>
+                <div className="mt-2 font-medium text-2xl leading-none">4</div>
+              </div>
+              <div className="flex flex-col my-3 xs:w-full">
+                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                  Total scenarios
+                </div>
+                <div className="mt-2 font-medium text-2xl leading-none">15</div>
+              </div>
+              <div className="flex flex-col my-3 xs:w-full">
+                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                  Total steps
+                </div>
+                <div className="mt-2 font-medium text-2xl leading-none">80</div>
+              </div>
+            </div>
+            <div className="flex items-center justify-center">
+              <PieCharts />
+            </div>
+          </Card>
+          <Card className="flex-col w-1/3 p-6">
+            <Title className="text-gray-700 font-semibold">Fallos</Title>
+            <div className="flex items-center justify-center flex-1">
+              <AreaCharts />
+            </div>
+          </Card>
         </div>
-        <div className="flex flex-1 overflow-y-auto">
+        <div className="flex flex-1">
           {isLoadingRuns ? (
             <div className="flex items-center justify-center flex-1">
               <Spinner className="h-10 w-10 text-gray-500" />

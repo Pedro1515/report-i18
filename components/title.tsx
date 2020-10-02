@@ -7,7 +7,6 @@ export function Title({ className, children, ...props }: TitleProps) {
   return (
     <span
       className={classNames(
-        "py-3",
         "text-left",
         "text-xs",
         "leading-4",

@@ -1,6 +1,14 @@
 import React from "react";
 import classNames from "classnames";
-import { Button, Sidebar } from "components";
+import { Sidebar } from "components";
+
+interface Children {
+  children: React.ReactNode;
+}
+
+interface LayoutContentProps extends Children {
+  scrollable?: boolean;
+}
 
 function Wrapper({ children }) {
   return <div className="flex flex-col flex-1">{children}</div>;
@@ -32,13 +40,17 @@ export function LayoutHeader({ children }) {
   );
 }
 
-export function LayoutContent({ children }) {
+export function LayoutContent({
+  scrollable = false,
+  ...props
+}: LayoutContentProps) {
   return (
     <main
-      className={classNames("flex", "flex-col", "h-full", "overflow-hidden")}
-    >
-      {children}
-    </main>
+      className={classNames("flex", "flex-col", "h-full", "overflow-hidden", {
+        "overflow-y-auto": scrollable,
+      })}
+      {...props}
+    />
   );
 }
 

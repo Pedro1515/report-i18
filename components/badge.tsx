@@ -1,3 +1,4 @@
+import { Dot } from "./dot";
 import classNames from "classnames";
 
 export interface BadgeProps {
@@ -10,15 +11,20 @@ export function Badge({ label, color }: BadgeProps) {
     <span
       className={classNames(
         "px-2",
+        "py-px",
         "inline-flex",
         "text-xs",
         "leading-5",
         "font-semibold",
         "rounded-full",
         `bg-${color}-100`,
-        `text-${color}-800`
+        `text-${color}-800`,
+        "tracking-wide",
+        "items-center",
+        "uppercase"
       )}
     >
+      <Dot {...{ color }} className="mr-2" />
       {label}
     </span>
   );
