@@ -12,7 +12,6 @@ export function Card({ children, className }: CardProps) {
       className={classNames(
         "flex",
         "bg-white",
-        "p-6",
         className
       )}
     >

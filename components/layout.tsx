@@ -1,6 +1,6 @@
 import React from "react";
 import classNames from "classnames";
-import { Button, Sidebar } from "components";
+import { Sidebar } from "components";
 
 function Wrapper({ children }) {
   return <div className="flex flex-col flex-1">{children}</div>;

@@ -31,7 +31,7 @@ export function Avatar() {
         onClick={toggle}
       >
         <div className="flex items-center">
-          <img src="/assets/avatar.png" className="rounded-full h-10" />
+          <img src={null} className="rounded-full h-10" />
           <div className="flex flex-col text-sm truncate ml-4">
             <span className="font-medium leading-7">{user?.name}</span>
             <span className="text-gray-500 text-xs uppercase">{user?.role}</span>

@@ -14,13 +14,7 @@ import {
   Spinner,
   Dot,
 } from "components";
-import {
-  ArchiveIcon,
-  HomeIcon,
-  ClockIcon,
-  TagIcon,
-  ExclamationIcon,
-} from "components/icons";
+import { ClockIcon, TagIconSolid, ExclamationIcon } from "components/icons";
 import classNames from "classnames";
 import { config } from "utils/tailwind";
 import { useProject, useRuns } from "utils/hooks";
@@ -156,60 +150,40 @@ const data = [
   {
     name: "Page B",
     uv: 3000,
-    pv: 1398,
-    amt: 2210,
   },
   {
     name: "Page C",
     uv: 2000,
-    pv: 9800,
-    amt: 2290,
   },
   {
     name: "Page D",
     uv: 2780,
-    pv: 3908,
-    amt: 2000,
   },
   {
     name: "Page E",
     uv: 1890,
-    pv: 4800,
-    amt: 2181,
   },
   {
     name: "Page F",
     uv: 2390,
-    pv: 3800,
-    amt: 2500,
   },
   {
     name: "Page G",
     uv: 3490,
-    pv: 4300,
-    amt: 2100,
   },
 ];
 
 function AreaCharts() {
   return (
-    <AreaChart
-      width={500}
-      height={400}
-      data={data}
-      margin={{
-        top: 10,
-        right: 30,
-        left: 0,
-        bottom: 0,
-      }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-    </AreaChart>
+    <ResponsiveContainer width="100%" height={350}>
+      <AreaChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }
 
@@ -401,7 +375,13 @@ function Project() {
   const {
     name,
     createdAt,
-    lastRun: { childLength, parentLength, startTime, status } = {},
+    lastRun: {
+      childLength,
+      parentLength,
+      startTime,
+      status,
+      categoryNameList,
+    } = {},
   } = project ?? {};
 
   return (
@@ -413,41 +393,79 @@ function Project() {
       </LayoutHeader>
       <LayoutContent scrollable>
         <div className="flex border-b">
-          <Card className="flex-col w-1/3 border-r">
-            <Title className="text-gray-700 font-semibold">General</Title>
-            <div className="mt-1 text-xs text-gray-500 font-medium">
-              Creado el{" "}
-              {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
+          <Card className="flex-col w-1/3 border-r divide-y">
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">General</Title>
+              <div className="mt-1 text-xs text-gray-500 font-medium">
+                Creado el{" "}
+                {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
+              </div>
+              <div className="flex flex-wrap 3 mt-4 space-x-10">
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Runs
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    2
+                  </div>
+                </div>
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Features
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    8
+                  </div>
+                </div>
+                <div className="flex flex-col my-3 xs:w-full">
+                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+                    Tests
+                  </div>
+                  <div className="mt-2 font-medium text-2xl leading-none">
+                    30
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-wrap 3 mt-4 space-x-10">
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Runs
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">2</div>
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">Tags</Title>
+              <div className="flex flex-wrap space-x-4 mt-4">
+                {categoryNameList?.map((tag) => (
+                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagIconSolid />
+                    </div>
+                    <span className="text-gray-800 font-medium text-xs">
+                      {tag}
+                    </span>
+                  </span>
+                ))}
               </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Features
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">8</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Tests
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">30</div>
+            </div>
+            <div className="flex-1 p-6">
+              <Title className="text-gray-700 font-semibold">Excepciones</Title>
+              <div className="flex flex-wrap space-x-4 mt-4">
+                {categoryNameList?.map((tag) => (
+                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagIconSolid />
+                    </div>
+                    <span className="text-gray-800 font-medium text-xs">
+                      {tag}
+                    </span>
+                  </span>
+                ))}
               </div>
             </div>
           </Card>
-          <Card className="flex-col w-1/3 border-r">
+          <Card className="flex-col w-1/3 border-r p-6">
             <div className="flex items-center justify-between">
               <div>
                 <Title className="text-gray-700 font-semibold">
                   Ultimo run
                 </Title>
                 <div className="mt-1 text-xs text-gray-500 font-medium">
-                  Inicio{" "}
+                  Iniciado el{" "}
                   {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
                 </div>
               </div>
@@ -456,7 +474,7 @@ function Project() {
                 color={status === "pass" ? "green" : "red"}
               />
             </div>
-            <div className="flex flex-wrap mt-4 space-x-10">
+            <div className="flex flex-wrap mt-4 justify-between">
               <div className="flex flex-col my-3 xs:w-full">
                 <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
                   Total features
@@ -480,32 +498,10 @@ function Project() {
               <PieCharts />
             </div>
           </Card>
-          <Card className="flex-col w-1/3">
+          <Card className="flex-col w-1/3 p-6">
             <Title className="text-gray-700 font-semibold">Fallos</Title>
-            <div className="flex flex-wrap mt-4 space-x-10">
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total features
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">4</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total scenarios
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">15</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total steps
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">80</div>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <ResponsiveContainer>
-                <AreaCharts />
-              </ResponsiveContainer>
+            <div className="flex items-center justify-center flex-1">
+              <AreaCharts />
             </div>
           </Card>
         </div>
