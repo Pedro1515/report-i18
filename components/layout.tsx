@@ -32,10 +32,18 @@ export function LayoutHeader({ children }) {
   );
 }
 
-export function LayoutContent({ children }) {
+export function LayoutContent({ children, scrollable = false }) {
   return (
     <main
-      className={classNames("flex", "flex-col", "h-full", "overflow-hidden")}
+      className={classNames(
+        "flex",
+        "flex-col",
+        "h-full",
+        "overflow-hidden",
+        {
+          "overflow-y-auto": scroll,
+        }
+      )}
     >
       {children}
     </main>

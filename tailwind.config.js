@@ -9,7 +9,6 @@ module.exports = {
       "./pages/**/*.{js,ts,jsx,tsx}",
       "./context/**/*.{js,ts,jsx,tsx}",
     ],
-    
   },
   theme: {
     extend: {
@@ -21,6 +20,9 @@ module.exports = {
       },
       spacing: {
         7: "1.75rem",
+      },
+      opacity: {
+        90: ".9",
       },
     },
   },
