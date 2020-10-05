@@ -23,3 +23,4 @@ export * from "./filter-label";
 export * from "./select";
 export * from "./form";
 export * from "./dot";
+export * from "./pie-chart";

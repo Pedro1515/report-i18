@@ -1,12 +1,22 @@
 import { Dot } from "./dot";
 import classNames from "classnames";
+import { m } from "framer-motion";
 
 export interface BadgeProps {
   label: string;
   color: string;
+  IconComponent?: React.ReactNode;
+  uppercase?: boolean;
+  className?: string;
 }
 
-export function Badge({ label, color }: BadgeProps) {
+export function Badge({
+  label,
+  color,
+  IconComponent,
+  uppercase = true,
+  className,
+}: BadgeProps) {
   return (
     <span
       className={classNames(
@@ -21,10 +31,11 @@ export function Badge({ label, color }: BadgeProps) {
         `text-${color}-800`,
         "tracking-wide",
         "items-center",
-        "uppercase"
+        { uppercase: uppercase },
+        className
       )}
     >
-      <Dot {...{ color }} className="mr-2" />
+      {IconComponent ? IconComponent : <Dot {...{ color }} className="mr-2" />}
       {label}
     </span>
   );
