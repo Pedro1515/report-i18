@@ -1,5 +1,4 @@
 import React from "react";
-import { useTable } from "react-table";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
 import { removeRun } from "api";
@@ -9,9 +8,7 @@ import {
   LayoutContent,
   Title,
   Card,
-  TableCell,
-  TableHeader,
-  TableRow,
+  Table,
   Badge,
   MenuIcon,
   Spinner,
@@ -25,7 +22,7 @@ import {
 } from "components/icons";
 import { ProtectRoute, useAlert, useNotification } from "context";
 import { useProject, useRuns } from "utils/hooks";
-import { customFormatDuration, getTotalBy, mutateFromCache } from "utils";
+import { customFormatDuration, getTotalBy } from "utils";
 
 const data1 = [
   { name: "Pass", value: 100, color: "green" },
@@ -63,45 +60,6 @@ const data = [
   },
 ];
 
-function Table({ columns, data, sticky }) {
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
-
-  return (
-    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
-      <thead className="border-b">
-        {headerGroups.map((headerGroup) => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <TableHeader {...column.getHeaderProps()} {...{ sticky }}>
-                {column.render("Header")}
-              </TableHeader>
-            ))}
-          </TableRow>
-        ))}
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <TableRow {...row.getRowProps()} hover>
-              {row.cells.map((cell) => {
-                return (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render("Cell")}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-}
-
 function DataDisplayWrapper(props) {
   return <div className="flex flex-wrap mt-4 -mx-6" {...props} />;
 }
@@ -121,9 +79,9 @@ function Caption(props) {
   return <div className="mt-1 text-xs text-gray-500 font-medium" {...props} />;
 }
 
-function Project() {
+function RunsTable() {
   const { query } = useRouter();
-  const { project, mutateProject } = useProject(query.id as string);
+  const { mutateProject } = useProject(query.id as string);
   const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(
     query.id as string
   );
@@ -214,6 +172,8 @@ function Project() {
       {
         Header: "Total features",
         id: "total_features",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
             {getTotalBy("feature", row.original)}
@@ -223,6 +183,8 @@ function Project() {
       {
         Header: "Total scenarios",
         id: "total_scenarios",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
             {getTotalBy("scenario", row.original)}
@@ -232,6 +194,8 @@ function Project() {
       {
         Header: "Passed",
         id: "passed",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-green-600">
             {row.original.passChildLength}
@@ -241,6 +205,8 @@ function Project() {
       {
         Header: "Failed",
         id: "failed",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span
             className="text-sm leading-5 text-red-600 text-center"
@@ -253,6 +219,8 @@ function Project() {
       {
         Header: "Skipped",
         id: "skipped",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span
             className="text-sm leading-5 text-yellow-600 text-center"
@@ -276,6 +244,21 @@ function Project() {
     ],
     []
   );
+
+  return (
+    <div className="flex flex-1 items-center justify-center">
+      {isLoadingRuns ? (
+        <Spinner className="h-10 w-10 text-gray-500" />
+      ) : (
+        <Table {...{ columns }} data={runs?.content} sticky />
+      )}
+    </div>
+  );
+}
+
+function Project() {
+  const { query } = useRouter();
+  const { project } = useProject(query.id as string);
 
   const {
     name,
@@ -394,15 +377,7 @@ function Project() {
             </div>
           </Card>
         </div>
-        <div className="flex flex-1">
-          {isLoadingRuns ? (
-            <div className="flex items-center justify-center flex-1">
-              <Spinner className="h-10 w-10 text-gray-500" />
-            </div>
-          ) : (
-            <Table {...{ columns }} data={runs?.content} sticky />
-          )}
-        </div>
+        <RunsTable />
       </LayoutContent>
     </Layout>
   );

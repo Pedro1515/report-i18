@@ -13,9 +13,7 @@ import {
   SearchBox,
   RCPagination,
   Button,
-  TableCell,
-  TableRow,
-  TableHeader,
+  Table,
   MenuIcon,
   Spinner,
   FilterLabel,
@@ -62,51 +60,6 @@ function MenuIconButton() {
         ],
       ]}
     />
-  );
-}
-
-interface TableProps {
-  columns: any;
-  data?: Project[];
-  sticky?: boolean;
-}
-
-function Table({ columns, data, sticky }: TableProps) {
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
-
-  return (
-    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
-      <thead className="border-b">
-        {headerGroups.map((headerGroup) => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <TableHeader {...column.getHeaderProps()} {...{ sticky }}>
-                {column.render("Header")}
-              </TableHeader>
-            ))}
-          </TableRow>
-        ))}
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <TableRow {...row.getRowProps()} hover>
-              {row.cells.map((cell) => {
-                return (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render("Cell")}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </table>
   );
 }
 
@@ -167,12 +120,11 @@ export function Home() {
         Header: "Ultimo build",
         id: "status",
         Cell: ({ row }) => {
-          const { lastRun: { status } } = row.original;
+          const {
+            lastRun: { status },
+          } = row.original;
           return (
-            <Badge
-              label={status}
-              color={status === "pass" ? "green" : "red"}
-            />
+            <Badge label={status} color={status === "pass" ? "green" : "red"} />
           );
         },
       },

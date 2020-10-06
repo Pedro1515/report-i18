@@ -1,4 +1,5 @@
 import React from "react";
+import { useTable } from "react-table";
 import classNames from "classnames";
 
 export interface TableHeaderProps
@@ -49,7 +50,7 @@ export function TableHeader({
 
 export function TableRow({ children, hover, ...props }: TableRowProps) {
   return (
-    <tr className={classNames({ "hover:bg-gray-100": hover })} {...props}>
+    <tr className={classNames({ "hover:bg-indigo-100": hover })} {...props}>
       {children}
     </tr>
   );
@@ -63,5 +64,53 @@ export function TableCell({ children, className, ...props }: TableCellProps) {
     >
       {children}
     </td>
+  );
+}
+
+export function Table({ columns, data, sticky }) {
+  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data,
+  });
+
+  return (
+    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
+      <thead className="border-b">
+        {headerGroups.map((headerGroup) => (
+          <TableRow {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <TableHeader
+                {...column.getHeaderProps({
+                  // @ts-ignore
+                  className: column.headerClassName,
+                })}
+                {...{ sticky }}
+              >
+                {column.render("Header")}
+              </TableHeader>
+            ))}
+          </TableRow>
+        ))}
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {rows.map((row, i) => {
+          prepareRow(row);
+          return (
+            <TableRow {...row.getRowProps()} hover>
+              {row.cells.map((cell) => {
+                return (
+                  <TableCell
+                    // @ts-ignore
+                    {...cell.getCellProps({ className: cell.column.className })}
+                  >
+                    {cell.render("Cell")}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
