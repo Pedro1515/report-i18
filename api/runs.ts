@@ -1,3 +1,5 @@
+import { apiInstance } from "utils";
+
 export interface Run {
   id: string;
   analysisStrategy?: string;
@@ -41,3 +43,6 @@ export interface Run {
   warningGrandChildLength: number;
   warningParentLength: number;
 }
+
+export const removeRun = async (id: string) =>
+  await apiInstance.delete(`/rest/runs/remove/${id}`);

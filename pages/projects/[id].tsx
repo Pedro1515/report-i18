@@ -1,152 +1,38 @@
 import React from "react";
-import { useTable } from "react-table";
+import format from "date-fns/format";
+import { useRouter } from "next/router";
+import { removeRun } from "api";
 import {
   Layout,
   LayoutHeader,
   LayoutContent,
   Title,
   Card,
-  TableCell,
-  TableHeader,
-  TableRow,
+  Table,
   Badge,
   MenuIcon,
   Spinner,
-  Dot,
-} from "components";
-import { ClockIcon, TagIconSolid, ExclamationIcon } from "components/icons";
-import classNames from "classnames";
-import { config } from "utils/tailwind";
-import { useProject, useRuns } from "utils/hooks";
-import { customFormatDuration, sum, percentage } from "utils";
-import { useRouter } from "next/router";
-import { ProtectRoute, useAlert } from "context";
-import format from "date-fns/format";
-import {
-  ResponsiveContainer,
   PieChart,
-  Pie,
-  Cell,
   AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
-
-const { green, red, yellow } = config.theme.colors;
+} from "components";
+import {
+  ClockIcon,
+  TagSolidIcon,
+  ExclamationSolidIcon,
+} from "components/icons";
+import { ProtectRoute, useAlert, useNotification } from "context";
+import { useProject, useRuns } from "utils/hooks";
+import { customFormatDuration, getTotalBy } from "utils";
 
 const data1 = [
   { name: "Pass", value: 100, color: "green" },
   { name: "Fail", value: 30, color: "red" },
-  { name: "Skip", value: 10, color: "yellow" },
 ];
-
-interface LabelWrapperProps {
-  className?: string;
-  children: React.ReactNode;
-}
-
-const CustomTooltip = ({ active, payload, label, ...props }) => {
-  const [data] = payload;
-  // @ts-ignore
-  const { payload: { name, value, color } = {} } = data ?? {};
-  console.log({ active, payload, label, ...props });
-  if (active) {
-    return (
-      <div className="flex px-3 py-2 bg-gray-800 text-xs rounded-md shadow-sm items-center opacity-90">
-        <Dot {...{ color }} className="mr-2" />
-        <div className="text-gray-400 font-medium">{name}:</div>
-        <div className="ml-2 font-semibold text-gray-100">{value}</div>
-      </div>
-    );
-  }
-
-  return null;
-};
-
-function LegendWrapper({ className, ...props }: LabelWrapperProps) {
-  return (
-    <div
-      className={classNames(
-        "flex",
-        "flex-col",
-        "justify-end",
-        "text-md",
-        "text-xs",
-        "divide-y",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
-function Legend({ label, value, percentage, color }) {
-  return (
-    <div
-      className={classNames("flex", "items-center", "justify-between", "py-3")}
-    >
-      <div className="flex items-center w-1/3">
-        <Dot className="mr-3" {...{ color }} />
-        <div className="truncate">{label}</div>
-      </div>
-      <div className="w-1/3 font-medium text-right">{value}</div>
-      <div className="w-1/3 text-right text-gray-500">{percentage}%</div>
-    </div>
-  );
-}
-
-function PieCharts() {
-  return (
-    <div className="flex flex-col flex-1 w-full">
-      <div style={{ height: 250 }}>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={data1}
-              innerRadius={60}
-              outerRadius={90}
-              fill="#8884d8"
-              paddingAngle={2}
-              dataKey="value"
-            >
-              {data1.map((entry, index) => {
-                console.log(entry);
-                return (
-                  <Cell
-                    key={`cell-${index}`}
-                    className={`text-${entry.color}-500`}
-                    fill="currentColor"
-                  />
-                );
-              })}
-            </Pie>
-            <Tooltip content={(props) => <CustomTooltip {...props} />} />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-      <LegendWrapper>
-        {data1.map(({ color, name, value }) => (
-          <Legend
-            key={name}
-            label={name}
-            {...{ color, value }}
-            percentage={percentage(value, sum(data1.map((x) => x.value)))}
-          />
-        ))}
-      </LegendWrapper>
-    </div>
-  );
-}
 
 const data = [
   {
     name: "Page A",
     uv: 4000,
-    pv: 2400,
-    amt: 2400,
   },
   {
     name: "Page B",
@@ -174,71 +60,60 @@ const data = [
   },
 ];
 
-function AreaCharts() {
+function DataDisplayWrapper(props) {
+  return <div className="flex flex-wrap mt-4 -mx-6" {...props} />;
+}
+
+function DataDisplay({ label, value }) {
   return (
-    <ResponsiveContainer width="100%" height={350}>
-      <AreaChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-      </AreaChart>
-    </ResponsiveContainer>
+    <div className="flex flex-col my-3 mx-6 xs:w-full">
+      <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+        {label}
+      </div>
+      <div className="mt-2 font-medium text-2xl leading-none">{value}</div>
+    </div>
   );
 }
 
-function Table({ columns, data, sticky }) {
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
-
-  return (
-    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
-      <thead className="border-b">
-        {headerGroups.map((headerGroup) => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <TableHeader {...column.getHeaderProps()} {...{ sticky }}>
-                {column.render("Header")}
-              </TableHeader>
-            ))}
-          </TableRow>
-        ))}
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <TableRow {...row.getRowProps()} hover>
-              {row.cells.map((cell) => {
-                return (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render("Cell")}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </table>
-  );
+function Caption(props) {
+  return <div className="mt-1 text-xs text-gray-500 font-medium" {...props} />;
 }
 
-function Project() {
+function RunsTable() {
   const { query } = useRouter();
-  const { project } = useProject(query.id as string);
-  const { runs, isLoading: isLoadingRuns } = useRuns(query.id as string);
-  const { show } = useAlert();
+  const { mutateProject } = useProject(query.id as string);
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(
+    query.id as string
+  );
+  const alert = useAlert();
+  const notitication = useNotification();
 
   const handleDeleteRun = ({ name, id }) => (e) => {
-    show({
+    const onConfirm = async () => {
+      try {
+        const response = await removeRun(id);
+        console.log(response);
+        mutateProject();
+        mutateRuns();
+        notitication.show({
+          title: "Exito",
+          type: "success",
+          message: `El run ${name} ha sido eliminado correctamente.`,
+        });
+      } catch (error) {
+        notitication.show({
+          title: "Error",
+          type: "error",
+          message: `Se produjo un error al intentar eliminar el run. Intente mas tarde.`,
+        });
+      }
+    };
+
+    alert.show({
       title: `Eliminar ${name}`,
       body:
         "Estas seguro que quieres eliminarlo? Se perderan todos los datos asociados.",
-      onConfirm: () => console.log("ale"),
+      onConfirm,
       action: "Eliminar",
     });
   };
@@ -297,37 +172,30 @@ function Project() {
       {
         Header: "Total features",
         id: "total_features",
-        Cell: ({ row }) => {
-          const { parentLength } = row.original;
-          return (
-            <span
-              className="text-sm leading-5 text-gray-500"
-              title={row.original.created}
-            >
-              {sum([parentLength])}
-            </span>
-          );
-        },
+        headerClassName: "text-right",
+        className: "text-right",
+        Cell: ({ row }) => (
+          <span className="text-sm leading-5 text-gray-500">
+            {getTotalBy("feature", row.original)}
+          </span>
+        ),
       },
       {
         Header: "Total scenarios",
         id: "total_scenarios",
-        Cell: ({ row }) => {
-          const { parentLength, childLength } = row.original;
-
-          return (
-            <span
-              className="text-sm leading-5 text-gray-500"
-              title={row.original.created}
-            >
-              {sum([childLength, parentLength])}
-            </span>
-          );
-        },
+        headerClassName: "text-right",
+        className: "text-right",
+        Cell: ({ row }) => (
+          <span className="text-sm leading-5 text-gray-500">
+            {getTotalBy("scenario", row.original)}
+          </span>
+        ),
       },
       {
         Header: "Passed",
         id: "passed",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-green-600">
             {row.original.passChildLength}
@@ -337,6 +205,8 @@ function Project() {
       {
         Header: "Failed",
         id: "failed",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span
             className="text-sm leading-5 text-red-600 text-center"
@@ -349,6 +219,8 @@ function Project() {
       {
         Header: "Skipped",
         id: "skipped",
+        headerClassName: "text-right",
+        className: "text-right",
         Cell: ({ row }) => (
           <span
             className="text-sm leading-5 text-yellow-600 text-center"
@@ -373,22 +245,28 @@ function Project() {
     []
   );
 
+  return (
+    <div className="flex flex-1 items-center justify-center">
+      {isLoadingRuns ? (
+        <Spinner className="h-10 w-10 text-gray-500" />
+      ) : (
+        <Table {...{ columns }} data={runs?.content} sticky />
+      )}
+    </div>
+  );
+}
+
+function Project() {
+  const { query } = useRouter();
+  const { project } = useProject(query.id as string);
+
   const {
     name,
     createdAt,
-    lastRun: {
-      // TODO: fix this
-      // @ts-ignore
-      childLength,
-      // @ts-ignore
-      parentLength,
-      // @ts-ignore
-      startTime,
-      // @ts-ignore
-      status,
-      // @ts-ignore
-      categoryNameList,
-    } = {},
+    runQuantity,
+    testQuantity,
+    errorState,
+    lastRun: { startTime = "", status = "", categoryNameList = [] } = {},
   } = project ?? {};
 
   return (
@@ -403,124 +281,103 @@ function Project() {
           <Card className="flex-col w-1/3 border-r divide-y">
             <div className="flex-1 p-6">
               <Title className="text-gray-700 font-semibold">General</Title>
-              <div className="mt-1 text-xs text-gray-500 font-medium">
+              <Caption>
                 Creado el{" "}
                 {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
-              </div>
-              <div className="flex flex-wrap 3 mt-4 justify-between">
-                <div className="flex flex-col my-3 xs:w-full">
-                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                    Runs
-                  </div>
-                  <div className="mt-2 font-medium text-2xl leading-none">
-                    2
-                  </div>
-                </div>
-                <div className="flex flex-col my-3 xs:w-full">
-                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                    Features
-                  </div>
-                  <div className="mt-2 font-medium text-2xl leading-none">
-                    8
-                  </div>
-                </div>
-                <div className="flex flex-col my-3 xs:w-full">
-                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                    Tests
-                  </div>
-                  <div className="mt-2 font-medium text-2xl leading-none">
-                    30
-                  </div>
-                </div>
-              </div>
+              </Caption>
+              <DataDisplayWrapper>
+                <DataDisplay label="Project Runs" value={runQuantity} />
+                <DataDisplay label="Project Tests" value={testQuantity} />
+              </DataDisplayWrapper>
             </div>
             <div className="flex-1 p-6">
               <Title className="text-gray-700 font-semibold">Tags</Title>
-              <div className="flex flex-wrap space-x-4 mt-4">
+              <div className="flex flex-wrap mt-4">
                 {categoryNameList?.map((tag) => (
-                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
-                    <div className="text-gray-700 w-3 h-3 mr-2">
-                      <TagIconSolid />
-                    </div>
-                    <span className="text-gray-800 font-medium text-xs">
-                      {tag}
-                    </span>
-                  </span>
+                  <Badge
+                    key={tag}
+                    IconComponent={
+                      <div className="text-gray-700 w-3 h-3 mr-2">
+                        <TagSolidIcon />
+                      </div>
+                    }
+                    className="m-2"
+                    uppercase={false}
+                    color="gray"
+                    label={tag}
+                  />
                 ))}
               </div>
             </div>
             <div className="flex-1 p-6">
               <Title className="text-gray-700 font-semibold">Excepciones</Title>
-              <div className="flex flex-wrap space-x-4 mt-4">
-                {categoryNameList?.map((tag) => (
-                  <span className="bg-gray-300 rounded-full inline-flex items-center px-3 py-1">
-                    <div className="text-gray-700 w-3 h-3 mr-2">
-                      <TagIconSolid />
-                    </div>
-                    <span className="text-gray-800 font-medium text-xs">
-                      {tag}
-                    </span>
-                  </span>
+              <div className="flex flex-wrap mt-4">
+                {errorState?.map((error) => (
+                  <Badge
+                    key={error}
+                    IconComponent={
+                      <div className="text-red-700 w-3 h-3 mr-2">
+                        <ExclamationSolidIcon />
+                      </div>
+                    }
+                    className="m-2"
+                    uppercase={false}
+                    color="red"
+                    label={error}
+                  />
                 ))}
               </div>
             </div>
           </Card>
           <Card className="flex-col w-1/3 border-r p-6">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex flex-col">
+              <div className="inline-flex items-baseline">
                 <Title className="text-gray-700 font-semibold">
                   Ultimo run
                 </Title>
-                <div className="mt-1 text-xs text-gray-500 font-medium">
-                  Iniciado el{" "}
-                  {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
-                </div>
+                <Badge
+                  className="ml-2"
+                  label={status}
+                  color={status === "pass" ? "green" : "red"}
+                />
               </div>
-              <Badge
-                label={status}
-                color={status === "pass" ? "green" : "red"}
+              <Caption>
+                Iniciado el{" "}
+                {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
+              </Caption>
+            </div>
+            <DataDisplayWrapper>
+              <DataDisplay
+                label="Total features"
+                value={getTotalBy("feature", project?.lastRun)}
               />
-            </div>
-            <div className="flex flex-wrap mt-4 justify-between">
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total features
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">4</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total scenarios
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">15</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total steps
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">80</div>
-              </div>
-            </div>
+              <DataDisplay
+                label="Total scenarios"
+                value={getTotalBy("scenario", project?.lastRun)}
+              />
+              <DataDisplay
+                label="Total steps"
+                value={getTotalBy("steps", project?.lastRun)}
+              />
+            </DataDisplayWrapper>
             <div className="flex items-center justify-center">
-              <PieCharts />
+              <PieChart height={250} data={data1} />
             </div>
           </Card>
           <Card className="flex-col w-1/3 p-6">
             <Title className="text-gray-700 font-semibold">Fallos</Title>
+            <Caption>De los ultimos X runs</Caption>
             <div className="flex items-center justify-center flex-1">
-              <AreaCharts />
+              <AreaChart
+                data={data}
+                areaDataKey="uv"
+                xAxisDataKey="name"
+                height={300}
+              />
             </div>
           </Card>
         </div>
-        <div className="flex flex-1">
-          {isLoadingRuns ? (
-            <div className="flex items-center justify-center flex-1">
-              <Spinner className="h-10 w-10 text-gray-500" />
-            </div>
-          ) : (
-            <Table {...{ columns }} data={runs?.content} sticky />
-          )}
-        </div>
+        <RunsTable />
       </LayoutContent>
     </Layout>
   );

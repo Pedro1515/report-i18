@@ -13,9 +13,7 @@ import {
   SearchBox,
   RCPagination,
   Button,
-  TableCell,
-  TableRow,
-  TableHeader,
+  Table,
   MenuIcon,
   Spinner,
   FilterLabel,
@@ -65,51 +63,6 @@ function MenuIconButton() {
   );
 }
 
-interface TableProps {
-  columns: any;
-  data?: Project[];
-  sticky?: boolean;
-}
-
-function Table({ columns, data, sticky }: TableProps) {
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
-
-  return (
-    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
-      <thead className="border-b">
-        {headerGroups.map((headerGroup) => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <TableHeader {...column.getHeaderProps()} {...{ sticky }}>
-                {column.render("Header")}
-              </TableHeader>
-            ))}
-          </TableRow>
-        ))}
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <TableRow {...row.getRowProps()} hover>
-              {row.cells.map((cell) => {
-                return (
-                  <TableCell {...cell.getCellProps()}>
-                    {cell.render("Cell")}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </tbody>
-    </table>
-  );
-}
-
 function Search({ onSearch }) {
   const search = useInputValue("");
 
@@ -141,7 +94,7 @@ export function Home() {
         Header: "Nombre",
         accessor: "name",
         Cell: ({ row }) => {
-          const { name, builds, tests, id } = row.original;
+          const { name, runQuantity, testQuantity, id } = row.original;
           return (
             <div className="flex items-center">
               <div>
@@ -151,7 +104,7 @@ export function Home() {
                   </a>
                 </Link>
                 <div className="text-sm leading-8 text-gray-600">
-                  {builds} Builds &middot; {tests} Tests
+                  {runQuantity} Runs &middot; {testQuantity} Tests
                 </div>
               </div>
             </div>
@@ -166,12 +119,14 @@ export function Home() {
       {
         Header: "Ultimo build",
         id: "status",
-        Cell: ({ row }) => (
-          <Badge
-            label={row.original.status}
-            color={row.original.status === "Pass" ? "green" : "red"}
-          />
-        ),
+        Cell: ({ row }) => {
+          const {
+            lastRun: { status },
+          } = row.original;
+          return (
+            <Badge label={status} color={status === "pass" ? "green" : "red"} />
+          );
+        },
       },
       {
         Header: "Creado",
