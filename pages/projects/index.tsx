@@ -96,16 +96,14 @@ export function Home() {
         Cell: ({ row }) => {
           const { name, runQuantity, testQuantity, id } = row.original;
           return (
-            <div className="flex items-center">
-              <div>
-                <Link href={`/projects/${id}`}>
-                  <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
-                    {name}
-                  </a>
-                </Link>
-                <div className="text-sm leading-8 text-gray-600">
-                  {runQuantity} Runs &middot; {testQuantity} Tests
-                </div>
+            <div className="flex flex-col">
+              <Link href={`/projects/${id}`}>
+                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                  {name}
+                </a>
+              </Link>
+              <div className="text-sm leading-8 text-gray-600">
+                {runQuantity} Runs &middot; {testQuantity} Tests
               </div>
             </div>
           );
@@ -161,7 +159,7 @@ export function Home() {
         </div>
         <div className="flex flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="flex items-center justify-center flex-1">
+            <div className="flex-center flex-1">
               <Spinner className="h-10 w-10 text-gray-500" />
             </div>
           ) : (

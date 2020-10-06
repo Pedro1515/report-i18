@@ -26,37 +26,6 @@ import { ProtectRoute, useAlert, useNotification } from "context";
 import { useProject, useRuns } from "utils/hooks";
 import { customFormatDuration, getTotalBy } from "utils";
 
-const data = [
-  {
-    name: "Page A",
-    uv: 4000,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-  },
-];
-
 function DataDisplayWrapper(props) {
   return <div className="flex flex-wrap mt-4 -mx-6" {...props} />;
 }
@@ -88,8 +57,7 @@ function RunsTable() {
   const handleDeleteRun = ({ name, id }) => (e) => {
     const onConfirm = async () => {
       try {
-        const response = await removeRun(id);
-        console.log(response);
+        await removeRun(id);
         mutateProject();
         mutateRuns();
         notitication.show({
@@ -192,40 +160,22 @@ function RunsTable() {
         Header: "Passed",
         id: "passed",
         headerClassName: "text-right",
-        className: "text-right",
-        Cell: ({ row }) => (
-          <span className="text-sm leading-5 text-green-600">
-            {row.original.passChildLength}
-          </span>
-        ),
+        className: "text-right text-sm leading-5 text-green-600",
+        accessor: "passChildLength",
       },
       {
         Header: "Failed",
         id: "failed",
         headerClassName: "text-right",
-        className: "text-right",
-        Cell: ({ row }) => (
-          <span
-            className="text-sm leading-5 text-red-600 text-center"
-            title={row.original.created}
-          >
-            {row.original.failChildLength}
-          </span>
-        ),
+        className: "text-right text-sm leading-5 text-red-600 text-center",
+        accessor: "failChildLength",
       },
       {
         Header: "Skipped",
         id: "skipped",
         headerClassName: "text-right",
-        className: "text-right",
-        Cell: ({ row }) => (
-          <span
-            className="text-sm leading-5 text-yellow-600 text-center"
-            title={row.original.created}
-          >
-            {row.original.skipChildLength}
-          </span>
-        ),
+        className: "text-right text-sm leading-5 text-yellow-600 text-center",
+        accessor: "skipChildLength",
       },
       {
         Header: () => null,
@@ -245,7 +195,7 @@ function RunsTable() {
   return (
     <div className="flex flex-1">
       {isLoadingRuns ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex-center flex-1">
           <Spinner className="h-10 w-10 text-gray-500" />
         </div>
       ) : (
@@ -386,7 +336,7 @@ function LastRunCard() {
           value={getTotalBy("steps", project?.lastRun)}
         />
       </DataDisplayWrapper>
-      <div className="flex items-center justify-center">
+      <div className="flex-center">
         <PieChart height={250} data={pieChartData} />
       </div>
     </Card>
@@ -394,15 +344,25 @@ function LastRunCard() {
 }
 
 function FailuresCard() {
+  const { query } = useRouter();
+  const { runs } = useRuns(query.id as string);
+
+  const size = runs?.content.length > 10 ? 10 : runs?.content.length;
+  const data = runs?.content.slice(0, 10).map((run, idx) => ({
+    idx,
+    name: run.name,
+    value: run.failChildLength,
+  }));
+
   return (
     <Card className="flex-col w-1/3 p-6">
       <Title className="text-gray-700 font-semibold">Fallos</Title>
-      <Caption>De los ultimos X runs</Caption>
-      <div className="flex items-center justify-center flex-1">
+      <Caption>De los ultimos {size} runs</Caption>
+      <div className="flex-center flex-1">
         <AreaChart
           data={data}
-          areaDataKey="uv"
-          xAxisDataKey="name"
+          areaDataKey="value"
+          xAxisDataKey="idx"
           height={300}
         />
       </div>

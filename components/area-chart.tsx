@@ -20,6 +20,22 @@ export interface AreaChartProps {
   areaDataKey: keyof Data;
 }
 
+export function CustomTooltip({ xAxisDataKey, active, payload, label, ...props }) {
+  const [data] = payload;
+  const { payload: { name = "", value = "", color = "" } = {} } = data ?? {};
+  console.log(payload);
+  if (active) {
+    return (
+      <div className="flex px-3 py-2 bg-gray-800 text-xs rounded-md shadow-sm items-center opacity-90">
+        <div className="text-gray-400 font-medium">{name}:</div>
+        <div className="ml-2 font-semibold text-gray-100">{value}</div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export function AreaChart({
   data,
   height,
@@ -31,14 +47,8 @@ export function AreaChart({
       <RAreaCharts data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={xAxisDataKey} />
-        <XAxis />
-        <Tooltip />
-        <Area
-          type="monotone"
-          dataKey={areaDataKey}
-          stroke="#8884d8"
-          fill="#8884d8"
-        />
+        <Tooltip content={(props) => <CustomTooltip {...props} />} />
+        <Area type="monotone" dataKey={areaDataKey} stroke="red" fill="red" />
       </RAreaCharts>
     </ResponsiveContainer>
   );
