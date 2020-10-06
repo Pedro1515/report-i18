@@ -1,5 +1,8 @@
 import React from "react";
 import { useTable } from "react-table";
+import format from "date-fns/format";
+import { useRouter } from "next/router";
+import { removeRun } from "api";
 import {
   Layout,
   LayoutHeader,
@@ -13,22 +16,16 @@ import {
   MenuIcon,
   Spinner,
   PieChart,
-} from "components";
-import { ClockIcon, TagSolidIcon, ExclamationSolidIcon } from "components/icons";
-import { useProject, useRuns } from "utils/hooks";
-import { customFormatDuration, sum } from "utils";
-import { useRouter } from "next/router";
-import { ProtectRoute, useAlert } from "context";
-import format from "date-fns/format";
-import {
-  ResponsiveContainer,
   AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
+} from "components";
+import {
+  ClockIcon,
+  TagSolidIcon,
+  ExclamationSolidIcon,
+} from "components/icons";
+import { ProtectRoute, useAlert, useNotification } from "context";
+import { useProject, useRuns } from "utils/hooks";
+import { customFormatDuration, getTotalBy, mutateFromCache } from "utils";
 
 const data1 = [
   { name: "Pass", value: 100, color: "green" },
@@ -39,8 +36,6 @@ const data = [
   {
     name: "Page A",
     uv: 4000,
-    pv: 2400,
-    amt: 2400,
   },
   {
     name: "Page B",
@@ -67,20 +62,6 @@ const data = [
     uv: 3490,
   },
 ];
-
-function AreaCharts() {
-  return (
-    <ResponsiveContainer width="100%" height={350}>
-      <AreaChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
-      </AreaChart>
-    </ResponsiveContainer>
-  );
-}
 
 function Table({ columns, data, sticky }) {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
@@ -121,18 +102,60 @@ function Table({ columns, data, sticky }) {
   );
 }
 
+function DataDisplayWrapper(props) {
+  return <div className="flex flex-wrap mt-4 -mx-6" {...props} />;
+}
+
+function DataDisplay({ label, value }) {
+  return (
+    <div className="flex flex-col my-3 mx-6 xs:w-full">
+      <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+        {label}
+      </div>
+      <div className="mt-2 font-medium text-2xl leading-none">{value}</div>
+    </div>
+  );
+}
+
+function Caption(props) {
+  return <div className="mt-1 text-xs text-gray-500 font-medium" {...props} />;
+}
+
 function Project() {
   const { query } = useRouter();
-  const { project } = useProject(query.id as string);
-  const { runs, isLoading: isLoadingRuns } = useRuns(query.id as string);
-  const { show } = useAlert();
+  const { project, mutateProject } = useProject(query.id as string);
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(
+    query.id as string
+  );
+  const alert = useAlert();
+  const notitication = useNotification();
 
   const handleDeleteRun = ({ name, id }) => (e) => {
-    show({
+    const onConfirm = async () => {
+      try {
+        const response = await removeRun(id);
+        console.log(response);
+        mutateProject();
+        mutateRuns();
+        notitication.show({
+          title: "Exito",
+          type: "success",
+          message: `El run ${name} ha sido eliminado correctamente.`,
+        });
+      } catch (error) {
+        notitication.show({
+          title: "Error",
+          type: "error",
+          message: `Se produjo un error al intentar eliminar el run. Intente mas tarde.`,
+        });
+      }
+    };
+
+    alert.show({
       title: `Eliminar ${name}`,
       body:
         "Estas seguro que quieres eliminarlo? Se perderan todos los datos asociados.",
-      onConfirm: () => console.log("ale"),
+      onConfirm,
       action: "Eliminar",
     });
   };
@@ -191,33 +214,20 @@ function Project() {
       {
         Header: "Total features",
         id: "total_features",
-        Cell: ({ row }) => {
-          const { parentLength } = row.original;
-          return (
-            <span
-              className="text-sm leading-5 text-gray-500"
-              title={row.original.created}
-            >
-              {sum([parentLength])}
-            </span>
-          );
-        },
+        Cell: ({ row }) => (
+          <span className="text-sm leading-5 text-gray-500">
+            {getTotalBy("feature", row.original)}
+          </span>
+        ),
       },
       {
         Header: "Total scenarios",
         id: "total_scenarios",
-        Cell: ({ row }) => {
-          const { parentLength, childLength, child } = row.original;
-
-          return (
-            <span
-              className="text-sm leading-5 text-gray-500"
-              title={row.original.created}
-            >
-              {sum([childLength, parentLength])}
-            </span>
-          );
-        },
+        Cell: ({ row }) => (
+          <span className="text-sm leading-5 text-gray-500">
+            {getTotalBy("scenario", row.original)}
+          </span>
+        ),
       },
       {
         Header: "Passed",
@@ -273,14 +283,7 @@ function Project() {
     runQuantity,
     testQuantity,
     errorState,
-    lastRun: {
-      childLength = 0,
-      parentLength = 0,
-      grandChildLength = 0,
-      startTime = "",
-      status = "",
-      categoryNameList = [],
-    } = {},
+    lastRun: { startTime = "", status = "", categoryNameList = [] } = {},
   } = project ?? {};
 
   return (
@@ -295,34 +298,21 @@ function Project() {
           <Card className="flex-col w-1/3 border-r divide-y">
             <div className="flex-1 p-6">
               <Title className="text-gray-700 font-semibold">General</Title>
-              <div className="mt-1 text-xs text-gray-500 font-medium">
+              <Caption>
                 Creado el{" "}
                 {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
-              </div>
-              <div className="flex flex-wrap 3 mt-4 justify-between">
-                <div className="flex flex-col my-3 xs:w-full">
-                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                    Runs
-                  </div>
-                  <div className="mt-2 font-medium text-2xl leading-none">
-                    {runQuantity}
-                  </div>
-                </div>
-                <div className="flex flex-col my-3 xs:w-full">
-                  <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                    Tests
-                  </div>
-                  <div className="mt-2 font-medium text-2xl leading-none">
-                    {testQuantity}
-                  </div>
-                </div>
-              </div>
+              </Caption>
+              <DataDisplayWrapper>
+                <DataDisplay label="Project Runs" value={runQuantity} />
+                <DataDisplay label="Project Tests" value={testQuantity} />
+              </DataDisplayWrapper>
             </div>
             <div className="flex-1 p-6">
               <Title className="text-gray-700 font-semibold">Tags</Title>
               <div className="flex flex-wrap mt-4">
                 {categoryNameList?.map((tag) => (
                   <Badge
+                    key={tag}
                     IconComponent={
                       <div className="text-gray-700 w-3 h-3 mr-2">
                         <TagSolidIcon />
@@ -341,6 +331,7 @@ function Project() {
               <div className="flex flex-wrap mt-4">
                 {errorState?.map((error) => (
                   <Badge
+                    key={error}
                     IconComponent={
                       <div className="text-red-700 w-3 h-3 mr-2">
                         <ExclamationSolidIcon />
@@ -356,53 +347,50 @@ function Project() {
             </div>
           </Card>
           <Card className="flex-col w-1/3 border-r p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div>
-                  <Title className="text-gray-700 font-semibold">
-                    Ultimo run
-                  </Title>
-                  <Badge
-                    className="ml-2"
-                    label={status}
-                    color={status === "pass" ? "green" : "red"}
-                  />
-                </div>
-
-                <div className="mt-1 text-xs text-gray-500 font-medium">
-                  Iniciado el{" "}
-                  {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
-                </div>
+            <div className="flex flex-col">
+              <div className="inline-flex items-baseline">
+                <Title className="text-gray-700 font-semibold">
+                  Ultimo run
+                </Title>
+                <Badge
+                  className="ml-2"
+                  label={status}
+                  color={status === "pass" ? "green" : "red"}
+                />
               </div>
+              <Caption>
+                Iniciado el{" "}
+                {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
+              </Caption>
             </div>
-            <div className="flex flex-wrap mt-4 justify-between">
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total features
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">{}</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total scenarios
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">15</div>
-              </div>
-              <div className="flex flex-col my-3 xs:w-full">
-                <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
-                  Total steps
-                </div>
-                <div className="mt-2 font-medium text-2xl leading-none">80</div>
-              </div>
-            </div>
+            <DataDisplayWrapper>
+              <DataDisplay
+                label="Total features"
+                value={getTotalBy("feature", project?.lastRun)}
+              />
+              <DataDisplay
+                label="Total scenarios"
+                value={getTotalBy("scenario", project?.lastRun)}
+              />
+              <DataDisplay
+                label="Total steps"
+                value={getTotalBy("steps", project?.lastRun)}
+              />
+            </DataDisplayWrapper>
             <div className="flex items-center justify-center">
               <PieChart height={250} data={data1} />
             </div>
           </Card>
           <Card className="flex-col w-1/3 p-6">
             <Title className="text-gray-700 font-semibold">Fallos</Title>
+            <Caption>De los ultimos X runs</Caption>
             <div className="flex items-center justify-center flex-1">
-              <AreaCharts />
+              <AreaChart
+                data={data}
+                areaDataKey="uv"
+                xAxisDataKey="name"
+                height={300}
+              />
             </div>
           </Card>
         </div>

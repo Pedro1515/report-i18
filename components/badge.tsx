@@ -1,6 +1,6 @@
 import { Dot } from "./dot";
 import classNames from "classnames";
-import { m } from "framer-motion";
+import { CrossIcon } from "./icons";
 
 export interface BadgeProps {
   label: string;
@@ -8,6 +8,7 @@ export interface BadgeProps {
   IconComponent?: React.ReactNode;
   uppercase?: boolean;
   className?: string;
+  onDismiss?: () => void;
 }
 
 export function Badge({
@@ -16,6 +17,7 @@ export function Badge({
   IconComponent,
   uppercase = true,
   className,
+  onDismiss,
 }: BadgeProps) {
   return (
     <span
@@ -32,11 +34,18 @@ export function Badge({
         "tracking-wide",
         "items-center",
         { uppercase: uppercase },
+        { [`hover:bg-${color}-200`]: onDismiss },
         className
       )}
+      onClick={onDismiss}
     >
       {IconComponent ? IconComponent : <Dot {...{ color }} className="mr-2" />}
       {label}
+      {onDismiss ? (
+        <button className="ml-2 w-3 h-3">
+          <CrossIcon />
+        </button>
+      ) : null}
     </span>
   );
 }
