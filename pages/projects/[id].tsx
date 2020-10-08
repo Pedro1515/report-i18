@@ -24,6 +24,7 @@ import {
 } from "components/icons";
 import { ProtectRoute, useAlert, useNotification } from "context";
 import { useProject, useRuns } from "utils/hooks";
+import { config } from "utils/tailwind";
 import { customFormatDuration, getTotalBy } from "utils";
 
 function DataDisplayWrapper(props) {
@@ -354,6 +355,8 @@ function FailuresCard() {
     value: run.failChildLength,
   }));
 
+  console.log(config);
+
   return (
     <Card className="flex-col w-1/3 p-6">
       <Title className="text-gray-700 font-semibold">Fallos</Title>
@@ -361,9 +364,13 @@ function FailuresCard() {
       <div className="flex-center flex-1">
         <AreaChart
           data={data}
-          areaDataKey="value"
           xAxisDataKey="idx"
           height={300}
+          AreaProps={{
+            dataKey: "value",
+            fill: config.theme.colors.red[600],
+            stroke: config.theme.colors.red[700],
+          }}
         />
       </div>
     </Card>

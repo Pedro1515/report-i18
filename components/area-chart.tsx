@@ -6,6 +6,8 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  YAxis,
+  AreaProps as RAreaProps,
 } from "recharts";
 
 type Data = {
@@ -17,13 +19,19 @@ export interface AreaChartProps {
   data: Data[];
   height: number;
   xAxisDataKey: keyof Data;
-  areaDataKey: keyof Data;
+  AreaProps?: RAreaProps;
 }
 
-export function CustomTooltip({ xAxisDataKey, active, payload, label, ...props }) {
+export function CustomTooltip({
+  xAxisDataKey,
+  active,
+  payload,
+  label,
+  ...props
+}) {
   const [data] = payload;
   const { payload: { name = "", value = "", color = "" } = {} } = data ?? {};
-  console.log(payload);
+
   if (active) {
     return (
       <div className="flex px-3 py-2 bg-gray-800 text-xs rounded-md shadow-sm items-center opacity-90">
@@ -40,15 +48,20 @@ export function AreaChart({
   data,
   height,
   xAxisDataKey,
-  areaDataKey,
+  AreaProps,
 }: AreaChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RAreaCharts data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={xAxisDataKey} />
+        <XAxis
+          dataKey={xAxisDataKey}
+          allowDecimals={false}
+          tick={{ fontSize: 12, fill: "#a0aec0" }}
+        />
+        <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: "#a0aec0" }} />
         <Tooltip content={(props) => <CustomTooltip {...props} />} />
-        <Area type="monotone" dataKey={areaDataKey} stroke="red" fill="red" />
+        <Area type="monotone" {...AreaProps} />
       </RAreaCharts>
     </ResponsiveContainer>
   );
