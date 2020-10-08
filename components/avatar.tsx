@@ -6,7 +6,7 @@ import { useModal } from "utils/hooks";
 import { MenuItemGroup, MenuItem, Divider } from "./menu-item";
 
 export function Avatar() {
-  const { visibility, toggle } = useModal();
+  const { visibility, toggle, getModalProps } = useModal();
   const { logout } = useAuth();
   const { user } = useUser({});
 
@@ -28,7 +28,7 @@ export function Avatar() {
           "duration-100",
           { "bg-white border-gray-300": visibility }
         )}
-        onClick={toggle}
+        {...getModalProps()}
       >
         <div className="flex items-center">
           <img src={null} className="rounded-full h-10" />
