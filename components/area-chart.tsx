@@ -22,7 +22,7 @@ export interface AreaChartProps {
   AreaProps?: RAreaProps;
 }
 
-export function CustomTooltip({
+function CustomTooltip({
   xAxisDataKey,
   active,
   payload,
