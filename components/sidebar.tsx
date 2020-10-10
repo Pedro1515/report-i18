@@ -20,27 +20,32 @@ export function SidebarItem({ href, label, IconComponent }: SidebarItemsProps) {
           "flex",
           "items-center",
           "p-2",
-          { "hover:bg-gray-200": !active },
+          { "hover:bg-gray-800": !active },
           "rounded",
-          { "bg-gray-300": active },
+          { "bg-gray-800": active },
           "text-sm"
         )}
       >
         <div
-          className={classNames("w-5", "h-5", "text-gray-500", {
-            "text-gray-600": active,
-          })}
+          className={classNames(
+            "w-5",
+            "h-5",
+            { "text-gray-700": !active },
+            {
+              "text-gray-500": active,
+            }
+          )}
         >
           {IconComponent}
         </div>
         <span
           className={classNames(
             "ml-4",
-            "text-gray-700",
+            { "text-gray-600": !active },
             "font-medium",
             "text-sm",
             {
-              "text-gray-900": active,
+              "text-gray-400": active,
             }
           )}
         >
@@ -59,23 +64,24 @@ export function Sidebar() {
         "hidden",
         "w-64",
         "overflow-y-auto",
-        "bg-gray-100",
-        "dark:bg-gray-800",
+        "bg-gray-900",
         "md:block",
-        "flex-shrink-0",
-        "border-r",
-        "border-gray-300"
+        "flex-shrink-0"
       )}
     >
       <div className="p-4">
         <img
-          className="h-16 w-auto"
-          src="/assets/logo_lippia_final_color.png"
+          className="h-12 w-auto"
+          src="/assets/logo_lippia.png"
           alt="lippia"
         />
         <Avatar />
         <div className="space-y-3">
-          <SidebarItem href="/projects" label="Proyectos" IconComponent={<ArchiveIcon />} />
+          <SidebarItem
+            href="/projects"
+            label="Proyectos"
+            IconComponent={<ArchiveIcon />}
+          />
           <SidebarItem
             href="/users"
             label="Gestionar usuarios"

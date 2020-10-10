@@ -1,15 +1,19 @@
 import useSWR from "swr";
 import { Run, Response } from "api";
+import { objectToQueryParams } from "utils/string";
 
-export function useRuns(projectId: string) {
+export function useRuns(query) {
+  console.log(query);
+  const queryParams = objectToQueryParams(query);
+  console.log(queryParams);
   const { data, error, mutate: mutateRuns } = useSWR<Response<Run[]>>(
-    `/rest/runs/q?projectId=${projectId}`
+    `/rest/runs/q?${queryParams}`
   );
 
   return {
     runs: data,
     isLoading: !error && !data,
     isError: error,
-    mutateRuns
+    mutateRuns,
   };
 }

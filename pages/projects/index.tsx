@@ -16,7 +16,7 @@ import {
   Table,
   MenuIcon,
   Spinner,
-  FilterLabel,
+  Title,
 } from "components";
 import { ProtectRoute, useAlert } from "context";
 import {
@@ -153,8 +153,8 @@ export function Home() {
         </div>
       </LayoutHeader>
       <LayoutContent>
-        <div className="px-6 py-4 border-b">
-          <FilterLabel>filtros</FilterLabel>
+        <div className="px-6 py-4">
+          <Title>filtros</Title>
           <Search onSearch={(search) => console.log(search)} />
         </div>
         <div className="flex flex-1 overflow-y-auto">

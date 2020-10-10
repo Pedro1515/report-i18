@@ -20,21 +20,20 @@ export function Avatar() {
           "py-2",
           "rounded-md",
           "hover:shadow-sm",
-          "hover:border-gray-300",
-          "border-transparent",
-          "border",
           "cursor-pointer",
-          "hover:bg-white",
+          "hover:bg-gray-800",
           "duration-100",
-          { "bg-white border-gray-300": visibility }
+          { "bg-gray-800": visibility }
         )}
         {...getModalProps()}
       >
         <div className="flex items-center">
-          <img src={null} className="rounded-full h-10" />
+          <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=718096&color=4a5568&bold=true`} className="rounded-full h-10" />
           <div className="flex flex-col text-sm truncate ml-4">
-            <span className="font-medium leading-7">{user?.name}</span>
-            <span className="text-gray-500 text-xs uppercase">{user?.role}</span>
+            <span className="font-medium text-gray-600 leading-7">{user?.name}</span>
+            <span className="text-gray-500 text-xs uppercase">
+              {user?.role}
+            </span>
           </div>
         </div>
         <div className="w-5 h-5 text-gray-500">

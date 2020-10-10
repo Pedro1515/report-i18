@@ -31,7 +31,7 @@ export function SearchBox({
           "text-gray-700",
           "leading-tight",
           "focus:outline-none",
-          "focus:shadow-outline",
+          "focus:shadow",
           "text-sm",
           className
         )}

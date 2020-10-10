@@ -1,7 +1,7 @@
 import React from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
-import { removeRun } from "api";
+import { removeRun, Run } from "api";
 import {
   Layout,
   LayoutHeader,
@@ -23,7 +23,7 @@ import {
   ExclamationSolidIcon,
 } from "components/icons";
 import { ProtectRoute, useAlert, useNotification } from "context";
-import { useProject, useRuns } from "utils/hooks";
+import { usePagination, useProject, useRuns } from "utils/hooks";
 import { config } from "utils/tailwind";
 import { customFormatDuration, getTotalBy } from "utils";
 
@@ -49,9 +49,14 @@ function Caption(props) {
 function RunsTable() {
   const { query } = useRouter();
   const { mutateProject } = useProject(query.id as string);
-  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(
-    query.id as string
-  );
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns({
+    projectId: query.id as string,
+  });
+
+  const { PaginationComponent, currentPage } = usePagination<Run[]>({
+    paginatedObject: runs,
+  });
+
   const alert = useAlert();
   const notitication = useNotification();
 
@@ -194,15 +199,18 @@ function RunsTable() {
   );
 
   return (
-    <div className="flex flex-1">
-      {isLoadingRuns ? (
-        <div className="flex-center flex-1">
-          <Spinner className="h-10 w-10 text-gray-500" />
-        </div>
-      ) : (
-        <Table {...{ columns }} data={runs?.content} sticky />
-      )}
-    </div>
+    <>
+      <div className="flex flex-1">
+        {isLoadingRuns ? (
+          <div className="flex-center flex-1">
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        ) : (
+          <Table {...{ columns }} data={runs?.content} sticky />
+        )}
+      </div>
+      {PaginationComponent}
+    </>
   );
 }
 
@@ -346,7 +354,9 @@ function LastRunCard() {
 
 function FailuresCard() {
   const { query } = useRouter();
-  const { runs } = useRuns(query.id as string);
+  const { runs } = useRuns({
+    projectId: query.id as string,
+  });
 
   const size = runs?.content.length > 10 ? 10 : runs?.content.length;
   const data = runs?.content.slice(0, 10).map((run, idx) => ({
