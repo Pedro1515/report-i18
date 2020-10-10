@@ -240,7 +240,7 @@ function GeneralCard() {
       </div>
       <div className="flex-1 p-6">
         <Title className="text-gray-700 font-semibold">Tags</Title>
-        <div className="flex flex-wrap mt-4">
+        <div className="flex flex-wrap mt-4 -mx-2">
           {categoryNameList?.map((tag) => (
             <Badge
               key={tag}
@@ -259,7 +259,7 @@ function GeneralCard() {
       </div>
       <div className="flex-1 p-6">
         <Title className="text-gray-700 font-semibold">Excepciones</Title>
-        <div className="flex flex-wrap mt-4">
+        <div className="flex flex-wrap mt-4 -mx-2">
           {errorState?.map((error) => (
             <Badge
               key={error}
