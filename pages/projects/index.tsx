@@ -14,11 +14,11 @@ import {
   MenuIcon,
   Spinner,
   Title,
+  useSearchBox,
 } from "components";
 import { ProtectRoute, useAlert } from "context";
 import {
   useModal,
-  useInputValue,
   useProjects,
   usePagination,
   prefetchProject,
@@ -62,20 +62,17 @@ function MenuIconButton() {
 }
 
 function Search({ onSearch }) {
-  const search = useInputValue("");
-
-  useEffect(() => {
-    onSearch(search.value);
-  }, [search.value]);
+  const { value, getInputProps, getResetterProps } = useSearchBox("");
 
   return (
     <div className="py-4 w-full md:w-2/3 xl:w-1/4">
       <SearchBox
-        placeholder="Buscar"
-        value={search.value}
         fullWidth
-        onChange={search.onChange}
-        onClear={search.clear}
+        inputProps={getInputProps({
+          onChange: (e) => console.log(e.target.value),
+          placeholder: "Buscar",
+        })}
+        resetterProps={getResetterProps({ onClick: () => {} })}
       />
     </div>
   );
