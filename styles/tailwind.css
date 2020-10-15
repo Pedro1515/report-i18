@@ -28,4 +28,20 @@
   .flex-center {
     @apply flex items-center justify-center;
   }
+
+  .runtime-table {
+    @apply w-full my-4;
+  }
+
+  .runtime-table > tbody {
+    @apply border;
+  }
+
+  .runtime-table > tbody > tr {
+    @apply border-b;
+  }
+
+  .runtime-table > tbody > tr > td {
+    @apply p-2 border text-sm;
+  }
 }

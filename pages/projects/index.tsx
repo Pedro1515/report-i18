@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { useTable } from "react-table";
 import { format } from "date-fns";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { Project } from "api";
 import {
@@ -11,12 +9,11 @@ import {
   Members,
   Badge,
   SearchBox,
-  RCPagination,
   Button,
   Table,
   MenuIcon,
   Spinner,
-  FilterLabel,
+  Title,
 } from "components";
 import { ProtectRoute, useAlert } from "context";
 import {
@@ -24,6 +21,7 @@ import {
   useInputValue,
   useProjects,
   usePagination,
+  prefetchProject,
 } from "utils/hooks";
 
 function MenuIconButton() {
@@ -84,10 +82,18 @@ function Search({ onSearch }) {
 }
 
 export function Home() {
-  const { projects, isLoading } = useProjects();
+  const [filters, setFilters] = React.useState({
+    page: 0,
+  });
+  const { projects, isLoading } = useProjects(filters);
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
+
+  React.useEffect(() => {
+    setFilters({ ...filters, page: currentPage });
+  }, [currentPage]);
+
   const columns = useMemo(
     () => [
       {
@@ -98,7 +104,10 @@ export function Home() {
           return (
             <div className="flex flex-col">
               <Link href={`/projects/${id}`}>
-                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                <a
+                  className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline"
+                  onMouseEnter={() => prefetchProject(id)}
+                >
                   {name}
                 </a>
               </Link>
@@ -153,8 +162,8 @@ export function Home() {
         </div>
       </LayoutHeader>
       <LayoutContent>
-        <div className="px-6 py-4 border-b">
-          <FilterLabel>filtros</FilterLabel>
+        <div className="px-6 py-4">
+          <Title>filtros</Title>
           <Search onSearch={(search) => console.log(search)} />
         </div>
         <div className="flex flex-1 overflow-y-auto">

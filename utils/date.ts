@@ -7,6 +7,10 @@ export function customFormatDuration({
   start: number;
   end: number;
 }) {
-  const durations = intervalToDuration({ start, end });
-  return formatDuration(durations);
+  try {
+    const durations = intervalToDuration({ start, end });
+    return formatDuration(durations);
+  } catch (error) {
+    return "";
+  }
 }

@@ -1,7 +1,8 @@
 import React from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
-import { removeRun } from "api";
+import Link from "next/link";
+import { removeRun, Run } from "api";
 import {
   Layout,
   LayoutHeader,
@@ -23,7 +24,7 @@ import {
   ExclamationSolidIcon,
 } from "components/icons";
 import { ProtectRoute, useAlert, useNotification } from "context";
-import { useProject, useRuns } from "utils/hooks";
+import { usePagination, useProject, useRuns } from "utils/hooks";
 import { config } from "utils/tailwind";
 import { customFormatDuration, getTotalBy } from "utils";
 
@@ -49,9 +50,19 @@ function Caption(props) {
 function RunsTable() {
   const { query } = useRouter();
   const { mutateProject } = useProject(query.id as string);
-  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(
-    query.id as string
-  );
+  const [filters, setFilters] = React.useState({
+    projectId: query.id as string,
+    page: 0,
+  });
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
+  const { PaginationComponent, currentPage } = usePagination<Run[]>({
+    paginatedObject: runs,
+  });
+
+  React.useEffect(() => {
+    setFilters({ ...filters, page: currentPage });
+  }, [currentPage]);
+
   const alert = useAlert();
   const notitication = useNotification();
 
@@ -90,12 +101,14 @@ function RunsTable() {
         Header: "Run",
         id: "name",
         Cell: ({ row }) => {
-          const { name, duration } = row.original;
+          const { name, duration, id } = row.original;
           return (
             <div className="flex flex-col text-sm">
-              <span className="leading-5 font-medium text-gray-900">
-                {name}
-              </span>
+              <Link href={`/runs/${id}`}>
+                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                  {name}
+                </a>
+              </Link>
               <div className="mt-2">
                 <div className="flex items-center">
                   <div className="w-4 h-4 text-gray-500 mr-2">
@@ -194,15 +207,18 @@ function RunsTable() {
   );
 
   return (
-    <div className="flex flex-1">
-      {isLoadingRuns ? (
-        <div className="flex-center flex-1">
-          <Spinner className="h-10 w-10 text-gray-500" />
-        </div>
-      ) : (
-        <Table {...{ columns }} data={runs?.content} sticky />
-      )}
-    </div>
+    <>
+      <div className="flex flex-1">
+        {isLoadingRuns ? (
+          <div className="flex-center flex-1">
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        ) : (
+          <Table {...{ columns }} data={runs?.content} sticky />
+        )}
+      </div>
+      {PaginationComponent}
+    </>
   );
 }
 
@@ -232,7 +248,7 @@ function GeneralCard() {
       </div>
       <div className="flex-1 p-6">
         <Title className="text-gray-700 font-semibold">Tags</Title>
-        <div className="flex flex-wrap mt-4">
+        <div className="flex flex-wrap mt-4 -mx-2">
           {categoryNameList?.map((tag) => (
             <Badge
               key={tag}
@@ -251,7 +267,7 @@ function GeneralCard() {
       </div>
       <div className="flex-1 p-6">
         <Title className="text-gray-700 font-semibold">Excepciones</Title>
-        <div className="flex flex-wrap mt-4">
+        <div className="flex flex-wrap mt-4 -mx-2">
           {errorState?.map((error) => (
             <Badge
               key={error}
@@ -346,7 +362,9 @@ function LastRunCard() {
 
 function FailuresCard() {
   const { query } = useRouter();
-  const { runs } = useRuns(query.id as string);
+  const { runs } = useRuns({
+    projectId: query.id as string,
+  });
 
   const size = runs?.content.length > 10 ? 10 : runs?.content.length;
   const data = runs?.content.slice(0, 10).map((run, idx) => ({

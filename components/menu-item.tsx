@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { SpawnSyncOptionsWithStringEncoding } from "child_process";
 
 export interface MenuItemProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -37,11 +38,16 @@ export function Divider() {
 
 export interface MenuItemGroup extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
+  className?: string;
 }
 
-export function MenuItemGroup({ children, ...props }) {
+export function MenuItemGroup({
+  children,
+  className,
+  ...props
+}: MenuItemGroup) {
   return (
-    <div className="py-1" role="menu" {...props}>
+    <div className={classNames("py-1", className)} role="menu" {...props}>
       {children}
     </div>
   );
