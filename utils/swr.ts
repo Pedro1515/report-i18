@@ -1,3 +1,4 @@
+import { fetcher } from "utils/axios";
 import { mutate, cache } from "swr";
 
 export function mutateFromCache(urlKey: string) {
@@ -8,6 +9,8 @@ export function mutateFromCache(urlKey: string) {
   });
 }
 
-// export function withConfig(hook) {
-//   return hook
-// }
+export function fetchAndCache(key) {
+  const request = fetcher(key);
+  mutate(key, request, false);
+  return request;
+}

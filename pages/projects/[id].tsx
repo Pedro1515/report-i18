@@ -1,6 +1,7 @@
 import React from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { removeRun, Run } from "api";
 import {
   Layout,
@@ -100,12 +101,14 @@ function RunsTable() {
         Header: "Run",
         id: "name",
         Cell: ({ row }) => {
-          const { name, duration } = row.original;
+          const { name, duration, id } = row.original;
           return (
             <div className="flex flex-col text-sm">
-              <span className="leading-5 font-medium text-gray-900">
-                {name}
-              </span>
+              <Link href={`/runs/${id}`}>
+                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                  {name}
+                </a>
+              </Link>
               <div className="mt-2">
                 <div className="flex items-center">
                   <div className="w-4 h-4 text-gray-500 mr-2">

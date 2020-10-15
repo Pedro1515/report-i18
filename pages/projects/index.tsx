@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { useTable } from "react-table";
 import { format } from "date-fns";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { Project } from "api";
 import {
@@ -11,7 +9,6 @@ import {
   Members,
   Badge,
   SearchBox,
-  RCPagination,
   Button,
   Table,
   MenuIcon,
@@ -24,6 +21,7 @@ import {
   useInputValue,
   useProjects,
   usePagination,
+  prefetchProject,
 } from "utils/hooks";
 
 function MenuIconButton() {
@@ -106,7 +104,10 @@ export function Home() {
           return (
             <div className="flex flex-col">
               <Link href={`/projects/${id}`}>
-                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                <a
+                  className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline"
+                  onMouseEnter={() => prefetchProject(id)}
+                >
                   {name}
                 </a>
               </Link>

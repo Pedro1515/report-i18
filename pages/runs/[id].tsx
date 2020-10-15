@@ -12,7 +12,13 @@ import {
   Spinner,
 } from "components";
 import classNames from "classnames";
-import { useInputValue, useDebounce, useFeatures, useTests } from "utils/hooks";
+import {
+  useInputValue,
+  useDebounce,
+  useFeatures,
+  useTests,
+  useRuns,
+} from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
   CheckCircleIcon,
@@ -24,6 +30,7 @@ import {
 import { format } from "date-fns";
 import { customFormatDuration } from "utils";
 import { Feature } from "api";
+import { useRouter } from "next/router";
 
 interface FeatureItemProps {
   name: string;
@@ -66,7 +73,8 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
 
 function Search({ onSelect, selectedFeatureId }) {
   const search = useInputValue("");
-  const { features } = useFeatures("5f3bf3c26eae8d59322205f4");
+  const { query } = useRouter();
+  const { features } = useFeatures(query.id as string);
   const debouncedSearch = useDebounce(search.value, 500);
   const [visible, setVisible] = React.useState(false);
 
@@ -155,7 +163,7 @@ function Step({ status, name }) {
 
 function TestCard({ name, steps }) {
   return (
-    <div className="mt-4 border-b border-gray-300">
+    <div className="mt-4 border border-gray-300 rounded-md p-4">
       <div className="text-sm font-medium">{name}</div>
       <ul className="text-sm space-y-2 py-4">
         {steps.map(({ id, status, name }) => (
@@ -337,8 +345,10 @@ function SummaryWrapper({ children }) {
 }
 
 function Run() {
+  const { query } = useRouter();
   const [feature, setFeature] = React.useState<Feature>(null);
   const { name, startTime, categoryNameList, id } = feature ?? {};
+  const { runs } = useRuns({ id: query.id });
 
   return (
     <Layout>
