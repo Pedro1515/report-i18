@@ -49,13 +49,18 @@ function Caption(props) {
 function RunsTable() {
   const { query } = useRouter();
   const { mutateProject } = useProject(query.id as string);
-  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns({
+  const [filters, setFilters] = React.useState({
     projectId: query.id as string,
+    page: 0,
   });
-
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
   const { PaginationComponent, currentPage } = usePagination<Run[]>({
     paginatedObject: runs,
   });
+
+  React.useEffect(() => {
+    setFilters({ ...filters, page: currentPage });
+  }, [currentPage]);
 
   const alert = useAlert();
   const notitication = useNotification();

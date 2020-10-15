@@ -84,10 +84,18 @@ function Search({ onSearch }) {
 }
 
 export function Home() {
-  const { projects, isLoading } = useProjects();
+  const [filters, setFilters] = React.useState({
+    page: 0,
+  });
+  const { projects, isLoading } = useProjects(filters);
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
+
+  React.useEffect(() => {
+    setFilters({ ...filters, page: currentPage });
+  }, [currentPage]);
+
   const columns = useMemo(
     () => [
       {

@@ -74,7 +74,7 @@ export function Table({ columns, data, sticky }) {
   });
 
   return (
-    <table className="min-w-full divide-y divide-gray-200" {...getTableProps()}>
+    <table className="w-full divide-y divide-gray-200" {...getTableProps()}>
       <thead className="border-b">
         {headerGroups.map((headerGroup) => (
           <TableRow {...headerGroup.getHeaderGroupProps()}>

@@ -7,3 +7,7 @@ export function mutateFromCache(urlKey: string) {
     }
   });
 }
+
+// export function withConfig(hook) {
+//   return hook
+// }

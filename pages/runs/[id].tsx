@@ -9,21 +9,34 @@ import {
   MenuItemGroup,
   Button,
   MenuIcon,
+  Spinner,
 } from "components";
 import classNames from "classnames";
-import { useInputValue, useDebounce } from "utils/hooks";
+import { useInputValue, useDebounce, useFeatures, useTests } from "utils/hooks";
 import { ProtectRoute } from "context";
-import { CheckCircleIcon, ClockIcon, TagSolidIcon } from "components/icons";
+import {
+  CheckCircleIcon,
+  ClockIcon,
+  TagSolidIcon,
+  BeakerIcon,
+  CrossCircleIcon,
+} from "components/icons";
 import { format } from "date-fns";
 import { customFormatDuration } from "utils";
+import { Feature } from "api";
 
 interface FeatureItemProps {
   name: string;
-  status: "pass" | "fail";
+  status: string;
   isActive?: boolean;
+  onClick: (e: React.MouseEvent) => void;
 }
 
-function FeatureItem({ name, status, isActive }: FeatureItemProps) {
+function StatusBadge({ status }) {
+  return <Badge label={status} color={status === "pass" ? "green" : "red"} />;
+}
+
+function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
   return (
     <li
       className={classNames(
@@ -36,6 +49,7 @@ function FeatureItem({ name, status, isActive }: FeatureItemProps) {
         "hover:bg-gray-100",
         { "border-l-2 border-indigo-600": isActive }
       )}
+      onClick={onClick}
     >
       <div className="flex items-center">
         <div className="font-medium text-sm">{name}</div>
@@ -45,19 +59,18 @@ function FeatureItem({ name, status, isActive }: FeatureItemProps) {
           </div>
         ) : null}
       </div>
-      <Badge label={status} color={status === "pass" ? "green" : "red"} />
+      <StatusBadge status={status} />
     </li>
   );
 }
 
-function Search({ onSearch }) {
+function Search({ onSelect, selectedFeatureId }) {
   const search = useInputValue("");
+  const { features } = useFeatures("5f3bf3c26eae8d59322205f4");
   const debouncedSearch = useDebounce(search.value, 500);
   const [visible, setVisible] = React.useState(false);
 
-  React.useEffect(() => {
-    onSearch(debouncedSearch);
-  }, [debouncedSearch]);
+  const handleSelect = (feature) => (e) => onSelect(feature);
 
   return (
     <div className="py-4 w-1/2 relative">
@@ -77,23 +90,15 @@ function Search({ onSearch }) {
         onClose={() => {}}
       >
         <MenuItemGroup>
-          <FeatureItem name="Minimal bis" status="fail" />
-          <FeatureItem name="Minimal bis" status="fail" isActive />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="fail" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="fail" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
-          <FeatureItem name="Minimal bis" status="pass" />
+          {features?.content.map((feature) => (
+            <FeatureItem
+              key={feature.id}
+              name={feature.name}
+              status={feature.status}
+              isActive={selectedFeatureId === feature.id}
+              onClick={handleSelect(feature)}
+            />
+          ))}
         </MenuItemGroup>
       </PopOver>
     </div>
@@ -129,34 +134,72 @@ function Summary() {
   );
 }
 
-function ScenarioCard() {
+function Step({ status, name }) {
+  return (
+    <li className="flex items-center">
+      <div
+        className={classNames(
+          { "text-red-600": status === "fail" },
+          { "text-green-600": status === "pass" },
+          "w-5",
+          "h-5",
+          "mr-2"
+        )}
+      >
+        {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
+      </div>
+      {name}
+    </li>
+  );
+}
+
+function TestCard({ name, steps }) {
+  return (
+    <div className="mt-4 border-b border-gray-300">
+      <div className="text-sm font-medium">{name}</div>
+      <ul className="text-sm space-y-2 py-4">
+        {steps.map(({ id, status, name }) => (
+          <Step key={id} {...{ id, status, name }} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ScenarioCard({ name, duration, status, tags, description, tests }) {
+  const formattedDuration = customFormatDuration({ start: 0, end: duration });
+
   return (
     <div className="rounded-md border px-4 mt-6">
       <div className="flex border-b -mx-4 py-3 px-4 items-center justify-between">
         <div className="flex items-center">
-          <div className="font-medium text-sm">
-            Scenario Outline: Many additions bis2
-          </div>
+          <div className="font-medium text-sm">{name}</div>
           <div className="mx-2 text-gray-500">&middot;</div>
           <div className="flex items-center">
             <div className="w-4 h-4 text-gray-500 mr-2">
               <ClockIcon />
             </div>
-            <span className="block text-gray-500 text-sm" title="Duration">
-              {customFormatDuration({ start: 0, end: 500000 })}
-            </span>
+            {formattedDuration ? (
+              <span className="block text-gray-500 text-sm" title="Duration">
+                {formattedDuration}
+              </span>
+            ) : null}
           </div>
-          <Badge
-            IconComponent={
-              <div className="text-gray-700 w-3 h-3 mr-2">
-                <TagSolidIcon />
-              </div>
-            }
-            className="mx-4"
-            uppercase={false}
-            color="gray"
-            label="@featTag"
-          />
+          {tags.map((tag) => (
+            <Badge
+              key={tag}
+              IconComponent={
+                <div className="text-gray-700 w-3 h-3 mr-2">
+                  <TagSolidIcon />
+                </div>
+              }
+              className="m-2"
+              uppercase={false}
+              color="gray"
+              label={tag}
+            />
+          ))}
+          <StatusBadge status={status} />
         </div>
         <MenuIcon
           items={[
@@ -170,38 +213,133 @@ function ScenarioCard() {
         />
       </div>
       <div className="py-6">
-        <div className="text-sm">Datos iniciales</div>
-        {/* usar tabla */}
+        <div className="text-sm font-medium mb-4">Datos iniciales</div>
+        <div dangerouslySetInnerHTML={{ __html: description }} />
+        {tests.map((test) => {
+          const { id, name, nodes: steps } = test;
+          return <TestCard key={id} name={name} steps={steps} />;
+        })}
+      </div>
+    </div>
+  );
+}
+
+function FeatureHeading({ created, name, tags }) {
+  return (
+    <div className="mt-2">
+      <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm">Many additions bis</div>
-          <ul className="text-sm space-y-2 mt-2">
-            <li className="flex items-center">
-              <div className="text-green-600 w-4 h-4 mr-2">
-                <CheckCircleIcon />
-              </div>{" "}
-              Given a calculator I just turned on
-            </li>
-            <li className="flex items-center">
-              <div className="text-green-600 w-4 h-4 mr-2">
-                <CheckCircleIcon />
-              </div>{" "}
-              Given a calculator I just turned on
-            </li>
-            <li className="flex items-center">
-              <div className="text-green-600 w-4 h-4 mr-2">
-                <CheckCircleIcon />
-              </div>{" "}
-              Given a calculator I just turned on
-            </li>
-          </ul>
+          <div className="text-base font-medium">{name}</div>
+          <div className="text-sm mt-1">
+            Creado el {format(new Date(created), "dd/MM/yyyy HH:ss")}
+          </div>
+          <div className="-mx-2">
+            {tags.map((tag) => (
+              <Badge
+                key={tag}
+                IconComponent={
+                  <div className="text-gray-700 w-3 h-3 mr-2">
+                    <TagSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="gray"
+                label={tag}
+              />
+            ))}
+          </div>
+        </div>
+        <div>
+          <Button label="Editar" variant="white" color="indigo" />
         </div>
       </div>
     </div>
   );
 }
 
+function FeatureEmptyPlaceholder() {
+  return (
+    <div className="h-full flex-center flex-col font-medium text-gray-500 bg-gray-100">
+      <div className="w-16 h-16 mb-4">
+        <BeakerIcon />
+      </div>
+      <p className="text-center">
+        Selecciona una feature del buscador <br />
+        para ver el detalle.
+      </p>
+    </div>
+  );
+}
+
+function FeatureContent({ feature }) {
+  const { name, startTime, categoryNameList, id } = feature ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const scenarioOutline = f ? f.nodes : [];
+
+  if (!feature) {
+    return <FeatureEmptyPlaceholder />;
+  }
+
+  return (
+    <div className="px-6 py-4 flex-auto">
+      <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
+      <div className="space-y-8">
+        {isLoading ? (
+          <div className="flex-center mt-20">
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        ) : (
+          scenarioOutline?.map((scenario) => {
+            const {
+              id,
+              name,
+              status,
+              duration,
+              categoryNameList,
+              description,
+              nodes: tests,
+            } = scenario;
+            return (
+              <ScenarioCard
+                key={id}
+                name={name}
+                status={status}
+                duration={duration}
+                tags={categoryNameList}
+                tests={tests}
+                description={description}
+              />
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SummaryWrapper({ children }) {
+  return (
+    <div
+      className={classNames(
+        "px-6",
+        "py-4",
+        "border-b",
+        "w-full",
+        "flex",
+        "space-x-10"
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
 function Run() {
-  const [feature, setFeature] = React.useState();
+  const [feature, setFeature] = React.useState<Feature>(null);
+  const { name, startTime, categoryNameList, id } = feature ?? {};
+
   return (
     <Layout>
       <LayoutHeader>
@@ -210,45 +348,14 @@ function Run() {
         </div>
       </LayoutHeader>
       <LayoutContent scrollable>
-        <div className="px-6 py-4 border-b w-full flex space-x-10">
-          <Search onSearch={(search) => console.log(search)} />
+        <SummaryWrapper>
+          <Search
+            onSelect={(feature) => setFeature(feature)}
+            selectedFeatureId={id}
+          />
           <Summary />
-        </div>
-        <div className="px-6 py-4 flex-auto">
-          {/* <div className="h-full flex-center font-medium text-gray-500 bg-gray-100">
-            Selecciona una feature del buscador para ver el detalle.
-          </div> */}
-          <div className="mt-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-base font-medium">Minimal Bis</div>
-                <div className="text-sm mt-1">
-                  Creado el {format(new Date(), "dd/MM/yyyy HH:ss")}
-                </div>
-                <div className="-mx-2">
-                  <Badge
-                    IconComponent={
-                      <div className="text-gray-700 w-3 h-3 mr-2">
-                        <TagSolidIcon />
-                      </div>
-                    }
-                    className="m-2"
-                    uppercase={false}
-                    color="gray"
-                    label="@featTag"
-                  />
-                </div>
-              </div>
-              <div>
-                <Button label="Editar" variant="white" color="indigo" />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-8">
-            <ScenarioCard />
-            <ScenarioCard />
-          </div>
-        </div>
+        </SummaryWrapper>
+        <FeatureContent feature={feature} />
       </LayoutContent>
     </Layout>
   );
