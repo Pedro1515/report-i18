@@ -10,15 +10,10 @@ import {
   Button,
   MenuIcon,
   Spinner,
+  useSearchBox,
 } from "components";
 import classNames from "classnames";
-import {
-  useInputValue,
-  useDebounce,
-  useFeatures,
-  useTests,
-  useRuns,
-} from "utils/hooks";
+import { useDebounce, useFeatures, useTests, useRuns } from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
   CheckCircleIcon,
@@ -72,10 +67,10 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
 }
 
 function Search({ onSelect, selectedFeatureId }) {
-  const search = useInputValue("");
+  const { value, getInputProps, getResetterProps } = useSearchBox("");
   const { query } = useRouter();
   const { features } = useFeatures(query.id as string);
-  const debouncedSearch = useDebounce(search.value, 500);
+  const debouncedSearch = useDebounce(value, 500);
   const [visible, setVisible] = React.useState(false);
 
   const handleSelect = (feature) => (e) => onSelect(feature);
@@ -83,13 +78,14 @@ function Search({ onSelect, selectedFeatureId }) {
   return (
     <div className="py-4 w-1/2 relative">
       <SearchBox
-        placeholder="Buscar feature..."
-        value={search.value}
+        inputProps={getInputProps({
+          onChange: (e) => console.log(e.target.value),
+          onFocus: () => setVisible(true),
+          onBlur: () => setVisible(false),
+          placeholder: "Buscar feature...",
+        })}
+        resetterProps={getResetterProps({ onClick: () => {} })}
         fullWidth
-        onChange={search.onChange}
-        onClear={search.clear}
-        onFocus={() => setVisible(true)}
-        onBlur={() => setVisible(false)}
       />
       <PopOver
         visible={visible}
@@ -164,7 +160,19 @@ function Step({ status, name }) {
 function TestCard({ name, steps }) {
   return (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
-      <div className="text-sm font-medium">{name}</div>
+      <div className="flex justify-between items-center">
+        <div className="text-sm font-medium">{name}</div>
+        <MenuIcon
+          items={[
+            [
+              {
+                label: "Eliminar",
+                onClick: () => {},
+              },
+            ],
+          ]}
+        />
+      </div>
       <ul className="text-sm space-y-2 py-4">
         {steps.map(({ id, status, name }) => (
           <Step key={id} {...{ id, status, name }} />
@@ -347,7 +355,7 @@ function SummaryWrapper({ children }) {
 function Run() {
   const { query } = useRouter();
   const [feature, setFeature] = React.useState<Feature>(null);
-  const { name, startTime, categoryNameList, id } = feature ?? {};
+  const { id } = feature ?? {};
   const { runs } = useRuns({ id: query.id });
 
   return (
