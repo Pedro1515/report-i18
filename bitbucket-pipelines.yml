@@ -11,7 +11,7 @@ pipelines:
            - docker build -f Dockerfile.production -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
            - export IMAGE_NAME=crowdar/report-server-front:latest
-           - docker build -t $IMAGE_NAME .
+           - docker build -f Dockerfile.production -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
       - step:
          name: Deploy
