@@ -1,13 +1,19 @@
-import React from "react";
+import React, { HTMLAttributes } from "react";
 import classNames from "classnames";
 import { SearchIcon, CrossIcon } from "components/icons";
-import { callAll } from "utils";
+import { callAll, noop } from "utils";
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+interface ResetterProps {
+  onClick?: (e: React.MouseEvent) => void;
+}
 
 export interface SearchBoxProps extends React.HTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean;
   className?: string;
-  inputProps: any;
-  resetterProps: any;
+  inputProps: InputProps;
+  resetterProps: ResetterProps;
 }
 
 export function useSearchBox(initialValue: string) {
@@ -20,14 +26,14 @@ export function useSearchBox(initialValue: string) {
 
   const clear = () => setValue("");
 
-  const getInputProps = ({ onChange, ...props }) => ({
+  const getInputProps = ({ onChange = noop, ...props }: InputProps) => ({
     role: "searchbox",
     value,
     onChange: callAll(onChange, handleText),
     ...props,
   });
 
-  const getResetterProps = ({ onClick, ...props }) => ({
+  const getResetterProps = ({ onClick = noop, ...props }: ResetterProps) => ({
     role: "reset",
     onClick: callAll(onClick, clear),
     ...props,
