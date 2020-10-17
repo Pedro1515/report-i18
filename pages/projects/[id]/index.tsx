@@ -48,7 +48,7 @@ function Caption(props) {
 }
 
 function RunsTable() {
-  const { query } = useRouter();
+  const { query, route, asPath } = useRouter();
   const { mutateProject } = useProject(query.id as string);
   const [filters, setFilters] = React.useState({
     projectId: query.id as string,
@@ -104,7 +104,7 @@ function RunsTable() {
           const { name, duration, id } = row.original;
           return (
             <div className="flex flex-col text-sm">
-              <Link href={`/runs/${id}`}>
+              <Link href={`${asPath}/runs/${id}`}>
                 <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
                   {name}
                 </a>

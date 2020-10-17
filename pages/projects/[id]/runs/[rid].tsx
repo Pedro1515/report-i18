@@ -69,11 +69,14 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
 function Search({ onSelect, selectedFeatureId }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
   const { query } = useRouter();
-  const { features } = useFeatures(query.id as string);
+  const { features } = useFeatures(query.rid as string);
   const debouncedSearch = useDebounce(value, 500);
   const [visible, setVisible] = React.useState(false);
 
-  const handleSelect = (feature) => (e) => onSelect(feature);
+  const handleSelect = (feature) => (event) => {
+    event.stopPropagation();
+    onSelect(feature);
+  };
 
   return (
     <div className="py-4 w-1/2 relative">
@@ -211,7 +214,7 @@ function ScenarioCard({ name, duration, status, tags, description, tests }) {
               </span>
             ) : null}
           </div>
-          {tags.map((tag) => (
+          {tags?.map((tag) => (
             <Badge
               key={tag}
               IconComponent={
@@ -260,7 +263,7 @@ function FeatureHeading({ created, name, tags }) {
             Creado el {format(new Date(created), "dd/MM/yyyy HH:ss")}
           </div>
           <div className="-mx-2">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <Badge
                 key={tag}
                 IconComponent={
@@ -367,7 +370,7 @@ function Run() {
   const { query } = useRouter();
   const [feature, setFeature] = React.useState<Feature>(null);
   const { id } = feature ?? {};
-  const { run } = useRun(query.id as string);
+  const { run } = useRun(query.rid as string);
 
   return (
     <Layout>
