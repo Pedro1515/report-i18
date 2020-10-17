@@ -8,3 +8,5 @@ export * from "./swr";
 
 export const callAll = (...fns) => (...args) =>
   fns.forEach((fn) => fn?.(...args));
+
+export const noop = () => {};

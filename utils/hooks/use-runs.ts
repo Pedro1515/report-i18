@@ -15,3 +15,16 @@ export function useRuns(query?) {
     mutateRuns,
   };
 }
+
+export function useRun(id: string) {
+  const { data, error, mutate: mutateRun } = useSWR<Run>(
+    `/rest/runs/${id}`
+  );
+
+  return {
+    run: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutateRun,
+  };
+}

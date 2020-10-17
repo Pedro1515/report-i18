@@ -13,7 +13,7 @@ import {
   useSearchBox,
 } from "components";
 import classNames from "classnames";
-import { useDebounce, useFeatures, useTests, useRuns } from "utils/hooks";
+import { useDebounce, useFeatures, useTests, useRun } from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
   CheckCircleIcon,
@@ -23,8 +23,8 @@ import {
   CrossCircleIcon,
 } from "components/icons";
 import { format } from "date-fns";
-import { customFormatDuration } from "utils";
-import { Feature } from "api";
+import { customFormatDuration, getTotalBy } from "utils";
+import { Feature, Run as ApiRun } from "api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
@@ -69,11 +69,14 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
 function Search({ onSelect, selectedFeatureId }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
   const { query } = useRouter();
-  const { features } = useFeatures(query.id as string);
+  const { features } = useFeatures(query.rid as string);
   const debouncedSearch = useDebounce(value, 500);
   const [visible, setVisible] = React.useState(false);
 
-  const handleSelect = (feature) => (e) => onSelect(feature);
+  const handleSelect = (feature) => (event) => {
+    event.stopPropagation();
+    onSelect(feature);
+  };
 
   return (
     <div className="py-4 w-1/2 relative">
@@ -84,7 +87,7 @@ function Search({ onSelect, selectedFeatureId }) {
           onBlur: () => setVisible(false),
           placeholder: "Buscar feature...",
         })}
-        resetterProps={getResetterProps({ onClick: () => {} })}
+        resetterProps={getResetterProps({})}
         fullWidth
       />
       <PopOver
@@ -120,23 +123,33 @@ function DataDisplay({ label, value }) {
   );
 }
 
-function Summary() {
+interface SummaryProps {
+  run?: ApiRun;
+}
+
+const Summary = React.memo(function Summary({ run }: SummaryProps) {
   return (
     <div className="w-1/2">
       <div className="flex mt-2 -mx-6">
         <div className="w-1/3">
-          <DataDisplay label="Total features" value={60} />
+          <DataDisplay
+            label="Total features"
+            value={getTotalBy("feature", run)}
+          />
         </div>
         <div className="w-1/3">
-          <DataDisplay label="Total scenarios" value={20} />
+          <DataDisplay
+            label="Total scenarios"
+            value={getTotalBy("scenario", run)}
+          />
         </div>
         <div className="w-1/3">
-          <DataDisplay label="Total steps" value={30} />
+          <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
         </div>
       </div>
     </div>
   );
-}
+});
 
 function Step({ status, name }) {
   return (
@@ -157,7 +170,7 @@ function Step({ status, name }) {
   );
 }
 
-function TestCard({ name, steps }) {
+function TestCard({ name, steps = [] }) {
   return (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
       <div className="flex justify-between items-center">
@@ -174,7 +187,7 @@ function TestCard({ name, steps }) {
         />
       </div>
       <ul className="text-sm space-y-2 py-4">
-        {steps.map(({ id, status, name }) => (
+        {steps?.map(({ id, status, name }) => (
           <Step key={id} {...{ id, status, name }} />
         ))}
       </ul>
@@ -201,7 +214,7 @@ function ScenarioCard({ name, duration, status, tags, description, tests }) {
               </span>
             ) : null}
           </div>
-          {tags.map((tag) => (
+          {tags?.map((tag) => (
             <Badge
               key={tag}
               IconComponent={
@@ -250,7 +263,7 @@ function FeatureHeading({ created, name, tags }) {
             Creado el {format(new Date(created), "dd/MM/yyyy HH:ss")}
           </div>
           <div className="-mx-2">
-            {tags.map((tag) => (
+            {tags?.map((tag) => (
               <Badge
                 key={tag}
                 IconComponent={
@@ -317,6 +330,7 @@ function FeatureContent({ feature }) {
               description,
               nodes: tests,
             } = scenario;
+
             return (
               <ScenarioCard
                 key={id}
@@ -356,7 +370,7 @@ function Run() {
   const { query } = useRouter();
   const [feature, setFeature] = React.useState<Feature>(null);
   const { id } = feature ?? {};
-  const { runs } = useRuns({ id: query.id });
+  const { run } = useRun(query.rid as string);
 
   return (
     <Layout>
@@ -371,7 +385,7 @@ function Run() {
             onSelect={(feature) => setFeature(feature)}
             selectedFeatureId={id}
           />
-          <Summary />
+          <Summary run={run} />
         </SummaryWrapper>
         <FeatureContent feature={feature} />
       </LayoutContent>
