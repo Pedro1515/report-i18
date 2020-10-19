@@ -22,7 +22,7 @@ import {
   BeakerIcon,
   CrossCircleIcon,
 } from "components/icons";
-import { addHours, format } from "date-fns";
+import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "utils";
 import { Feature, Run as ApiRun } from "api";
 import { useRouter } from "next/router";
