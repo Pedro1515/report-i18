@@ -47,8 +47,8 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
         "py-3",
         "px-4",
         "items-center",
-        "cursor-pointer",
         "hover:bg-gray-100",
+        "cursor-pointer",
         { "border-l-2 border-indigo-600": isActive }
       )}
       onClick={onClick}
@@ -84,7 +84,6 @@ function Search({ onSelect, selectedFeatureId }) {
         inputProps={getInputProps({
           onChange: (e) => console.log(e.target.value),
           onFocus: () => setVisible(true),
-          onBlur: () => setVisible(false),
           placeholder: "Buscar feature...",
         })}
         resetterProps={getResetterProps({})}
@@ -94,7 +93,7 @@ function Search({ onSelect, selectedFeatureId }) {
         visible={visible}
         className="origin-top-left mt-2 w-full overflow-y-auto border"
         style={{ maxHeight: 400 }}
-        onClose={() => {}}
+        onClose={() => setVisible(false)}
       >
         <MenuItemGroup>
           {features?.content.map((feature) => (
@@ -151,9 +150,13 @@ const Summary = React.memo(function Summary({ run }: SummaryProps) {
   );
 });
 
+function StepWrapper({ children }) {
+  return <ul className="space-y-2 py-4">{children}</ul>;
+}
+
 function Step({ status, name }) {
   return (
-    <li className="flex items-center">
+    <li className="flex items-center text-sm">
       <div
         className={classNames(
           { "text-red-600": status === "fail" },
@@ -186,69 +189,100 @@ function TestCard({ name, steps = [] }) {
           ]}
         />
       </div>
-      <ul className="text-sm space-y-2 py-4">
+      <StepWrapper>
         {steps?.map(({ id, status, name }) => (
           <Step key={id} {...{ id, status, name }} />
         ))}
-      </ul>
+      </StepWrapper>
     </div>
   );
 }
 
-function ScenarioCard({ name, duration, status, tags, description, tests }) {
+function ScenarioHeader({ name, duration, tags, status }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
-
   return (
-    <div className="rounded-md border px-4 mt-6">
-      <div className="flex border-b -mx-4 py-3 px-4 items-center justify-between">
+    <div className="flex border-b -mx-4 py-3 px-4 items-center justify-between">
+      <div className="flex items-center">
+        <div className="font-medium text-sm">{name}</div>
+        <div className="mx-2 text-gray-500">&middot;</div>
         <div className="flex items-center">
-          <div className="font-medium text-sm">{name}</div>
-          <div className="mx-2 text-gray-500">&middot;</div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 text-gray-500 mr-2">
-              <ClockIcon />
-            </div>
-            {formattedDuration ? (
-              <span className="block text-gray-500 text-sm" title="Duration">
-                {formattedDuration}
-              </span>
-            ) : null}
+          <div className="w-4 h-4 text-gray-500 mr-2">
+            <ClockIcon />
           </div>
-          {tags?.map((tag) => (
-            <Badge
-              key={tag}
-              IconComponent={
-                <div className="text-gray-700 w-3 h-3 mr-2">
-                  <TagSolidIcon />
-                </div>
-              }
-              className="m-2"
-              uppercase={false}
-              color="gray"
-              label={tag}
-            />
-          ))}
-          <StatusBadge status={status} />
+          {formattedDuration ? (
+            <span className="block text-gray-500 text-sm" title="Duration">
+              {formattedDuration}
+            </span>
+          ) : null}
         </div>
-        <MenuIcon
-          items={[
-            [
-              {
-                label: "Eliminar",
-                onClick: () => {},
-              },
-            ],
-          ]}
-        />
+        {tags?.map((tag) => (
+          <Badge
+            key={tag}
+            IconComponent={
+              <div className="text-gray-700 w-3 h-3 mr-2">
+                <TagSolidIcon />
+              </div>
+            }
+            className="m-2"
+            uppercase={false}
+            color="gray"
+            label={tag}
+          />
+        ))}
+        <StatusBadge status={status} />
       </div>
+      <MenuIcon
+        items={[
+          [
+            {
+              label: "Eliminar",
+              onClick: () => {},
+            },
+          ],
+        ]}
+      />
+    </div>
+  );
+}
+
+function ScenarioContent({ bddType, nodes, description }) {
+  if (bddType === "Scenario Outline") {
+    return (
       <div className="py-6">
         <div className="text-sm font-medium mb-4">Datos iniciales</div>
         <div dangerouslySetInnerHTML={{ __html: description }} />
-        {tests.map((test) => {
+        {nodes?.map((test) => {
           const { id, name, nodes: steps } = test;
-          return <TestCard key={id} name={name} steps={steps} />;
+          return <TestCard key={id} {...{ name, steps }} />;
         })}
       </div>
+    );
+  }
+
+  return (
+    <StepWrapper>
+      {nodes?.map(({ id, status, name }) => (
+        <Step key={id} {...{ id, status, name }} />
+      ))}
+    </StepWrapper>
+  );
+}
+
+function ScenarioCard({ scenario }) {
+  const {
+    id,
+    name,
+    status,
+    duration,
+    categoryNameList,
+    description,
+    nodes,
+    bddType,
+  } = scenario;
+  return (
+    <div className="rounded-md border px-4 mt-6">
+      <ScenarioHeader {...{ name, duration, status, tags: categoryNameList }} />
+      <ScenarioContent {...{ bddType, nodes, description }} />
     </div>
   );
 }
@@ -305,7 +339,7 @@ function FeatureContent({ feature }) {
   const { name, startTime, categoryNameList, id } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
-  const scenarioOutline = f ? f.nodes : [];
+  const child = f ? f.nodes : [];
 
   if (!feature) {
     return <FeatureEmptyPlaceholder />;
@@ -320,28 +354,8 @@ function FeatureContent({ feature }) {
             <Spinner className="h-10 w-10 text-gray-500" />
           </div>
         ) : (
-          scenarioOutline?.map((scenario) => {
-            const {
-              id,
-              name,
-              status,
-              duration,
-              categoryNameList,
-              description,
-              nodes: tests,
-            } = scenario;
-
-            return (
-              <ScenarioCard
-                key={id}
-                name={name}
-                status={status}
-                duration={duration}
-                tags={categoryNameList}
-                tests={tests}
-                description={description}
-              />
-            );
+          child?.map((scenario) => {
+            return <ScenarioCard key={scenario.id} scenario={scenario} />;
           })
         )}
       </div>
@@ -376,7 +390,7 @@ function Run() {
     <Layout>
       <LayoutHeader>
         <div className="flex space-x-4">
-          <span className="font-medium text-lg">Run name</span>
+          <span className="font-medium text-lg">{run?.name}</span>
         </div>
       </LayoutHeader>
       <LayoutContent scrollable>
