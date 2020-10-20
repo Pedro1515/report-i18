@@ -100,8 +100,8 @@ function ErrorStateMenuIcon({ id, errors }) {
   const { project } = useProject(run?.project);
   const { errorState } = project ?? {};
 
-  const handleErrorState = (error) => (event) => {
-    updateTest({ id, errorStates: [error] });
+  const handleErrorState = (error) => async (event) => {
+    await updateTest({ id, errorStates: [error] });
     mutateTests();
   };
 
