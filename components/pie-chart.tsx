@@ -103,16 +103,13 @@ export function PieChart({ data, height }: PieChartProps) {
               paddingAngle={2}
               dataKey="value"
             >
-              {data.map((entry, index) => {
-                console.log(entry);
-                return (
-                  <Cell
-                    key={`cell-${index}`}
-                    className={`text-${entry.color}-500`}
-                    fill="currentColor"
-                  />
-                );
-              })}
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  className={`text-${entry.color}-500`}
+                  fill="currentColor"
+                />
+              ))}
             </Pie>
             <Tooltip content={(props) => <CustomTooltip {...props} />} />
           </RPieChart>

@@ -373,8 +373,6 @@ function FailuresCard() {
     value: run.failChildLength,
   }));
 
-  console.log(config);
-
   return (
     <Card className="flex-col w-1/3 p-6">
       <Title className="text-gray-700 font-semibold">Fallos</Title>

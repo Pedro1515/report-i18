@@ -13,7 +13,13 @@ import {
   useSearchBox,
 } from "components";
 import classNames from "classnames";
-import { useDebounce, useFeatures, useTests, useRun } from "utils/hooks";
+import {
+  useDebounce,
+  useFeatures,
+  useTests,
+  useRun,
+  useProject,
+} from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
   CheckCircleIcon,
@@ -21,10 +27,11 @@ import {
   TagSolidIcon,
   BeakerIcon,
   CrossCircleIcon,
+  ExclamationSolidIcon,
 } from "components/icons";
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "utils";
-import { Feature, Run as ApiRun } from "api";
+import { Feature, Run as ApiRun, updateTest } from "api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
@@ -32,6 +39,23 @@ interface FeatureItemProps {
   status: string;
   isActive?: boolean;
   onClick: (e: React.MouseEvent) => void;
+}
+
+// @ts-ignore
+const FeatureContext = React.createContext();
+
+function FeatureProvider(props) {
+  const [feature, setFeature] = React.useState<Feature>(null);
+  const value = { feature, setFeature };
+  return <FeatureContext.Provider value={value} {...props} />;
+}
+
+function useFeature() {
+  const context = React.useContext(FeatureContext);
+  if (!context) {
+    throw new Error("useFeature must be used within a FeatureProvider");
+  }
+  return context;
 }
 
 function StatusBadge({ status }) {
@@ -66,16 +90,46 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
   );
 }
 
-function Search({ onSelect, selectedFeatureId }) {
+function ErrorStateMenuIcon({ id, errors }) {
+  const { query } = useRouter();
+  // @ts-ignore
+  const { feature } = useFeature();
+  const { id: featureId } = feature ?? {};
+  const { mutateTests } = useTests({ "deep-populate": true, id: featureId });
+  const { run } = useRun(query.rid as string);
+  const { project } = useProject(run?.project);
+  const { errorState } = project ?? {};
+
+  const handleErrorState = (error) => (event) => {
+    updateTest({ id, errorStates: [error] });
+    mutateTests();
+  };
+
+  return (
+    <MenuIcon
+      items={[
+        errorState?.map((error) => ({
+          label: error,
+          onClick: handleErrorState(error),
+          selected: errors.includes(error),
+        })),
+      ]}
+    />
+  );
+}
+
+function Search({ selectedFeatureId }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
   const { query } = useRouter();
   const { features } = useFeatures(query.rid as string);
+  // @ts-ignore
+  const { setFeature } = useFeature();
   const debouncedSearch = useDebounce(value, 500);
   const [visible, setVisible] = React.useState(false);
 
   const handleSelect = (feature) => (event) => {
     event.stopPropagation();
-    onSelect(feature);
+    setFeature(feature);
   };
 
   return (
@@ -173,21 +227,33 @@ function Step({ status, name }) {
   );
 }
 
-function TestCard({ name, steps = [] }) {
+function TestCard({ id, name, steps = [], errors }) {
   return (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
-      <div className="flex justify-between items-center">
-        <div className="text-sm font-medium">{name}</div>
-        <MenuIcon
-          items={[
-            [
-              {
-                label: "Eliminar",
-                onClick: () => {},
-              },
-            ],
-          ]}
-        />
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center">
+          <div className="text-sm font-medium">{name}</div>
+          <ErrorStateMenuIcon {...{ id, errors }} />
+        </div>
+        {errors?.length > 0 && (
+          <div className="flex items-center">
+            <div className="font-medium text-sm">Excepciones</div>
+            {errors.map((error) => (
+              <Badge
+                key={error}
+                IconComponent={
+                  <div className="text-red-700 w-3 h-3 mr-2">
+                    <ExclamationSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="red"
+                label={error}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <StepWrapper>
         {steps?.map(({ id, status, name }) => (
@@ -198,49 +264,61 @@ function TestCard({ name, steps = [] }) {
   );
 }
 
-function ScenarioHeader({ name, duration, tags, status }) {
+function ScenarioHeader({ id, name, duration, tags, status, errors }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
-    <div className="flex border-b -mx-4 py-3 px-4 items-center justify-between">
-      <div className="flex items-center">
-        <div className="font-medium text-sm">{name}</div>
-        <div className="mx-2 text-gray-500">&middot;</div>
+    <div className="flex flex-col border-b -mx-4 py-3 px-4">
+      <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <div className="w-4 h-4 text-gray-500 mr-2">
-            <ClockIcon />
+          <div className="font-medium text-sm">{name}</div>
+          <div className="mx-2 text-gray-500">&middot;</div>
+          <div className="flex items-center">
+            <div className="w-4 h-4 text-gray-500 mr-2">
+              <ClockIcon />
+            </div>
+            {formattedDuration ? (
+              <span className="block text-gray-500 text-sm" title="Duration">
+                {formattedDuration}
+              </span>
+            ) : null}
           </div>
-          {formattedDuration ? (
-            <span className="block text-gray-500 text-sm" title="Duration">
-              {formattedDuration}
-            </span>
-          ) : null}
+          {tags?.map((tag) => (
+            <Badge
+              key={tag}
+              IconComponent={
+                <div className="text-gray-700 w-3 h-3 mr-2">
+                  <TagSolidIcon />
+                </div>
+              }
+              className="m-2"
+              uppercase={false}
+              color="gray"
+              label={tag}
+            />
+          ))}
+          <StatusBadge status={status} />
         </div>
-        {tags?.map((tag) => (
-          <Badge
-            key={tag}
-            IconComponent={
-              <div className="text-gray-700 w-3 h-3 mr-2">
-                <TagSolidIcon />
-              </div>
-            }
-            className="m-2"
-            uppercase={false}
-            color="gray"
-            label={tag}
-          />
-        ))}
-        <StatusBadge status={status} />
+        <ErrorStateMenuIcon {...{ id, errors }} />
       </div>
-      <MenuIcon
-        items={[
-          [
-            {
-              label: "Eliminar",
-              onClick: () => {},
-            },
-          ],
-        ]}
-      />
+      {errors?.length > 0 && (
+        <div className="flex items-center">
+          <div className="font-medium text-sm">Excepciones</div>
+          {errors.map((error) => (
+            <Badge
+              key={error}
+              IconComponent={
+                <div className="text-red-700 w-3 h-3 mr-2">
+                  <ExclamationSolidIcon />
+                </div>
+              }
+              className="m-2"
+              uppercase={false}
+              color="red"
+              label={error}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -252,8 +330,10 @@ function ScenarioContent({ bddType, nodes, description }) {
         <div className="text-sm font-medium mb-4">Datos iniciales</div>
         <div dangerouslySetInnerHTML={{ __html: description }} />
         {nodes?.map((test) => {
-          const { id, name, nodes: steps } = test;
-          return <TestCard key={id} {...{ name, steps }} />;
+          const { id, name, nodes: steps, errorStates } = test;
+          return (
+            <TestCard key={id} {...{ id, name, steps, errors: errorStates }} />
+          );
         })}
       </div>
     );
@@ -278,10 +358,20 @@ function ScenarioCard({ scenario }) {
     description,
     nodes,
     bddType,
+    errorStates,
   } = scenario;
   return (
     <div className="rounded-md border px-4 mt-6">
-      <ScenarioHeader {...{ name, duration, status, tags: categoryNameList }} />
+      <ScenarioHeader
+        {...{
+          id,
+          name,
+          duration,
+          status,
+          tags: categoryNameList,
+          errors: errorStates,
+        }}
+      />
       <ScenarioContent {...{ bddType, nodes, description }} />
     </div>
   );
@@ -382,7 +472,8 @@ function SummaryWrapper({ children }) {
 
 function Run() {
   const { query } = useRouter();
-  const [feature, setFeature] = React.useState<Feature>(null);
+  // @ts-ignore
+  const { feature } = useFeature();
   const { id } = feature ?? {};
   const { run } = useRun(query.rid as string);
 
@@ -395,10 +486,7 @@ function Run() {
       </LayoutHeader>
       <LayoutContent scrollable>
         <SummaryWrapper>
-          <Search
-            onSelect={(feature) => setFeature(feature)}
-            selectedFeatureId={id}
-          />
+          <Search selectedFeatureId={id} />
           <Summary run={run} />
         </SummaryWrapper>
         <FeatureContent feature={feature} />
@@ -407,4 +495,12 @@ function Run() {
   );
 }
 
-export default ProtectRoute(Run);
+function RunWithProvider() {
+  return (
+    <FeatureProvider>
+      <Run />
+    </FeatureProvider>
+  );
+}
+
+export default ProtectRoute(RunWithProvider);
