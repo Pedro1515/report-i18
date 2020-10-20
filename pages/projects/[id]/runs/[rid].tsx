@@ -111,7 +111,7 @@ function ErrorStateMenuIcon({ id, errors }) {
         errorState?.map((error) => ({
           label: error,
           onClick: handleErrorState(error),
-          selected: errors.includes(error),
+          selected: errors ? errors.includes(error) : false,
         })),
       ]}
     />
@@ -150,15 +150,19 @@ function Search({ selectedFeatureId }) {
         onClose={() => setVisible(false)}
       >
         <MenuItemGroup>
-          {features?.content.map((feature) => (
-            <FeatureItem
-              key={feature.id}
-              name={feature.name}
-              status={feature.status}
-              isActive={selectedFeatureId === feature.id}
-              onClick={handleSelect(feature)}
-            />
-          ))}
+          {features?.content
+            .filter(({ name }) =>
+              name.toLowerCase().includes(debouncedSearch.toLowerCase())
+            )
+            .map((feature) => (
+              <FeatureItem
+                key={feature.id}
+                name={feature.name}
+                status={feature.status}
+                isActive={selectedFeatureId === feature.id}
+                onClick={handleSelect(feature)}
+              />
+            ))}
         </MenuItemGroup>
       </PopOver>
     </div>
