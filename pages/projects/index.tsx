@@ -50,7 +50,7 @@ function MenuIconButton() {
                 title: "Eliminar proyecto",
                 body:
                   "Estas seguro que quieres eliminar el proyecto? Se perderan todos los datos asociados.",
-                onConfirm: () => console.log("ale"),
+                onConfirm: () => console.log("eliminar proyecto"),
                 action: "Eliminar",
               });
             },

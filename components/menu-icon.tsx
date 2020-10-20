@@ -9,6 +9,7 @@ import {
 } from "components";
 import { DotsVerticalIcon } from "components/icons";
 import { useModal } from "utils/hooks";
+import { callAll } from "utils";
 
 export interface MenuIconProps {
   items: MenuItemProps[][];
@@ -41,8 +42,13 @@ export function MenuIcon({ items }: MenuIconProps) {
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
               >
-                {group.map(({ label, ...props }) => (
-                  <MenuItem key={label} {...{ label }} {...props} />
+                {group?.map(({ label, onClick, ...props }) => (
+                  <MenuItem
+                    key={label}
+                    {...{ label }}
+                    onClick={callAll(onClick, popover.toggle)}
+                    {...props}
+                  />
                 ))}
               </MenuItemGroup>
               {arr[index] ? <Divider /> : null}

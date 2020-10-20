@@ -1,13 +1,13 @@
 import React from "react";
 import classNames from "classnames";
-import { SpawnSyncOptionsWithStringEncoding } from "child_process";
 
 export interface MenuItemProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   label: string;
+  selected?: boolean;
 }
 
-export function MenuItem({ label, ...props }: MenuItemProps) {
+export function MenuItem({ label, selected, ...props }: MenuItemProps) {
   return (
     <a
       href="#"
@@ -22,7 +22,8 @@ export function MenuItem({ label, ...props }: MenuItemProps) {
         "hover:text-gray-900",
         "focus:outline-none",
         "focus:bg-gray-100",
-        "focus:text-gray-900"
+        "focus:text-gray-900",
+        { "border-l-2 border-indigo-600": selected }
       )}
       role="menuitem"
       {...props}
