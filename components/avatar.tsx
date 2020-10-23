@@ -28,15 +28,15 @@ export function Avatar() {
         {...getModalProps()}
       >
         <div className="flex items-center">
-          <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=718096&color=4a5568&bold=true`} className="rounded-full h-10" />
-          <div className="flex flex-col text-sm truncate ml-4">
+          <img src={`https://ui-avatars.com/api/?name=${user?.name}&background=718096&color=4a5568&bold=true`} className="rounded-full h-8 xl:h-10" />
+          <div className="flex-col text-sm truncate ml-4 hidden xl:flex">
             <span className="font-medium text-gray-600 leading-7">{user?.name}</span>
             <span className="text-gray-500 text-xs uppercase">
               {user?.role}
             </span>
           </div>
         </div>
-        <div className="w-5 h-5 text-gray-500">
+        <div className="w-5 h-5 text-gray-500 hidden xl:block">
           <SelectorIcon />
         </div>
       </div>

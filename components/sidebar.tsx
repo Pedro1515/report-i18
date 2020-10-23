@@ -23,8 +23,11 @@ export function SidebarItem({ href, label, IconComponent }: SidebarItemsProps) {
           { "hover:bg-gray-800": !active },
           "rounded",
           { "bg-gray-800": active },
-          "text-sm"
+          "text-sm",
+          "justify-center",
+          "xl:justify-start"
         )}
+        title={label}
       >
         <div
           className={classNames(
@@ -40,6 +43,8 @@ export function SidebarItem({ href, label, IconComponent }: SidebarItemsProps) {
         </div>
         <span
           className={classNames(
+            "hidden",
+            "xl:block",
             "ml-4",
             { "text-gray-600": !active },
             "font-medium",
@@ -61,18 +66,23 @@ export function Sidebar() {
     <aside
       className={classNames(
         "z-20",
-        "hidden",
-        "w-64",
+        "w-16",
+        "xl:w-64",
         "overflow-y-auto",
         "bg-gray-900",
-        "md:block",
-        "flex-shrink-0"
+        "flex-shrink-0",
+        "overflow-x-hidden"
       )}
     >
-      <div className="p-4">
+      <div className="p-2 xl:p-4 flex flex-col justify-center">
         <img
-          className="h-12 w-auto"
+          className="hidden xl:block h-12 w-auto object-contain"
           src="/assets/logo_lippia.png"
+          alt="lippia"
+        />
+        <img
+          className="block xl:hidden h-10 w-auto object-contain mt-2"
+          src="/assets/logo_lippia_min.png"
           alt="lippia"
         />
         <Avatar />
