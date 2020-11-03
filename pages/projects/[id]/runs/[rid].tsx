@@ -19,6 +19,7 @@ import {
   useTests,
   useRun,
   useProject,
+  useMedia,
 } from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
@@ -31,8 +32,36 @@ import {
 } from "components/icons";
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "utils";
-import { Feature, Run as ApiRun, updateTest } from "api";
+import { Feature, Run as ApiRun, updateTest} from "api";
+import { getMedias, Medias } from "api";
 import { useRouter } from "next/router";
+
+function Modal(imageBase64: string) {
+  const [showModal, setShowModal] = React.useState(false);
+  return (
+    <>
+      <button 
+      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+      type="button" onClick={() => setShowModal(true)}>Image</button>
+      {showModal ? (
+        <>
+          <div
+            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
+            onClick={() => setShowModal(false)}
+          >
+            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+              {/*content*/}
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                <img src={imageBase64}/>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
+    </>
+  );
+}
 
 interface FeatureItemProps {
   name: string;
@@ -212,23 +241,64 @@ function StepWrapper({ children }) {
   return <ul className="space-y-2 py-4">{children}</ul>;
 }
 
-function Step({ status, name }) {
+function Step({ status, name, logs }) {
   return (
-    <li className="flex items-center text-sm">
-      <div
-        className={classNames(
-          { "text-red-600": status === "fail" },
-          { "text-green-600": status === "pass" },
-          "w-5",
-          "h-5",
-          "mr-2"
-        )}
-      >
-        {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
-      </div>
-      {name}
-    </li>
+    <React.Fragment>
+      <li className="flex items-center text-sm">
+        <div
+          className={classNames(
+            { "text-red-600": status === "fail" },
+            { "text-green-600": status === "pass" },
+            "w-5",
+            "h-5",
+            "mr-2"
+          )}
+        >
+          {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
+        </div>     
+        {name}  
+      </li>
+      
+      {logs.length > 0 ? 
+          <LogError {...{ logs }} />
+        : ""
+      }
+    </React.Fragment>
+    
   );
+}
+
+function LogError({logs}) {
+  return (
+
+    logs?.map(({test, status, details, media}) =>  (
+        <React.Fragment>
+          {status === "fail" ? 
+                <li className="flex items-center text-sm" dangerouslySetInnerHTML={{__html: details}} ></li>   
+          :""}
+
+          { media != null ? 
+              media?.map(({base64String}) =>  (
+                <li className="flex items-center text-sm"> 
+                
+                <MediaButton {...{media}}/> </li>
+              ))
+          :""}
+        </React.Fragment>
+      )
+    )
+  );
+}
+
+function MediaButton(mediaId) {
+  var media = useMedia("5f3ff702c01974514e18135b");
+
+  return (
+    <div>hola 
+      { (media.data!=undefined)?console.log(media.data[0].base64String):"" }
+    </div>
+      
+  )
 }
 
 function TestCard({ id, name, steps = [], errors }) {
@@ -260,9 +330,14 @@ function TestCard({ id, name, steps = [], errors }) {
         )}
       </div>
       <StepWrapper>
-        {steps?.map(({ id, status, name }) => (
-          <Step key={id} {...{ id, status, name }} />
+        {steps?.map(({ id, status, name, logs }) => (
+          <Step key={id} {...{ id, status, name, logs }} />
         ))}
+
+        {/* {steps?.map(({ logs }) => (
+          <ErrorDetails {...{ logs }} />
+        ))} */}
+        
       </StepWrapper>
     </div>
   );
@@ -345,9 +420,14 @@ function ScenarioContent({ bddType, nodes, description }) {
 
   return (
     <StepWrapper>
-      {nodes?.map(({ id, status, name }) => (
-        <Step key={id} {...{ id, status, name }} />
-      ))}
+      {nodes?.map(({ id, status, name, logs }) => {
+        <Step key={id} {...{ id, status, name, logs }} />
+        })}
+
+      {/* {nodes?.map(({ logs }) => (
+        <ErrorDetails {...{ logs }} />
+        ))} */}
+
     </StepWrapper>
   );
 }

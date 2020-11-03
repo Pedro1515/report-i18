@@ -6,3 +6,4 @@ export * from "./use-pagination";
 export * from "./use-debounce";
 export * from "./use-features";
 export * from "./use-tests";
+export * from "./use-medias";
