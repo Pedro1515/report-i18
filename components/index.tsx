@@ -24,3 +24,4 @@ export * from "./form";
 export * from "./dot";
 export * from "./pie-chart";
 export * from "./area-chart";
+export * from "./media-modal"; 

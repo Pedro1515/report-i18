@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
   Layout,
   LayoutHeader,
@@ -11,6 +11,7 @@ import {
   MenuIcon,
   Spinner,
   useSearchBox,
+  MediaModal,
 } from "components";
 import classNames from "classnames";
 import {
@@ -33,35 +34,8 @@ import {
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "utils";
 import { Feature, Run as ApiRun, updateTest} from "api";
-import { getMedias, Medias } from "api";
+import { getMedias } from "api";
 import { useRouter } from "next/router";
-
-function Modal(imageBase64: string) {
-  const [showModal, setShowModal] = React.useState(false);
-  return (
-    <>
-      <button 
-      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-      type="button" onClick={() => setShowModal(true)}>Image</button>
-      {showModal ? (
-        <>
-          <div
-            className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
-            onClick={() => setShowModal(false)}
-          >
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
-              {/*content*/}
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <img src={imageBase64}/>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-        </>
-      ) : null}
-    </>
-  );
-}
 
 interface FeatureItemProps {
   name: string;
@@ -242,6 +216,7 @@ function StepWrapper({ children }) {
 }
 
 function Step({ status, name, logs }) {
+  console.log(logs)
   return (
     <React.Fragment>
       <li className="flex items-center text-sm">
@@ -260,7 +235,7 @@ function Step({ status, name, logs }) {
       </li>
       
       {logs.length > 0 ? 
-          <LogError {...{ logs }} />
+          <Logs {...{ logs }} />
         : ""
       }
     </React.Fragment>
@@ -268,38 +243,57 @@ function Step({ status, name, logs }) {
   );
 }
 
-function LogError({logs}) {
+function Logs({logs}) {
   return (
-
+    
     logs?.map(({test, status, details, media}) =>  (
-        <React.Fragment>
-          {status === "fail" ? 
-                <li className="flex items-center text-sm" dangerouslySetInnerHTML={{__html: details}} ></li>   
+
+      <React.Fragment>
+
+          {details != '' ? 
+                <li className="flex items-center text-sm" 
+                    dangerouslySetInnerHTML={{__html: details}}></li>   
           :""}
 
           { media != null ? 
-              media?.map(({base64String}) =>  (
+              media?.map(() =>  (
                 <li className="flex items-center text-sm"> 
-                
-                <MediaButton {...{media}}/> </li>
+                  <MediaButton testId={test} /> 
+                </li>
               ))
-          :""}
+              :""}
         </React.Fragment>
       )
-    )
-  );
-}
-
-function MediaButton(mediaId) {
-  var media = useMedia("5f3ff702c01974514e18135b");
-
-  return (
-    <div>hola 
-      { (media.data!=undefined)?console.log(media.data[0].base64String):"" }
-    </div>
+      )
+      );
+    }
+    
+    function MediaButton(testId) {
+      const [base64String, setBase64String] = useState("");
       
-  )
+      return ( 
+        <div>
+          <button 
+            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+            type="button" 
+            onClick={() => {
+              if(base64String == ""){
+                      getMedias(testId.testId)
+                      .then(res => { 
+                        setBase64String(res)
+                      })
+              };
+            }}  
+          >View Image </button>
+          {base64String!="" ? <Image src={base64String}/> : null }
+        </div>
+      )
 }
+
+const Image = (src) => (
+    <img src={src.src} />
+  )
+
 
 function TestCard({ id, name, steps = [], errors }) {
   return (
