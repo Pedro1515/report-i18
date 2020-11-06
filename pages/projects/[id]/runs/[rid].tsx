@@ -258,7 +258,7 @@ function Logs({logs}) {
           { media != null ? 
               media?.map(() =>  (
                 <li className="flex items-center text-sm"> 
-                  <MediaModal testId={test} /> 
+                  <MediaModal {...{testId:test}} /> 
                 </li>
               ))
               :""}
