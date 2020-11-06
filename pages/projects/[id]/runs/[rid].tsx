@@ -258,42 +258,15 @@ function Logs({logs}) {
           { media != null ? 
               media?.map(() =>  (
                 <li className="flex items-center text-sm"> 
-                  <MediaButton testId={test} /> 
+                  <MediaModal testId={test} /> 
                 </li>
               ))
               :""}
         </React.Fragment>
       )
-      )
-      );
-    }
-    
-    function MediaButton(testId) {
-      const [base64String, setBase64String] = useState("");
-      
-      return ( 
-        <div>
-          <button 
-            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-            type="button" 
-            onClick={() => {
-              if(base64String == ""){
-                      getMedias(testId.testId)
-                      .then(res => { 
-                        setBase64String(res)
-                      })
-              };
-            }}  
-          >View Image </button>
-          {base64String!="" ? <Image src={base64String}/> : null }
-        </div>
-      )
+    )
+  );
 }
-
-const Image = (src) => (
-    <img src={src.src} />
-  )
-
 
 function TestCard({ id, name, steps = [], errors }) {
   return (

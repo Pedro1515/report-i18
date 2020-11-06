@@ -2,43 +2,30 @@ import React, { Component } from "react";
 import { getMedias } from "api";
 
  export class MediaModal extends Component {
-   
-  
+    
+    state = {
+      base64String: '',
+      id: '',
+    };  
+
    constructor(props) {
      super(props);
-     this.handleChange = this.handleChange.bind(this);
+     console.log(props);
      this.state = {
         base64String: '',
         id: props.id,
       };  
     }
 
-    handleChange(e) {
-      console.log("sada" +e)
-      // this.setState({id: e.target.value});
-    }
-  
-
-    
-
-
-  
     componentDidUpdate = (prevProps, prevState, snapshot) => {
-      console.log(snapshot)
       console.log(prevState)
-      if (prevProps.id !== this.state.id) {
-        console.log(prevProps);
-        this.fetchMedia();
-      }else{
-        console.log("iguales!!! ---->    " + prevProps.id  +" <--> " + this.state.id );
-        
-      }
     };
   
     fetchMedia = async () => {
       getMedias(this.state.id)
         .then(res => {
             this.setState({base64String: `${res}`})
+            console.log(this.state.base64String);
           })
 
     };
@@ -46,10 +33,18 @@ import { getMedias } from "api";
     render() {
 
         return (
-            <div>
-              <img src={this.state.base64String} />
+          <div>
+            <button 
+              className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+              type="button" 
+              onClick={() => {
+                if(this.state.base64String == ""){
+                        this.fetchMedia();
+                };
+              }}  
+            >View Image </button>
 
-            </div>
-      )
-    }
+          </div>
+        )
+      }
   }
