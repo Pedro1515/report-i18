@@ -455,7 +455,8 @@ function FeatureHeading({ created, name, tags }) {
           </div>
         </div>
         <div>
-          <Button label="Editar" variant="white" color="indigo" />
+          {/* <Button label="Editar" variant="white" color="indigo" /> */}
+          &nbsp;
         </div>
       </div>
     </div>

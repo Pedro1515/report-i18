@@ -45,11 +45,11 @@ export function Avatar() {
         className="origin-top-left mt-2"
         onClose={toggle}
       >
-        <MenuItemGroup>
+        {/* <MenuItemGroup>
           <MenuItem label="Configuracion de cuenta" />
           <MenuItem label="Modo oscuro" />
           <MenuItem label="Soporte" />
-        </MenuItemGroup>
+        </MenuItemGroup> */}
         <Divider />
         <MenuItemGroup>
           <MenuItem label="Cerrar sesion" onClick={logout} />

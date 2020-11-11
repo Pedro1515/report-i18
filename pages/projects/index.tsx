@@ -31,16 +31,16 @@ function MenuIconButton() {
   return (
     <MenuIcon
       items={[
-        [
-          {
-            label: "Agregar usuarios",
-            onClick: () => console.log("Agregar Usuarios"),
-          },
-          {
-            label: "Configuracion",
-            onClick: () => console.log("config"),
-          },
-        ],
+        // [
+        //   {
+        //     label: "Agregar usuarios",
+        //     onClick: () => console.log("Agregar Usuarios"),
+        //   },
+        //   {
+        //     label: "Configuracion",
+        //     onClick: () => console.log("config"),
+        //   },
+        // ],
         [
           {
             label: "Eliminar",
@@ -155,7 +155,8 @@ export function Home() {
       <LayoutHeader>
         <span className="font-medium text-lg">Proyectos</span>
         <div>
-          <Button label="Crear proyecto" variant="primary" color="indigo" />
+          &nbsp;
+          {/* <Button label="Crear proyecto" variant="primary" color="indigo" /> */}
         </div>
       </LayoutHeader>
       <LayoutContent>
