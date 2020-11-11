@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
   Layout,
   LayoutHeader,
@@ -11,6 +11,7 @@ import {
   MenuIcon,
   Spinner,
   useSearchBox,
+  MediaModal,
 } from "components";
 import classNames from "classnames";
 import {
@@ -19,6 +20,7 @@ import {
   useTests,
   useRun,
   useProject,
+  useMedia,
 } from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
@@ -31,7 +33,8 @@ import {
 } from "components/icons";
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "utils";
-import { Feature, Run as ApiRun, updateTest } from "api";
+import { Feature, Run as ApiRun, updateTest} from "api";
+import { getMedias } from "api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
@@ -212,22 +215,56 @@ function StepWrapper({ children }) {
   return <ul className="space-y-2 py-4">{children}</ul>;
 }
 
-function Step({ status, name }) {
+function Step({ status, name, logs }) {
+  console.log(logs)
   return (
-    <li className="flex items-center text-sm">
-      <div
-        className={classNames(
-          { "text-red-600": status === "fail" },
-          { "text-green-600": status === "pass" },
-          "w-5",
-          "h-5",
-          "mr-2"
-        )}
-      >
-        {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
-      </div>
-      {name}
-    </li>
+    <React.Fragment>
+      <li className="flex items-center text-sm">
+        <div
+          className={classNames(
+            { "text-red-600": status === "fail" },
+            { "text-green-600": status === "pass" },
+            "w-5",
+            "h-5",
+            "mr-2"
+          )}
+        >
+          {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
+        </div>     
+        {name}  
+      </li>
+      
+      {logs.length > 0 ? 
+          <Logs {...{ logs }} />
+        : ""
+      }
+    </React.Fragment>
+    
+  );
+}
+
+function Logs({logs}) {
+  return (
+    
+    logs?.map(({test, status, details, media}) =>  (
+
+      <React.Fragment>
+
+          {details != '' ? 
+                <li className="flex items-center text-sm" 
+                    dangerouslySetInnerHTML={{__html: details}}></li>   
+          :""}
+
+          { media != null ? 
+              media?.map(() =>  (
+                <li className="flex items-center text-sm"> 
+                  <MediaModal {...{testId:test}} /> 
+                </li>
+              ))
+              :""}
+        </React.Fragment>
+      )
+    )
   );
 }
 
@@ -260,9 +297,14 @@ function TestCard({ id, name, steps = [], errors }) {
         )}
       </div>
       <StepWrapper>
-        {steps?.map(({ id, status, name }) => (
-          <Step key={id} {...{ id, status, name }} />
+        {steps?.map(({ id, status, name, logs }) => (
+          <Step key={id} {...{ id, status, name, logs }} />
         ))}
+
+        {/* {steps?.map(({ logs }) => (
+          <ErrorDetails {...{ logs }} />
+        ))} */}
+        
       </StepWrapper>
     </div>
   );
@@ -345,9 +387,14 @@ function ScenarioContent({ bddType, nodes, description }) {
 
   return (
     <StepWrapper>
-      {nodes?.map(({ id, status, name }) => (
-        <Step key={id} {...{ id, status, name }} />
-      ))}
+      {nodes?.map(({ id, status, name, logs }) => {
+        <Step key={id} {...{ id, status, name, logs }} />
+        })}
+
+      {/* {nodes?.map(({ logs }) => (
+        <ErrorDetails {...{ logs }} />
+        ))} */}
+
     </StepWrapper>
   );
 }
@@ -408,7 +455,8 @@ function FeatureHeading({ created, name, tags }) {
           </div>
         </div>
         <div>
-          <Button label="Editar" variant="white" color="indigo" />
+          {/* <Button label="Editar" variant="white" color="indigo" /> */}
+          &nbsp;
         </div>
       </div>
     </div>

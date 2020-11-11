@@ -22,6 +22,7 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
   }
+  
 }
 
 @layer components {
@@ -43,5 +44,12 @@
 
   .runtime-table > tbody > tr > td {
     @apply p-2 border text-sm;
+  }
+}
+
+@layer utilities {
+  .code-block {
+    width: 90%;
+    height: 100px;
   }
 }

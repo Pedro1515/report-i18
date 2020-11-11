@@ -92,11 +92,7 @@ export function Sidebar() {
             label="Proyectos"
             IconComponent={<ArchiveIcon />}
           />
-          <SidebarItem
-            href="/users"
-            label="Gestionar usuarios"
-            IconComponent={<UsersIcon />}
-          />
+          {/* <SidebarItem href="/users" label="Gestionar usuarios" IconComponent={<UsersIcon />} /> */}
         </div>
       </div>
     </aside>
