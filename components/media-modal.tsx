@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { getMedias } from "api";
 
- export class MediaModal extends Component {
+interface IMedia {
+  testId?: string;
+}
+
+ export class MediaModal extends Component<IMedia> {
   state={base64String:''}
 
    constructor(props) {
