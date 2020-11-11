@@ -20,7 +20,6 @@ import {
   useTests,
   useRun,
   useProject,
-  useMedia,
 } from "utils/hooks";
 import { ProtectRoute } from "context";
 import {
