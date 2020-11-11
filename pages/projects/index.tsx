@@ -64,12 +64,20 @@ function MenuIconButton() {
 function Search({ onSearch }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
 
+  const filter = (e) => {
+    const searchText = e.target.value;
+
+      onSearch(searchText);
+    
+  
+  };
+  
   return (
     <div className="py-4 w-full md:w-2/3 xl:w-1/4">
       <SearchBox
         fullWidth
         inputProps={getInputProps({
-          onChange: (e) => console.log(e.target.value),
+          onChange: filter,
           placeholder: "Buscar",
         })}
         resetterProps={getResetterProps({ onClick: () => {} })}
@@ -162,7 +170,7 @@ export function Home() {
       <LayoutContent>
         <div className="px-6 py-4">
           <Title>filtros</Title>
-          <Search onSearch={(search) => console.log(search)} />
+          <Search onSearch={(search) => setFilters({name: search})} />
         </div>
         <div className="flex flex-1 overflow-y-auto">
           {isLoading ? (
