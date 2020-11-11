@@ -3,7 +3,8 @@ import Cookies from "js-cookie";
 
 export const apiInstance = axios.create({
   //baseURL: process.env.NEXT_PUBLIC_API_HOST_URL,
-  baseURL: "http://vps2.crowdaronline.com:8083",
+  baseURL: "http://vps2.crowdaronline.com:8082",
+  //baseURL: "https://rsapi.automation.crowdaronline.com",
   headers: {
     "Content-Type": "application/json",
   },
