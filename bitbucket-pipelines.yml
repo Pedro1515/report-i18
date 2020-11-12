@@ -3,6 +3,7 @@ pipelines:
     master:
       - step:
          name: Generate docker image
+         size: 2x
          services:
            - docker
          script:
