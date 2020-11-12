@@ -53,9 +53,9 @@ interface IMedia {
             <Modal show={this.state.isOpen} >
 
             
-              <div class="relative px-4 min-h-screen lg:flex lg:items-center lg:justify-center">
-                <div class="bg-black opacity-25 w-full h-full absolute z-10 inset-0"></div>
-                <div class="bg-white rounded-lg lg:max-w-v lg:mx-auto p-4 fixed inset-x-0 bottom-0 z-50 mb-4 mx-4 lg:relative">
+              <div className="relative px-4 min-h-screen lg:flex lg:items-center lg:justify-center">
+                <div className="bg-black opacity-25 w-full h-full absolute z-10 inset-0"></div>
+                <div className="bg-white rounded-lg lg:max-w-v lg:mx-auto p-4 fixed inset-x-0 bottom-0 z-50 mb-4 mx-4 lg:relative">
 
                     <div className="flex flex-1">
                       
@@ -68,7 +68,7 @@ interface IMedia {
                       }
 
                   </div>
-                  <div class="text-center lg:text-right mt-4 lg:flex lg:justify-end">
+                  <div className="text-center lg:text-right mt-4 lg:flex lg:justify-end">
                     <Button 
                       className="block w-full lg:inline-block lg:w-auto px-4 py-3 lg:py-2 bg-indigo-300 rounded-lg font-semibold text-sm text-gray-800 mt-4 lg:mt-0 lg:order-1"
                       onClick={this.closeModal}

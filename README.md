@@ -6,7 +6,7 @@ docker-compose up -d --build
 Or locally
 ``` 
    # sudo npm i
-   # npm start dev
+   # npm run dev
 ``` 
 
 
