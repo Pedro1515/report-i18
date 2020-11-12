@@ -3,7 +3,6 @@ pipelines:
     master:
       - step:
          name: Generate docker image
-         size: 2x
          services:
            - docker
          script:
@@ -23,3 +22,8 @@ pipelines:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
                COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up -d --build"
+               
+definitions:
+  services:
+    docker:
+      memory: 2048               
