@@ -1,16 +1,27 @@
 import React, { Component } from "react";
 import { getMedias } from "api";
+import { Modal, Button} from "react-bootstrap";
 
  export class MediaModal extends Component {
-  state={base64String:''}
-
-   constructor(props) {
-     super(props);
+    state={
+      isOpen: false,
+      base64String:'',
     }
-  
+
+    constructor(props) {
+      super(props);
+    }
+
+    openModal = () => this.setState({ isOpen: true });
+
+    closeModal = () => this.setState({ isOpen: false });
+
+
+
     fetchMedia = async () => {
       getMedias(this.props.testId)
         .then(res => {
+
             this.setState({base64String: `${res}`})
             // console.log(this.state.base64String);
           })
@@ -19,23 +30,49 @@ import { getMedias } from "api";
     render() {
 
         return (
-          <div>
+          <>
+            <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }} >
             {
-              this.state.base64String == "" ?
-                  <button 
-                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-                    type="button" 
-                    onClick={() => {
-                      if(this.state.base64String == ""){
-                              this.fetchMedia();
-                      };
-                    }}  
-                  >View Image </button>
+              <Button 
+              className="block w-full lg:inline-block lg:w-auto px-4 py-3 lg:py-2 bg-indigo-300 rounded-lg font-semibold text-sm text-gray-800 mt-4 lg:mt-0 lg:order-1"
+              variant="primary" 
+              onClick={() => {
+                              // console.log(this.state.base64String);
+                              // console.log(this.state.isOpen);
+                              this.openModal();
 
-              :
-                <img src={this.state.base64String} />
+                              if(this.state.base64String == ""){
+                                this.fetchMedia();
+                              };
+                            }}> 
+                View Image 
+              </Button>              
             }
-          </div>  
+            </div>
+            
+            <Modal show={this.state.isOpen} >
+
+            
+              <div class="relative px-4 min-h-screen lg:flex lg:items-center lg:justify-center">
+                <div class="bg-black opacity-25 w-full h-full absolute z-10 inset-0"></div>
+                <div class="bg-white rounded-lg lg:max-w-v lg:mx-auto p-4 fixed inset-x-0 bottom-0 z-50 mb-4 mx-4 lg:relative">
+                  <div class="lg:flex items-center">
+
+                    {this.state.base64String==''? <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-64 w-64" ></div> : null }
+                    
+                    { <img src={this.state.base64String} /> }
+                  </div>
+                  <div class="text-center lg:text-right mt-4 lg:flex lg:justify-end">
+                    <Button 
+                      className="block w-full lg:inline-block lg:w-auto px-4 py-3 lg:py-2 bg-indigo-300 rounded-lg font-semibold text-sm text-gray-800 mt-4 lg:mt-0 lg:order-1"
+                      onClick={this.closeModal}
+                    >Close</Button>
+                  </div>
+                </div>
+              </div>
+
+            </Modal> 
+          </>
 
         )
       }
