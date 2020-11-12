@@ -4,7 +4,6 @@ import { AlertProvider, NotificationProvider, AuthProvider } from "context";
 import { fetcher } from "utils/axios";
 import "typeface-inter";
 import "styles/tailwind.css";
-import "styles/spinner.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
