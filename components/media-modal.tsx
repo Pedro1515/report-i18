@@ -2,11 +2,15 @@ import React, { Component } from "react";
 import { getMedias } from "api";
 import { Modal, Button} from "react-bootstrap";
 
- export class MediaModal extends Component {
-    state={
-      isOpen: false,
-      base64String:'',
-    }
+interface IMedia {
+  testId?: string;
+}
+
+ export class MediaModal extends Component<IMedia> {
+  state={
+    base64String:'',
+    isOpen: false,
+  }
 
     constructor(props) {
       super(props);
@@ -15,8 +19,6 @@ import { Modal, Button} from "react-bootstrap";
     openModal = () => this.setState({ isOpen: true });
 
     closeModal = () => this.setState({ isOpen: false });
-
-
 
     fetchMedia = async () => {
       getMedias(this.props.testId)
