@@ -10,4 +10,6 @@ RUN yarn
 
 COPY . .
 
+RUN echo NEXT_PUBLIC_API_HOST_URL=http://localhost:8082 >> .env 
+
 CMD ["yarn", "dev"]
