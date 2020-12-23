@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 export const apiInstance = axios.create({
-  baseURL: "https://backend.veritran.crowdaronline.com",
+  baseURL: process.env.NEXT_PUBLIC_API_HOST_URL,
   headers: {
     "Content-Type": "application/json",
   },
