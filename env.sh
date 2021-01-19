@@ -1,3 +1,5 @@
+rm .env
+
 if [[ ${API_URL} ]]; then
   echo "Using the api url ${API_URL}"
   echo API_HOST=${API_URL} >> .env 
