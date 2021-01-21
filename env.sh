@@ -9,4 +9,6 @@ else
   echo API_HOST=http://localhost:8082 >> .env 
 fi 
 
+yarn build
+
 yarn start
