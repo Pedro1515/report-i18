@@ -10,6 +10,4 @@ RUN yarn
 
 COPY . .
 
-RUN yarn build
-
 CMD ["bash", "env.sh"]
