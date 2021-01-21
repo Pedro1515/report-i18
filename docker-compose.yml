@@ -8,6 +8,9 @@ services:
     volumes:
       - .:/usr/src/app
     tty: true
+    environment:
+      - API_URL=http://vps2.crowdaronline.com:8082
+
   # api_rs_report:
   #   image: crowdar/report-server-backend:3.2.1.1
   #   environment:
