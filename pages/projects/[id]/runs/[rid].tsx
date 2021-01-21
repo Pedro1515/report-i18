@@ -368,7 +368,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors }) {
   );
 }
 
-function ScenarioContent({ bddType, nodes, description }) {
+function ScenarioOutlineContent({ bddType, nodes, description }) {
   if (bddType === "Scenario Outline") {
     return (
       <div className="py-6">
@@ -380,6 +380,42 @@ function ScenarioContent({ bddType, nodes, description }) {
             <TestCard key={id} {...{ id, name, steps, errors: errorStates }} />
           );
         })}
+      </div>
+    );
+  }
+
+  return (
+    <StepWrapper>
+      {nodes?.map(({ id, status, name, logs }) => {
+        <Step key={id} {...{ id, status, name, logs }} />
+        })}
+
+      {/* {nodes?.map(({ logs }) => (
+        <ErrorDetails {...{ logs }} />
+        ))} */}
+
+    </StepWrapper>
+  );
+}
+
+function ScenarioContent({ scenario }) {
+  const {
+    id,
+    name,
+    status,
+    duration,
+    categoryNameList,
+    description,
+    nodes,
+    bddType,
+    errorStates,
+  } = scenario;
+  
+  if (bddType === "Scenario") {
+    return (
+      <div className="py-6">
+        <div dangerouslySetInnerHTML={{ __html: description }} />
+            <TestCard key={id} {...{ id, name, steps: nodes, errors: errorStates }} />
       </div>
     );
   }
@@ -422,7 +458,9 @@ function ScenarioCard({ scenario }) {
           errors: errorStates,
         }}
       />
-      <ScenarioContent {...{ bddType, nodes, description }} />
+      <ScenarioOutlineContent {...{ bddType, nodes, description }} />
+      <ScenarioContent {...{ scenario }} />
+
     </div>
   );
 }
