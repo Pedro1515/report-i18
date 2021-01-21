@@ -10,6 +10,6 @@ RUN yarn
 
 COPY . .
 
-RUN echo NEXT_PUBLIC_API_HOST_URL=http://localhost:8082 >> .env 
+RUN yarn build
 
-CMD ["yarn", "dev"]
+CMD ["bash", "env.sh"]

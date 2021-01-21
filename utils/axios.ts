@@ -4,8 +4,6 @@ import Cookies from "js-cookie";
 export const apiInstance = axios.create({
 
   baseURL: process.env.API_HOST,
-  //baseURL: "http://vps2.crowdaronline.com:8082",
-  //baseURL: "https://backend.veritran.crowdaronline.com",
   headers: {
     "Content-Type": "application/json",
   },
