@@ -5,13 +5,13 @@ export function getTotalBy(key: "feature" | "scenario" | "steps", run?: Run) {
   let filterKey;
   switch (key) {
     case "feature":
-      filterKey = "parent";
+      filterKey = "parentLength";
       break;
     case "scenario":
-      filterKey = "child";
+      filterKey = "childLength";
       break;
     case "steps":
-      filterKey = "grandChild";
+      filterKey = "grandChildLength";
       break;
     default:
       break;
@@ -20,13 +20,7 @@ export function getTotalBy(key: "feature" | "scenario" | "steps", run?: Run) {
   if (run) {
     const quantities = Object.keys(run)
       .map((key) => {
-        const sanitizedKey = key.toLowerCase();
-        const sanitizedFilterKey = filterKey.toLowerCase();
-        const hasParent =
-          sanitizedKey.includes(sanitizedFilterKey) &&
-          sanitizedKey.includes("length");
-
-        return hasParent ? run[key] : null;
+        return key.toLowerCase() == filterKey.toLowerCase() ? run[key] : null;
       })
       .filter((quantity) => quantity);
 
