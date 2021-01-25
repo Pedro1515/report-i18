@@ -33,7 +33,7 @@ interface IMedia {
 
         return (
           <>
-            <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }} >
+            <div className="d-flex align-items-center justify-content-center" >
             {
               <Button 
               className="block w-full lg:inline-block lg:w-auto px-4 py-3 lg:py-2 bg-indigo-300 rounded-lg font-semibold text-sm text-gray-800 mt-4 lg:mt-0 lg:order-1"

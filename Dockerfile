@@ -10,4 +10,4 @@ RUN yarn
 
 COPY . .
 
-CMD ["yarn", "dev"]
+CMD ["bash", "env.sh"]

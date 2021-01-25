@@ -28,7 +28,7 @@ pipelines:
          services:
            - docker
          script:
-           - export IMAGE_NAME=crowdar/report-server-front:RC-$BITBUCKET_COMMIT
+           - export IMAGE_NAME=crowdar/report-server-front:RC-staging
            - docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PASSWORD
            - docker build -f Dockerfile.production -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
@@ -40,7 +40,7 @@ pipelines:
              variables:
                SSH_USER: 'root'
                SERVER: '144.217.240.139'
-               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front:RC-$BITBUCKET_COMMIT && docker-compose -f docker-compose.yml up -d --build"
+               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front:RC-staging && docker-compose -f docker-compose.yml up -d --build"
 
 definitions:
   services:
