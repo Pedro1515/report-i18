@@ -13,15 +13,16 @@ pipelines:
            - export IMAGE_NAME=crowdar/report-server-front:latest
            - docker build -f Dockerfile.production -t $IMAGE_NAME .
            - docker push $IMAGE_NAME
-      - step:
-         name: VPS1 Deploy
-         deployment: production
-         script:
-           - pipe: atlassian/ssh-run:0.2.2
-             variables:
-               SSH_USER: 'root'
-               SERVER: '144.217.90.28'
-               COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up -d --build"
+      #- step:
+      #   name: VPS1 Deploy
+      #   deployment: production
+      #   script:
+      #     - pipe: atlassian/ssh-run:0.2.2
+      #       variables:
+      #         SSH_USER: 'root'
+      #         SERVER: '144.217.90.28'
+      #         COMMAND: "cd lippia-report-server-front && docker pull crowdar/report-server-front && docker-compose -f docker-compose.yml up -d --build"
+      
     staging:
       - step:
          name: Generate RC docker image
