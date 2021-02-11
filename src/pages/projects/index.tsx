@@ -16,60 +16,25 @@ import {
   Title,
   useSearchBox,
 } from "src/components";
-import { ProtectRoute, useAlert } from "src/context";
+import { ProtectRoute, useAlert, useNotification } from "src/context";
 import {
   useModal,
   useProjects,
   usePagination,
   prefetchProject,
+  useProject,
+  useRuns,
 } from "src/utils/hooks";
+import { removeProject } from 'src/api'
+import { useRouter } from "next/router";
 
-function MenuIconButton() {
-  const popover = useModal();
-  const { show } = useAlert();
-
-  return (
-    <MenuIcon
-      items={[
-        // [
-        //   {
-        //     label: "Agregar usuarios",
-        //     onClick: () => console.log("Agregar Usuarios"),
-        //   },
-        //   {
-        //     label: "Configuracion",
-        //     onClick: () => console.log("config"),
-        //   },
-        // ],
-        [
-          {
-            label: "Eliminar",
-            onClick: () => {
-              popover.toggle();
-              show({
-                title: "Eliminar proyecto",
-                body:
-                  "Estas seguro que quieres eliminar el proyecto? Se perderan todos los datos asociados.",
-                onConfirm: () => console.log("eliminar proyecto"),
-                action: "Eliminar",
-              });
-            },
-          },
-        ],
-      ]}
-    />
-  );
-}
 
 function Search({ onSearch }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
 
   const filter = (e) => {
     const searchText = e.target.value;
-
       onSearch(searchText);
-    
-  
   };
   
   return (
@@ -87,6 +52,8 @@ function Search({ onSearch }) {
 }
 
 export function Home() {
+  const { query } = useRouter();
+  const { mutateProject } = useProject(query.id as string);
   const [filters, setFilters] = React.useState({
     page: 0,
     size: 5,
@@ -96,10 +63,47 @@ export function Home() {
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
+  const { mutateRuns } = useRuns(filters);
 
   React.useEffect(() => {
     setFilters({ ...filters, page: currentPage });
   }, [currentPage]);
+
+
+  const alert = useAlert();
+  const notitication = useNotification();
+
+  // Eliminar Projecto
+  const handleDeleteProject = ({ name, id }) => (e) => {
+    
+    const onConfirm = async () => {
+      try {
+        console.log(name+' con id: '+id+' Eliminado')
+        await removeProject(id);
+        mutateProject();
+        mutateRuns();
+        notitication.show({
+          title: "Exito",
+          type: "success",
+          message: `El proyecto ${name} ha sido eliminado correctamente.`,
+        });
+      } catch (error) {
+        notitication.show({
+          title: "Error",
+          type: "error",
+          message: `Se produjo un error al intentar eliminar el run. Intente mas tarde.`,
+        });
+      }
+    };
+
+    alert.show({
+      title: `Eliminar ${name}`,
+      body:
+        "Estas seguro que quieres eliminarlo? Se perderan todos los datos asociados.",
+      onConfirm,
+      action: "Eliminar",
+    });
+  };
 
   const columns = useMemo(
     () => [
@@ -152,9 +156,16 @@ export function Home() {
         ),
       },
       {
+        // boton eliminar proyecto
         Header: () => null,
         id: "edit",
-        Cell: ({ row }) => <MenuIconButton />,
+        Cell: ({ row }) => (
+          <MenuIcon
+            items={[
+              [{ label: "Eliminar", onClick: handleDeleteProject(row.original) }],
+            ]}
+          />
+        ),
       },
     ],
     []
