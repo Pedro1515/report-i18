@@ -91,7 +91,7 @@ export function Home() {
         notitication.show({
           title: "Error",
           type: "error",
-          message: `Se produjo un error al intentar eliminar el run. Intente mas tarde.`,
+          message: `Se produjo un error al intentar eliminar el proyecto. Intente mas tarde.`,
         });
       }
     };
