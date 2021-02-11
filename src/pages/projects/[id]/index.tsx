@@ -53,6 +53,7 @@ function RunsTable() {
   const [filters, setFilters] = React.useState({
     projectId: query.id as string,
     page: 0,
+    size: 5,
   });
   const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
   const { PaginationComponent, currentPage } = usePagination<Run[]>({

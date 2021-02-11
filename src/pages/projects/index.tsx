@@ -89,6 +89,7 @@ function Search({ onSearch }) {
 export function Home() {
   const [filters, setFilters] = React.useState({
     page: 0,
+    size: 5,
     name: ""
   });
   const { projects, isLoading } = useProjects(filters);
@@ -171,7 +172,7 @@ export function Home() {
       <LayoutContent>
         <div className="px-6 py-4">
           <Title>filtros</Title>
-          <Search onSearch={(search: string) => setFilters({page:0, name: search})} />
+          <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} />
         </div>
         <div className="flex flex-1 overflow-y-auto">
           {isLoading ? (
