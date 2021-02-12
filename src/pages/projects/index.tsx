@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
-import { Project } from "src/api";
+import { Project, removeProject } from "src/api";
 import {
   Layout,
   LayoutHeader,
@@ -25,16 +25,17 @@ import {
   useProject,
   useRuns,
 } from "src/utils/hooks";
-import { removeProject } from 'src/api'
 import { useRouter } from "next/router";
-
 
 function Search({ onSearch }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
 
   const filter = (e) => {
     const searchText = e.target.value;
+
       onSearch(searchText);
+    
+  
   };
   
   return (
@@ -51,9 +52,8 @@ function Search({ onSearch }) {
   );
 }
 
+// Principal
 export function Home() {
-  const { query } = useRouter();
-  const { mutateProject } = useProject(query.id as string);
   const [filters, setFilters] = React.useState({
     page: 0,
     size: 5,
@@ -63,22 +63,20 @@ export function Home() {
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
-  const { mutateRuns } = useRuns(filters);
 
   React.useEffect(() => {
     setFilters({ ...filters, page: currentPage });
   }, [currentPage]);
 
 
-  const alert = useAlert();
-  const notitication = useNotification();
-
-  // Eliminar Projecto
   const handleDeleteProject = ({ name, id }) => (e) => {
-    
+    const { query, route, asPath } = useRouter();
+    const { mutateProject } = useProject(query.id as string);
+    const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
+    const alert = useAlert();
+    const notitication = useNotification();
     const onConfirm = async () => {
       try {
-        console.log(name+' con id: '+id+' Eliminado')
         await removeProject(id);
         mutateProject();
         mutateRuns();
@@ -156,7 +154,6 @@ export function Home() {
         ),
       },
       {
-        // boton eliminar proyecto
         Header: () => null,
         id: "edit",
         Cell: ({ row }) => (
