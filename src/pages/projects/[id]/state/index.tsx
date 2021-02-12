@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { useRouter } from "next/router";
-import { Layout, LayoutHeader, LayoutContent, Title, useSearchBox, SearchBox } from "src/components";
+import {
+  Layout,
+  LayoutHeader,
+  LayoutContent,
+  Title,
+  useSearchBox,
+  SearchBox,
+} from "src/components";
 import { ProtectRoute } from "src/context";
 import { Navigation } from "react-minimal-side-navigation";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
-
+import { useProject } from "src/utils";
 
 function Search({ onSearch }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
@@ -13,11 +20,9 @@ function Search({ onSearch }) {
   const filter = (e) => {
     const searchText = e.target.value;
 
-      onSearch(searchText);
-    
-  
+    onSearch(searchText);
   };
-  
+
   return (
     <div className="py-1 w-full md:w-2/3 xl:w-1/4">
       <SearchBox
@@ -34,21 +39,31 @@ function Search({ onSearch }) {
 /*===============================================================================*/
 
 const SidebarState = () => {
+  const { query } = useRouter();
+  const { project } = useProject(query.id as string);
+
+  const {
+    errorState,
+    lastRun: { categoryNameList = [] } = {},
+  } = project ?? {};
+
   return (
     <>
       <>
-        <div className='navbar'>
-          <div className='states-Num'>
+        <div className="navbar">
+          <div className="states-Num">
             <h1>States</h1>
-            <span>7</span>
+            <span>{errorState && errorState.length}</span>
           </div>
           <div>
-          {/* <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} /> */}
-          <Search onSearch={('')} />
+            {/* <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} /> */}
+            <Search onSearch={""} />
+          </div>
         </div>
-        </div>
-        <nav className={'nav-menu'}>
-          <ul className='nav-menu-items'>
+        <nav className={"nav-menu"}>
+          <ul className="nav-menu-items">
+            
+          {errorState?.map((error) => (<li key={error} >{error}</li>))}
             {/* {SidebarData.map((item, index) => {
               return (
                 <li key={index} className={item.cName}>
@@ -64,8 +79,7 @@ const SidebarState = () => {
       </>
     </>
   );
-}
-
+};
 
 /*===============================================================================*/
 
@@ -73,7 +87,7 @@ function State() {
   const [filters, setFilters] = React.useState({
     page: 0,
     size: 5,
-    name: ""
+    name: "",
   });
   const { query } = useRouter();
   // const { project } = useProject(query.id as string);
@@ -84,7 +98,7 @@ function State() {
 
   return (
     <Layout>
-        <SidebarState />
+      <SidebarState />
     </Layout>
   );
 }
