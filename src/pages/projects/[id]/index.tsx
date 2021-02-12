@@ -268,7 +268,7 @@ function GeneralCard() {
       </div>
       <div className="flex-1 p-6">
         <Title className="text-gray-700 font-semibold">Excepciones</Title>
-        <a href={`${project && project.id}/state`} className="btn-state-page">State errors</a>
+        <a href={`${project && project.id}/state`} className="btn-state-page">Error States</a>
         <div className="flex flex-wrap mt-4 -mx-2">
           {errorState?.map((error) => (
             <Badge
