@@ -27,7 +27,6 @@
   background-color: #fafafa;
   width: 250px;
   height: 100vh;
-  justify-content: center;
   top: 0;
 }
 
@@ -42,8 +41,8 @@
 
 .nav-menu-items {
   margin-top: 30px;
-  text-align: center;
   width: 100%;
+  margin-left: 25px;
 }
 .nav-menu-items li {
   color: #636363;
