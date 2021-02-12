@@ -10,8 +10,6 @@ import {
   SearchBox,
 } from "src/components";
 import { ProtectRoute } from "src/context";
-import { Navigation } from "react-minimal-side-navigation";
-import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import { useProject } from "src/utils";
 
 function Search({ onSearch }) {
