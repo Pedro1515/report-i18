@@ -4,6 +4,7 @@ import { AlertProvider, NotificationProvider, AuthProvider } from "src/context";
 import { fetcher } from "src/utils";
 import "typeface-inter";
 import "src/styles/tailwind.css";
+import "src/styles/navbar.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
