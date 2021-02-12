@@ -73,3 +73,7 @@ span {
   background: #21a5bb;
   transition: all 0.3s;
 }
+
+.features-search{
+  width: 77%;
+}

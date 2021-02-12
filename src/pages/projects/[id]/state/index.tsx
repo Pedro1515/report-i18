@@ -18,11 +18,11 @@ function Search({ onSearch }) {
   const filter = (e) => {
     const searchText = e.target.value;
 
-    onSearch(searchText);
+      onSearch(searchText);
   };
-
+  
   return (
-    <div className="py-1 w-full md:w-2/3 xl:w-1/4">
+    <div className="py-1 w-full md:w-3/3 x2:w-4/4">
       <SearchBox
         fullWidth
         inputProps={getInputProps({
@@ -53,7 +53,7 @@ const SidebarState = () => {
             <h1>States</h1>
             <span>{errorState && errorState.length}</span>
           </div>
-          <div>
+          <div className="features-search">
             {/* <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} /> */}
             <Search onSearch={""} />
           </div>
