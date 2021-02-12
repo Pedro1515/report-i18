@@ -58,3 +58,18 @@
 span {
   margin-left: 16px;
 }
+
+.btn-state-page {
+  background: #2fb4ca;
+  border-radius: 3px;
+  margin-left: 70px;
+  display: inline-block;
+  width: 104px;
+  text-align: center;
+  color: #fff;
+}
+
+.btn-state-page:hover {
+  background: #21a5bb;
+  transition: all 0.3s;
+}
