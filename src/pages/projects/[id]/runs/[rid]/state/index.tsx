@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Layout,
   LayoutHeader,
@@ -32,7 +32,7 @@ import {
 } from "src/components";
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "src/utils";
-import { Feature, Run as ApiRun, updateTest} from "src/api";
+import { Feature, Run as ApiRun, updateTest } from "src/api";
 import { getMedias } from "src/api";
 import { useRouter } from "next/router";
 
@@ -62,72 +62,60 @@ function useFeature() {
 
 /*===============================================================================*/
 function Search({ onSearch }) {
-    const { value, getInputProps, getResetterProps } = useSearchBox("");
-    return (
-      <div className="py-1 w-full md:w-3/3 x2:w-4/4">
-        <SearchBox
-          fullWidth
-          inputProps={getInputProps({
-            // onChange: filter,
-            placeholder: "Buscar",
-          })}
-          resetterProps={getResetterProps({ onClick: () => {} })}
-        />
-      </div>
-    );
-  }
+  const { value, getInputProps, getResetterProps } = useSearchBox("");
+  return (
+    <div className="py-1 w-full md:w-3/3 x2:w-4/4">
+      <SearchBox
+        fullWidth
+        inputProps={getInputProps({
+          // onChange: filter,
+          placeholder: "Buscar",
+        })}
+        resetterProps={getResetterProps({ onClick: () => {} })}
+      />
+    </div>
+  );
+}
 
 /*===============================================================================*/
 const SidebarState = () => {
-    const { query } = useRouter();
-    const { project } = useProject(query.id as string);
-  
-    const {
-      errorState,
-      lastRun: { categoryNameList = [] } = {},
-    } = project ?? {};
-  
-    return (
+  const { query } = useRouter();
+  const { run } = useRun(query.rid as string);
+  const { project } = useProject(run?.project);
+  const { errorState } = project ?? {};
+
+  return (
+    <>
       <>
-        <>
-          <div className="navbar">
-            <div className="states-Num">
-              <h1>States</h1>
-              <span>{errorState && errorState.length}</span>
-            </div>
-            <div className="features-search">
-              {/* <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} /> */}
-              <Search onSearch={""} />
-            </div>
+        <div className="navbar">
+          <div className="states-Num">
+            <h1>States</h1>
+            <span>{errorState && errorState.length}</span>
           </div>
-          <nav className={"nav-menu"}>
-            <ul className="nav-menu-items">
-              
-            {errorState?.map((error) => (<li key={error} >{error}</li>))}
-              {/* {SidebarData.map((item, index) => {
-                return (
-                  <li key={index} className={item.cName}>
-                    <a to={item.path}>
-                      {item.icon}
-                      <span>{item.title}</span>
-                    </a>
-                  </li>
-                );
-              })} */}
-            </ul>
-          </nav>
-        </>
+          <div className="features-search">
+            {/* <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} /> */}
+            <Search onSearch={""} />
+          </div>
+        </div>
+        <nav className={"nav-menu"}>
+          <ul className="nav-menu-items">
+            {errorState?.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        </nav>
       </>
-    );
-  };
+    </>
+  );
+};
 
 function State() {
-    return (
-      <Layout>
-        <SidebarState />
-      </Layout>
-    );
-  }
+  return (
+    <Layout>
+      <SidebarState />
+    </Layout>
+  );
+}
 
 function RunWithProvider() {
   return (
