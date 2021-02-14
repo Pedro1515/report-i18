@@ -35,7 +35,7 @@ export function RCPagination({ ...props }: PaginationProps) {
         if (type === "prev") {
           return (
             <a
-              href="#"
+              //href="#"
               className={classNames(
                 style,
                 "p-2",
@@ -55,7 +55,7 @@ export function RCPagination({ ...props }: PaginationProps) {
         if (type === "next") {
           return (
             <a
-              href="#"
+              //href="#"
               className={classNames(
                 style,
                 "-ml-px",
@@ -75,7 +75,7 @@ export function RCPagination({ ...props }: PaginationProps) {
 
         return (
           <a
-            href="#"
+            //href="#"
             className={classNames(
               style,
               "-ml-px",

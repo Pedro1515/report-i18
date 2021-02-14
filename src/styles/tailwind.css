@@ -53,3 +53,13 @@
     height: 100px;
   }
 }
+
+.rc-pagination-prev{
+  cursor: pointer;
+  outline: none;
+}
+
+.rc-pagination-item{
+  cursor: pointer;
+  outline: none;
+}
