@@ -560,7 +560,7 @@ function SummaryWrapper({ children }) {
 }
 
 function Run() {
-  const { query } = useRouter();
+  const { query, asPath } = useRouter();
   // @ts-ignore
   const { feature } = useFeature();
   const { id } = feature ?? {};
@@ -572,6 +572,7 @@ function Run() {
         <div className="flex space-x-4">
           <span className="font-medium text-lg">{run?.name}</span>
         </div>
+          <a href={`${asPath && asPath}/state`} className="btn-state-page">Error States</a>
       </LayoutHeader>
       <LayoutContent scrollable>
         <SummaryWrapper>
