@@ -153,10 +153,7 @@ function Search({ selectedFeatureId }) {
       >
         <MenuItemGroup>
           {features?.content
-            .filter(({ name }) =>
-              name.toLowerCase().includes(debouncedSearch.toLowerCase())
-            )
-            .map((feature) => (
+            .filter(({ name }) => name.toLowerCase().includes(debouncedSearch.toLowerCase())).map((feature) => (
               <FeatureItem
                 key={feature.id}
                 name={feature.name}
@@ -215,7 +212,7 @@ function StepWrapper({ children }) {
 }
 
 function Step({ status, name, logs }) {
-  console.log(logs)
+  // console.log(logs)
   return (
     <React.Fragment>
       <li className="flex items-center text-sm">
@@ -410,7 +407,6 @@ function ScenarioContent({ scenario }) {
     bddType,
     errorStates,
   } = scenario;
-  
   if (bddType === "Scenario") {
     return (
       <div className="py-6">
@@ -519,7 +515,7 @@ function FeatureContent({ feature }) {
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
-
+  // console.log(child);
   if (!feature) {
     return <FeatureEmptyPlaceholder />;
   }

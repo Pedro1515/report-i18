@@ -63,3 +63,10 @@ export interface Feature {
   authorNameList: string[];
   errorStates: string[];
 }
+
+export interface Test {
+  id:string, 
+  name:string, 
+  nodes:[],
+  errorStates:string[],
+}
