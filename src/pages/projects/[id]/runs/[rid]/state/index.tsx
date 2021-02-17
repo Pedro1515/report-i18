@@ -228,21 +228,25 @@ function ScenarioCard({ features }) {
   const { id } = features ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
-  const type = f ? f.bddType : [];
+  // const type = f ? f.bddType : [];
   const child = f ? f.nodes : [];
 
-  child.map((scenario) => {
-    const type2 = scenario ? scenario.bddType : [];
-  });
+  // child.map((scenario) => {
+  //   const type2 = scenario ? scenario.bddType : [];
+  // });
 
-  if (!child) {
-    return <div>cargando</div>;
+  if (isLoading) {
+    return <div>Loading tests...</div>;
   } else {
-    return child?.map((scenario1) => {
-      return (
-        <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
-      );
-    });
+    if (!child) {
+      return <div>cargando</div>;
+    } else {
+      return child?.map((scenario1) => {
+        return (
+          <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
+        );
+      });
+    }
   }
 }
 
