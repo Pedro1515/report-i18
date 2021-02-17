@@ -514,6 +514,7 @@ function FeatureContent({ feature }) {
   const { name, startTime, categoryNameList, id } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
+  console.log(f&&f);
   const child = f ? f.nodes : [];
   // console.log(child);
   if (!feature) {

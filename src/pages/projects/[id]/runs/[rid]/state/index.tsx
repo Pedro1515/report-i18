@@ -84,15 +84,15 @@ function SetFeatues({ features }) {
   useEffect(() => {
     setFeature(features);
   }, [features]);
-  
+
   return <>{/* <h1>{feature.name}</h1> */}</>;
 }
 
 function StateItem({ name, isActive, onClick }) {
   return (
     <li
-    className={classNames(
-      "flex",
+      className={classNames(
+        "flex",
         "justify-between",
         "py-3",
         "px-4",
@@ -113,7 +113,7 @@ function StateItem({ name, isActive, onClick }) {
 function NavMenu({ errorState }) {
   // @ts-ignore
   const { setTest } = useTest();
-  
+
   // @ts-ignore
   const { test } = useTest();
   const handleSelect = (error) => (event) => {
@@ -192,11 +192,11 @@ function TestCard({ id, name, errorStates, duration, endTime }) {
   );
 }
 
-function ScenarioOutlineContent({scenario}) {
-  const { nodes, bddType } = scenario
+function ScenarioOutlineContent({ scenario1 }) {
+  const { nodes: scenario2, bddType } = scenario1;
   return (
-    <div className="h-full">
-      {nodes?.map((tests) => {
+    <>
+      {scenario2?.map((tests) => {
         const {
           id,
           name,
@@ -205,6 +205,7 @@ function ScenarioOutlineContent({scenario}) {
           endTime,
           nodes: steps,
         } = tests;
+
         // @ts-ignore
         const { test: errorTest } = useTest();
         if (errorStates && errorStates.includes(errorTest)) {
@@ -214,27 +215,40 @@ function ScenarioOutlineContent({scenario}) {
               {...{ id, name, errorStates, duration, endTime }}
             />
           );
-        } else {
-          return <TestEmptyPlaceholder />;
         }
+        // else {
+        //   return <TestEmptyPlaceholder />;
+        // }
       })}
-    </div>
+    </>
   );
 }
 
 function ScenarioCard({ features }) {
   const { id } = features ?? {};
-  const { tests } = useTests({ "deep-populate": true, id });
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
+  const type = f ? f.bddType : [];
   const child = f ? f.nodes : [];
-  return child?.map((scenario) => {
-    return (<ScenarioOutlineContent key={scenario.id} scenario={scenario} />);
+
+  child.map((scenario) => {
+    const type2 = scenario ? scenario.bddType : [];
   });
+
+  if (!child) {
+    return <div>cargando</div>;
+  } else {
+    return child?.map((scenario1) => {
+      return (
+        <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
+      );
+    });
+  }
 }
 
 function FeatureContent({ feature }) {
   return (
-    <div className="h-full">
+    <div className="h-full 2">
       {feature?.map((features) => {
         return <ScenarioCard key={features.id} features={features} />;
       })}
