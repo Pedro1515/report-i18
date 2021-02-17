@@ -10,7 +10,7 @@ export interface MenuItemProps
 export function MenuItem({ label, selected, ...props }: MenuItemProps) {
   return (
     <a
-      href="#"
+      // href="#"
       className={classNames(
         "block",
         "px-4",
@@ -23,6 +23,7 @@ export function MenuItem({ label, selected, ...props }: MenuItemProps) {
         "focus:outline-none",
         "focus:bg-gray-100",
         "focus:text-gray-900",
+        "pointer",
         { "border-l-2 border-indigo-600": selected }
       )}
       role="menuitem"
