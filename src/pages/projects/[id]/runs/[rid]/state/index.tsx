@@ -242,15 +242,13 @@ function ScenarioCard({ features }) {
       </div>
     );
   } else {
-    if (!child) {
-      return <div>cargando</div>;
-    } else {
+    if (child) {
       return child?.map((scenario1) => {
         return (
           <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
         );
       });
-    }
+    } 
   }
 }
 
