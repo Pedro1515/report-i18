@@ -77,6 +77,23 @@ function useTest() {
   return contextTest;
 }
 
+// @ts-ignore
+const ScrollContext = React.createContext();
+
+function ScrollProvider(props) {
+  const [scroll, setScroll] = React.useState(false);
+  const value = { scroll, setScroll };
+  return <ScrollContext.Provider value={value} {...props} />;
+}
+
+function useScroll() {
+  const contextScroll = React.useContext(ScrollContext);
+  if (!contextScroll) {
+    throw new Error("useScroll must be used within a ScrollProvider");
+  }
+  return contextScroll;
+}
+
 // agregando features al context
 function SetFeatues({ features }) {
   // @ts-ignore
@@ -398,9 +415,11 @@ function RunWithProvider() {
   return (
     <FeatureProvider>
       <TestProvider>
-        <Layout>
-          <LayoutState />
-        </Layout>
+        <ScrollProvider>
+          <Layout>
+            <LayoutState />
+          </Layout>
+        </ScrollProvider>
       </TestProvider>
     </FeatureProvider>
   );
