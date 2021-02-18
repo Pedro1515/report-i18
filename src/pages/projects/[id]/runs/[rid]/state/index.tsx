@@ -314,6 +314,9 @@ function ScenarioOutlineContent({ scenario1, fetureName }) {
         // @ts-ignore
         const { test: errorTest } = useTest();
         if (errorStates && errorStates.includes(errorTest)) {
+          // @ts-ignore
+          const { setScroll } = useScroll();
+          setScroll(true)
           return (
             <TestCard
               key={id}
@@ -371,8 +374,10 @@ function Scenario({ features }) {
 }
 
 function FeatureContent({ feature }) {
+  // @ts-ignore
+  const { scroll } = useScroll();  
   return (
-    <div className="h-full scroll-y-auto">
+    <div className={`h-full ${scroll && 'scroll-y-auto'}`}>
       {feature?.map((features) => {
         return <Scenario key={features.id} features={features} />;
       })}
