@@ -126,7 +126,7 @@ function NavMenu({ errorState }) {
     <nav className="nav-menu">
       <div className="states-Num">
         <h1>States</h1>
-        <span>{errorState.length}</span>
+        <span><div>{errorState.length}</div></span>
       </div>
       <ul className="nav-menu-items">
         {errorState.map((error) => {
@@ -227,7 +227,7 @@ function TestCard({ id, name, errorStates, duration, steps }) {
   return (
     <>
       <input type="checkbox" id={`toggle${count}`} className='d-none' onChange={handleCheckbox}/>
-      <label className="pointer" htmlFor={`toggle${count}`}>
+      <label className="cursor-pointer" htmlFor={`toggle${count}`}>
         <div className="testCard">
           <h2>{name}</h2>
           <div className="info-testCard">
