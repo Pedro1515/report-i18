@@ -41,7 +41,8 @@ export function RCPagination({ ...props }: PaginationProps) {
                 "p-2",
                 "rounded-l-md",
                 "text-gray-500",
-                "hover:text-gray-400"
+                "hover:text-gray-400",
+                "cursor-pointer"
               )}
               aria-label="Previous"
             >
@@ -62,7 +63,8 @@ export function RCPagination({ ...props }: PaginationProps) {
                 "p-2",
                 "rounded-r-md",
                 "text-gray-500",
-                "hover:text-gray-400"
+                "hover:text-gray-400",
+                "cursor-pointer"
               )}
               aria-label="Next"
             >
@@ -83,6 +85,7 @@ export function RCPagination({ ...props }: PaginationProps) {
               "py-2",
               "text-gray-700",
               "hover:text-gray-500",
+              "cursor-pointer",
               { "text-gray-900 bg-gray-200": props?.current === page }
             )}
           >
