@@ -88,10 +88,6 @@
   transition: all 0.3s;
 }
 
-.info-testCard{
-  margin-top: -5px;
-}
-
 .testCard p {
   display: inline-block;
   font-size: 13px;
@@ -103,3 +99,13 @@
   text-align: center;
 }
 
+
+.feature-item-name {
+  float: right;
+  font-size: 14px;
+  background: #549EFF;
+  border-radius: 3px;
+  padding: 0px 10px;
+  color: #fff;
+  font-weight: 500;
+}

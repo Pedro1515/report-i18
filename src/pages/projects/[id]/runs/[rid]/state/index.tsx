@@ -126,7 +126,9 @@ function NavMenu({ errorState }) {
     <nav className="nav-menu">
       <div className="states-Num">
         <h1>States</h1>
-        <span><div>{errorState.length}</div></span>
+        <span>
+          <div>{errorState.length}</div>
+        </span>
       </div>
       <ul className="nav-menu-items">
         {errorState.map((error) => {
@@ -217,20 +219,28 @@ function StepsCard({ steps = [] }) {
   );
 }
 
-function TestCard({ id, name, errorStates, duration, steps }) {
+function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
-  const [checkbox, setCheckbox] = useState(false)
+  const [checkbox, setCheckbox] = useState(false);
   const count = Math.random();
   const handleCheckbox = (e) => {
-    setCheckbox(e.target.checked)
+    setCheckbox(e.target.checked);
   };
   return (
     <>
-      <input type="checkbox" id={`toggle${count}`} className='d-none' onChange={handleCheckbox}/>
+      <input
+        type="checkbox"
+        id={`toggle${count}`}
+        className="d-none"
+        onChange={handleCheckbox}
+      />
       <label className="cursor-pointer" htmlFor={`toggle${count}`}>
         <div className="testCard">
-          <h2>{name}</h2>
-          <div className="info-testCard">
+          <div>
+            <span>{name}</span>
+            <span className="feature-item-name">Feture: {fetureName}</span>
+          </div>
+          <div>
             <p>id: {id}</p>
             {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
             <div className="inline-block">
@@ -270,7 +280,7 @@ function TestCard({ id, name, errorStates, duration, steps }) {
   );
 }
 
-function ScenarioOutlineContent({ scenario1 }) {
+function ScenarioOutlineContent({ scenario1, fetureName }) {
   const { nodes: scenario2, bddType } = scenario1;
   return (
     <>
@@ -290,7 +300,15 @@ function ScenarioOutlineContent({ scenario1 }) {
           return (
             <TestCard
               key={id}
-              {...{ id, name, errorStates, duration, endTime, steps }}
+              {...{
+                id,
+                name,
+                errorStates,
+                duration,
+                endTime,
+                steps,
+                fetureName,
+              }}
             />
           );
         }
@@ -308,6 +326,7 @@ function Scenario({ features }) {
   const [f] = tests?.content ?? [];
   // const type = f ? f.bddType : [];
   const child = f ? f.nodes : [];
+  const name = f ? f.name : {};
 
   // child.map((scenario) => {
   //   const type2 = scenario ? scenario.bddType : [];
@@ -323,7 +342,11 @@ function Scenario({ features }) {
     if (child) {
       return child?.map((scenario1) => {
         return (
-          <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
+          <ScenarioOutlineContent
+            key={scenario1.id}
+            scenario1={scenario1}
+            fetureName={name}
+          />
         );
       });
     }
