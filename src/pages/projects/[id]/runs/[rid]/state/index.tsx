@@ -173,42 +173,36 @@ function Step({ status, name, logs }) {
           )}
         >
           {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
-        </div>     
-        {name}  
+        </div>
+        {name}
       </li>
-      
-      {logs.length > 0 ? 
-          <Logs {...{ logs }} />
-        : ""
-      }
+
+      {logs.length > 0 ? <Logs {...{ logs }} /> : ""}
     </React.Fragment>
-    
   );
 }
 
-function Logs({logs}) {
-  return (
-    
-    logs?.map(({test, status, details, media}) =>  (
+function Logs({ logs }) {
+  return logs?.map(({ test, status, details, media }) => (
+    <React.Fragment>
+      {details != "" ? (
+        <li
+          className="flex items-center text-sm"
+          dangerouslySetInnerHTML={{ __html: details }}
+        ></li>
+      ) : (
+        ""
+      )}
 
-      <React.Fragment>
-
-          {details != '' ? 
-                <li className="flex items-center text-sm" 
-                    dangerouslySetInnerHTML={{__html: details}}></li>   
-          :""}
-
-          { media != null ? 
-              media?.map(() =>  (
-                <li className="flex items-center text-sm"> 
-                  <MediaModal {...{testId:test}} /> 
-                </li>
-              ))
-              :""}
-        </React.Fragment>
-      )
-    )
-  );
+      {media != null
+        ? media?.map(() => (
+            <li className="flex items-center text-sm">
+              <MediaModal {...{ testId: test }} />
+            </li>
+          ))
+        : ""}
+    </React.Fragment>
+  ));
 }
 
 function StepsCard({ steps = [] }) {
@@ -223,44 +217,56 @@ function StepsCard({ steps = [] }) {
   );
 }
 
-
 function TestCard({ id, name, errorStates, duration, steps }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
+  const [checkbox, setCheckbox] = useState(false)
+  const count = Math.random();
+  const handleCheckbox = (e) => {
+    setCheckbox(e.target.checked)
+  };
   return (
-    <div className="testCard pointer">
-      <h2>{name}</h2>
-      <div className="info-testCard">
-        <p>id: {id}</p>
-        {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
-        <div className="inline-block">
-          <div className="flex items-center">
-            <div className="w-4 h-4 text-gray-500 mr-2">
-              <ClockIcon />
-            </div>
-            {formattedDuration ? (
-              <span className="block text-gray-500 text-sm" title="Duration">
-                {formattedDuration}
-              </span>
-            ) : null}
-          </div>
-        </div>
-        {errorStates.map((error) => (
-          <Badge
-            key={error}
-            IconComponent={
-              <div className="text-red-700 w-3 h-3 mr-2">
-                <ExclamationSolidIcon />
+    <>
+      <input type="checkbox" id={`toggle${count}`} className='d-none' onChange={handleCheckbox}/>
+      <label className="pointer" htmlFor={`toggle${count}`}>
+        <div className="testCard">
+          <h2>{name}</h2>
+          <div className="info-testCard">
+            <p>id: {id}</p>
+            {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
+            <div className="inline-block">
+              <div className="flex items-center">
+                <div className="w-4 h-4 text-gray-500 mr-2">
+                  <ClockIcon />
+                </div>
+                {formattedDuration ? (
+                  <span
+                    className="block text-gray-500 text-sm"
+                    title="Duration"
+                  >
+                    {formattedDuration}
+                  </span>
+                ) : null}
               </div>
-            }
-            className="m-2"
-            uppercase={false}
-            color="red"
-            label={error}
-          />
-        ))}
-      </div>
-      <StepsCard steps={steps}/>
-    </div>
+            </div>
+            {errorStates.map((error) => (
+              <Badge
+                key={error}
+                IconComponent={
+                  <div className="text-red-700 w-3 h-3 mr-2">
+                    <ExclamationSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="red"
+                label={error}
+              />
+            ))}
+          </div>
+          {checkbox && <StepsCard steps={steps} />}
+        </div>
+      </label>
+    </>
   );
 }
 
