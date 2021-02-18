@@ -67,10 +67,18 @@
 
 /*test cards*/
 .testCard {
-  background: #FAFAFA;
-  border-radius: 3px;
-  padding: 5px;
-  margin: 5px;
+  border-radius: 5px;
+  padding: 10px 10px 5px 10px;
+  margin: 0px 5px 0px 5px;
+}
+
+.testCard:hover {
+  background: #f5f7fb;
+  transition: all 0.3s;
+}
+
+.info-testCard{
+  margin-top: -5px;
 }
 
 .testCard p {
@@ -83,3 +91,4 @@
   border: 1px solid #d6d6d6;
   text-align: center;
 }
+

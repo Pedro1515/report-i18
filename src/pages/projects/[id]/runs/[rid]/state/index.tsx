@@ -158,36 +158,38 @@ function TestEmptyPlaceholder() {
 function TestCard({ id, name, errorStates, duration, endTime }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
-    <div className="testCard">
+    <div className="testCard pointer">
       <h2>{name}</h2>
-      <p>id: {id}</p>
-      {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
-      <div className="inline-block">
-        <div className="flex items-center">
-          <div className="w-4 h-4 text-gray-500 mr-2">
-            <ClockIcon />
-          </div>
-          {formattedDuration ? (
-            <span className="block text-gray-500 text-sm" title="Duration">
-              {formattedDuration}
-            </span>
-          ) : null}
-        </div>
-      </div>
-      {errorStates.map((error) => (
-        <Badge
-          key={error}
-          IconComponent={
-            <div className="text-red-700 w-3 h-3 mr-2">
-              <ExclamationSolidIcon />
+      <div className="info-testCard">
+        <p>id: {id}</p>
+        {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
+        <div className="inline-block">
+          <div className="flex items-center">
+            <div className="w-4 h-4 text-gray-500 mr-2">
+              <ClockIcon />
             </div>
-          }
-          className="m-2"
-          uppercase={false}
-          color="red"
-          label={error}
-        />
-      ))}
+            {formattedDuration ? (
+              <span className="block text-gray-500 text-sm" title="Duration">
+                {formattedDuration}
+              </span>
+            ) : null}
+          </div>
+        </div>
+        {errorStates.map((error) => (
+          <Badge
+            key={error}
+            IconComponent={
+              <div className="text-red-700 w-3 h-3 mr-2">
+                <ExclamationSolidIcon />
+              </div>
+            }
+            className="m-2"
+            uppercase={false}
+            color="red"
+            label={error}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -248,7 +250,7 @@ function ScenarioCard({ features }) {
           <ScenarioOutlineContent key={scenario1.id} scenario1={scenario1} />
         );
       });
-    } 
+    }
   }
 }
 
