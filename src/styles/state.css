@@ -1,3 +1,11 @@
+.scroll-y-auto{
+  overflow-y: auto;
+}
+
+.scroll-none{
+  overflow-y: none;
+}
+
 .pointer{
   cursor: pointer;
 }

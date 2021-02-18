@@ -155,7 +155,76 @@ function TestEmptyPlaceholder() {
   );
 }
 
-function TestCard({ id, name, errorStates, duration, endTime }) {
+function StepWrapper({ children }) {
+  return <ul className="space-y-2 py-4">{children}</ul>;
+}
+
+function Step({ status, name, logs }) {
+  return (
+    <React.Fragment>
+      <li className="flex items-center text-sm">
+        <div
+          className={classNames(
+            { "text-red-600": status === "fail" },
+            { "text-green-600": status === "pass" },
+            "w-5",
+            "h-5",
+            "mr-2"
+          )}
+        >
+          {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
+        </div>     
+        {name}  
+      </li>
+      
+      {logs.length > 0 ? 
+          <Logs {...{ logs }} />
+        : ""
+      }
+    </React.Fragment>
+    
+  );
+}
+
+function Logs({logs}) {
+  return (
+    
+    logs?.map(({test, status, details, media}) =>  (
+
+      <React.Fragment>
+
+          {details != '' ? 
+                <li className="flex items-center text-sm" 
+                    dangerouslySetInnerHTML={{__html: details}}></li>   
+          :""}
+
+          { media != null ? 
+              media?.map(() =>  (
+                <li className="flex items-center text-sm"> 
+                  <MediaModal {...{testId:test}} /> 
+                </li>
+              ))
+              :""}
+        </React.Fragment>
+      )
+    )
+  );
+}
+
+function StepsCard({ steps = [] }) {
+  return (
+    <div className="mt-4 border border-gray-300 rounded-md p-4">
+      <StepWrapper>
+        {steps?.map(({ id, status, name, logs }) => (
+          <Step key={id} {...{ id, status, name, logs }} />
+        ))}
+      </StepWrapper>
+    </div>
+  );
+}
+
+
+function TestCard({ id, name, errorStates, duration, steps }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
     <div className="testCard pointer">
@@ -190,6 +259,7 @@ function TestCard({ id, name, errorStates, duration, endTime }) {
           />
         ))}
       </div>
+      <StepsCard steps={steps}/>
     </div>
   );
 }
@@ -214,7 +284,7 @@ function ScenarioOutlineContent({ scenario1 }) {
           return (
             <TestCard
               key={id}
-              {...{ id, name, errorStates, duration, endTime }}
+              {...{ id, name, errorStates, duration, endTime, steps }}
             />
           );
         }
@@ -226,7 +296,7 @@ function ScenarioOutlineContent({ scenario1 }) {
   );
 }
 
-function ScenarioCard({ features }) {
+function Scenario({ features }) {
   const { id } = features ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
@@ -256,9 +326,9 @@ function ScenarioCard({ features }) {
 
 function FeatureContent({ feature }) {
   return (
-    <div className="h-full 2">
+    <div className="h-full scroll-y-auto">
       {feature?.map((features) => {
-        return <ScenarioCard key={features.id} features={features} />;
+        return <Scenario key={features.id} features={features} />;
       })}
     </div>
   );
