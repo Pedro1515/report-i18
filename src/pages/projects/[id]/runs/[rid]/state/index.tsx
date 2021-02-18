@@ -236,7 +236,11 @@ function ScenarioCard({ features }) {
   // });
 
   if (isLoading) {
-    return <div>Loading tests...</div>;
+    return (
+      <div className="h-full flex-center">
+        <Spinner className="h-10 w-10 text-gray-500" />
+      </div>
+    );
   } else {
     if (!child) {
       return <div>cargando</div>;
