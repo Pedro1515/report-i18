@@ -58,6 +58,23 @@ function useFeature() {
   return context;
 }
 
+// @ts-ignore
+const UiDataContext = React.createContext();
+
+function UiDataProvider(props) {
+  const [uiData, setUiData] = React.useState(false);
+  const value = { uiData, setUiData };
+  return <UiDataContext.Provider value={value} {...props} />;
+}
+
+function useUiData() {
+  const context = React.useContext(UiDataContext);
+  if (!context) {
+    throw new Error("useUiData must be used within a UiDataProvider");
+  }
+  return context;
+}
+
 function StatusBadge({ status }) {
   return <Badge label={status} color={status === "pass" ? "green" : "red"} />;
 }
@@ -93,6 +110,8 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
 function ErrorStateMenuIcon({ id, errors }) {
   const { query } = useRouter();
   // @ts-ignore
+    const { setUiData } = useUiData()
+  // @ts-ignore
   const { feature } = useFeature();
   const { id: featureId } = feature ?? {};
   const { mutateTests } = useTests({ "deep-populate": true, id: featureId });
@@ -101,8 +120,12 @@ function ErrorStateMenuIcon({ id, errors }) {
   const { errorState } = project ?? {};
 
   const handleErrorState = (error) => async (event) => {
+    setUiData(true)
     await updateTest({ id, errorStates: [error] });
-    mutateTests();
+    const done = await mutateTests();
+    if (done) {
+      setUiData(false)
+    }
   };
 
   return (
@@ -558,22 +581,26 @@ function Run() {
   const { feature } = useFeature();
   const { id } = feature ?? {};
   const { run } = useRun(query.rid as string);
-
+  
+  // @ts-ignore
+  const { uiData } = useUiData()
   return (
     <Layout>
-      <LayoutHeader>
-        <div className="flex space-x-4">
-          <span className="font-medium text-lg">{run?.name}</span>
-        </div>
-          <a href={`${asPath && asPath}/state`} className="btn-state-page">Error States</a>
-      </LayoutHeader>
-      <LayoutContent scrollable>
-        <SummaryWrapper>
-          <Search selectedFeatureId={id} />
-          <Summary run={run} />
-        </SummaryWrapper>
-        <FeatureContent feature={feature} />
-      </LayoutContent>
+      <div className={`h-full ${uiData && 'cursor-wait'}`}>
+        <LayoutHeader>
+          <div className="flex space-x-4">
+            <span className="font-medium text-lg">{run?.name}</span>
+          </div>
+            <a href={`${asPath && asPath}/state`} className="btn-state-page">Error States</a>
+        </LayoutHeader>
+        <LayoutContent scrollable>
+          <SummaryWrapper>
+            <Search selectedFeatureId={id} />
+            <Summary run={run} />
+          </SummaryWrapper>
+          <FeatureContent feature={feature} />
+        </LayoutContent>
+      </div>
     </Layout>
   );
 }
@@ -581,7 +608,9 @@ function Run() {
 function RunWithProvider() {
   return (
     <FeatureProvider>
-      <Run />
+      <UiDataProvider>
+        <Run />
+      </UiDataProvider>
     </FeatureProvider>
   );
 }
