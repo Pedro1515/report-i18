@@ -1,4 +1,8 @@
 /*Generales*/
+li{
+  outline: none;
+}
+
 .d-none{
   display: none;
 }
