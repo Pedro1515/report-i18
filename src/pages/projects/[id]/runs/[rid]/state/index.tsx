@@ -203,7 +203,7 @@ function Logs({ logs }) {
 
       {media != null
         ? media?.map(() => (
-            <li className="flex items-center text-sm">
+            <li key={test} className="flex items-center text-sm">
               <MediaModal {...{ testId: test }} />
             </li>
           ))
@@ -285,7 +285,7 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
   );
 }
 
-function ScenarioOutlineContent({ scenario1, fetureName }) {
+function ScenarioContent({ scenario1, fetureName }) {
   const { nodes: scenario2, bddType } = scenario1;
   return (
     <>
@@ -301,7 +301,7 @@ function ScenarioOutlineContent({ scenario1, fetureName }) {
 
         // @ts-ignore
         const { test: errorTest } = useTest();
-        if (errorStates && errorStates.includes(errorTest)) {
+        if (errorStates?.includes(errorTest)) {
           // @ts-ignore
           const { setScroll } = useScroll();
           setScroll(true)
@@ -350,7 +350,7 @@ function Scenario({ features }) {
     if (child) {
       return child?.map((scenario1) => {
         return (
-          <ScenarioOutlineContent
+          <ScenarioContent
             key={scenario1.id}
             scenario1={scenario1}
             fetureName={name}
@@ -361,7 +361,7 @@ function Scenario({ features }) {
   }
 }
 
-function FeatureContent({ feature }) {
+function Features({ feature }) {
   // @ts-ignore
   const { scroll } = useScroll();  
   return (
@@ -373,19 +373,15 @@ function FeatureContent({ feature }) {
   );
 }
 
-function FeatureData({ content }) {
-  return <SetFeatues features={content} />;
-}
-
-function TestContent() {
+function Content() {
   const { query } = useRouter();
   const { features } = useFeatures(query.rid as string);
   // @ts-ignore
   const { feature } = useFeature();
   return (
     <div className="test-content h-full">
-      <FeatureContent feature={feature} />
-      {features && <FeatureData {...features} />}
+      <Features feature={feature} />
+      {features && <SetFeatues features={features.content} /> }
     </div>
   );
 }
@@ -399,7 +395,7 @@ const LayoutState = () => {
   return (
     <div className="errorStatesPage">
       {errorState && <NavMenu errorState={errorState} />}
-      <TestContent />
+      <Content />
     </div>
   );
 };
