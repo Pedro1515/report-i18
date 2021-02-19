@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Layout,
   LayoutHeader,
@@ -7,7 +7,6 @@ import {
   PopOver,
   Badge,
   MenuItemGroup,
-  Button,
   MenuIcon,
   Spinner,
   useSearchBox,
@@ -33,7 +32,6 @@ import {
 import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "src/utils";
 import { Feature, Run as ApiRun, updateTest} from "src/api";
-import { getMedias } from "src/api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
@@ -514,9 +512,7 @@ function FeatureContent({ feature }) {
   const { name, startTime, categoryNameList, id } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
-  console.log(f&&f);
   const child = f ? f.nodes : [];
-  // console.log(child);
   if (!feature) {
     return <FeatureEmptyPlaceholder />;
   }

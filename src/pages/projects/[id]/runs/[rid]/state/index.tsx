@@ -1,21 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
   Layout,
-  LayoutHeader,
-  LayoutContent,
-  SearchBox,
-  PopOver,
   Badge,
-  MenuItemGroup,
-  Button,
-  MenuIcon,
   Spinner,
-  useSearchBox,
   MediaModal,
 } from "src/components";
 import classNames from "classnames";
 import {
-  useDebounce,
   useFeatures,
   useTests,
   useRun,
@@ -25,15 +16,12 @@ import { ProtectRoute } from "src/context";
 import {
   CheckCircleIcon,
   ClockIcon,
-  TagSolidIcon,
   BeakerIcon,
   CrossCircleIcon,
   ExclamationSolidIcon,
 } from "src/components";
-import { format } from "date-fns";
-import { customFormatDuration, getTotalBy } from "src/utils";
-import { Feature, Run as ApiRun, Test, updateTest } from "src/api";
-import { getMedias } from "src/api";
+import { customFormatDuration } from "src/utils";
+import { Feature, Run as ApiRun, Test } from "src/api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
