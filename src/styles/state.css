@@ -11,10 +11,6 @@ li{
   display: none;
 }
 
-.scroll-y-auto{
-  overflow-y: auto;
-}
-
 .scroll-none{
   overflow-y: none;
 }
