@@ -591,7 +591,7 @@ function Run() {
           <div className="flex space-x-4">
             <span className="font-medium text-lg">{run?.name}</span>
           </div>
-            <a href={`${asPath && asPath}/state`} className="btn-state-page">Error States</a>
+            <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>
         </LayoutHeader>
         <LayoutContent scrollable>
           <SummaryWrapper>
