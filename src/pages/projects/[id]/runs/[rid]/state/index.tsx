@@ -128,14 +128,14 @@ function NavMenu({ errorState }) {
     setTest(error);
   };
   return (
-    <nav className="nav-menu">
-      <div className="states-Num">
-        <h1>States</h1>
-        <span>
+    <nav>
+      <div className="p-4">
+        <span>States</span>
+        <span className="btn-Num float-right">
           <div>{errorState.length}</div>
         </span>
       </div>
-      <ul className="nav-menu-items">
+      <ul>
         {errorState.map((error) => {
           return (
             <StateItem
@@ -240,15 +240,14 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
         onChange={handleCheckbox}
       />
       <label className="cursor-pointer" htmlFor={`toggle${count}`}>
-        <div className="testCard">
+        <div className="m-3 p-2 rounded border">
           <div>
             <span>{name}</span>
             <span className="feature-item-name">Feture: {fetureName}</span>
           </div>
           <div>
-            <p>id: {id}</p>
-            {/* <div className='text-red-700 w-3 h-3 mr-2'>{errorStates}</div> */}
-            <div className="inline-block">
+            <span className="border p-1 rounded"><small>id: {id}</small></span>
+            <div className="ml-2 inline-block">
               <div className="flex items-center">
                 <div className="w-4 h-4 text-gray-500 mr-2">
                   <ClockIcon />
@@ -336,13 +335,9 @@ function Scenario({ features }) {
   const child = f ? f.nodes : [];
   const name = f ? f.name : {};
 
-  // child.map((scenario) => {
-  //   const type2 = scenario ? scenario.bddType : [];
-  // });
-
   if (isLoading) {
     return (
-      <div className="h-full flex-center">
+      <div className="w-full h-full flex-center">
         <Spinner className="h-10 w-10 text-gray-500" />
       </div>
     );
@@ -379,10 +374,10 @@ function Content() {
   // @ts-ignore
   const { feature } = useFeature();
   return (
-    <div className="test-content h-full">
+    <>
       <Features feature={feature} />
       {features && <SetFeatues features={features.content} /> }
-    </div>
+    </>
   );
 }
 
@@ -393,9 +388,13 @@ const LayoutState = () => {
   const { errorState } = project ?? {};
 
   return (
-    <div className="errorStatesPage">
-      {errorState && <NavMenu errorState={errorState} />}
-      <Content />
+    <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
+        <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
+          {errorState && <NavMenu errorState={errorState} />}
+        </div>
+        <div className="w-full h-full">
+          <Content />
+        </div>
     </div>
   );
 };

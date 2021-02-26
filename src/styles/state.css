@@ -11,57 +11,15 @@ li{
   display: none;
 }
 
-.scroll-none{
-  overflow-y: none;
-}
-
-/*cabecera*/
-.errorStatesPage{
-  width: 100%;
-  height: 100%;
-}
-
-/*contenido*/
-.test-content{
-  width: 77%;
-  height: 100%;
-  float: right;
-}
-
-
-/*menu de estados de error*/
-.nav-menu{
-  background-color: #fafafa;
-  height: 100%;
-  width: 23%;
-  float: left;
-}
-
-.states-Num {
-  width: 80%;
-  margin-top: 10px;
-  margin-left: 16px;
-  display: flex;
-}
-
-.states-Num span {
+.btn-Num {
   width: 30px;
   border-radius: 3px;
   color: #fff;
   background: #549eff;
-  margin-left: 60%;
   /**/
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.nav-menu-items {
-  margin-top: 20px;
-  border-top: 1px solid #ececec;
-}
-.nav-menu-items li {
-  color: #444;
 }
 
 .btn-state-page {
@@ -79,30 +37,6 @@ li{
   background: #21a5bb;
   transition: all 0.3s;
 }
-
-/*test cards*/
-.testCard {
-  border-radius: 5px;
-  padding: 10px 10px 5px 10px;
-  margin: 10px;
-}
-
-.testCard:hover {
-  background: #f5f7fb;
-  transition: all 0.3s;
-}
-
-.testCard p {
-  display: inline-block;
-  font-size: 13px;
-  border-radius: 3px;
-  background: #fff;
-  padding: 2px 10px;
-  margin-right: 10px;
-  border: 1px solid #d6d6d6;
-  text-align: center;
-}
-
 
 .feature-item-name {
   float: right;
