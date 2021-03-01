@@ -291,7 +291,7 @@ function TestCard({ id, name, steps = [], errors }) {
       <div className="flex flex-col">
         <div className="flex justify-between items-center">
           <div className="text-sm font-medium">{name}</div>
-          <ErrorStateMenuIcon {...{ id, errors }} />
+          {errors && <ErrorStateMenuIcon {...{ id, errors }} />}
         </div>
         {errors?.length > 0 && (
           <div className="flex items-center">
@@ -361,7 +361,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors }) {
           ))}
           <StatusBadge status={status} />
         </div>
-        <ErrorStateMenuIcon {...{ id, errors }} />
+        {errors && <ErrorStateMenuIcon {...{ id, errors }} />}
       </div>
       {errors?.length > 0 && (
         <div className="flex items-center">
@@ -581,7 +581,8 @@ function Run() {
   const { feature } = useFeature();
   const { id } = feature ?? {};
   const { run } = useRun(query.rid as string);
-  
+  const { project } = useProject(run?.project);
+  const { errorState } = project ?? {};
   // @ts-ignore
   const { uiData } = useUiData()
   return (
@@ -591,7 +592,7 @@ function Run() {
             <div className="flex space-x-4">
               <span className="font-medium text-lg">{run?.name}</span>
             </div>
-              <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>
+            {errorState && <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>}
           </LayoutHeader>
           <LayoutContent scrollable>
             <SummaryWrapper>
