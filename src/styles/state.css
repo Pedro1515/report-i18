@@ -11,17 +11,6 @@ li{
   display: none;
 }
 
-.btn-Num {
-  width: 30px;
-  border-radius: 3px;
-  color: #fff;
-  background: #549eff;
-  /**/
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .btn-state-page {
   background: #2fb4ca;
   border-radius: 3px;
@@ -36,14 +25,4 @@ li{
 .btn-state-page:hover {
   background: #21a5bb;
   transition: all 0.3s;
-}
-
-.feature-item-name {
-  float: right;
-  font-size: 14px;
-  background: #549EFF;
-  border-radius: 3px;
-  padding: 0px 10px;
-  color: #fff;
-  font-weight: 500;
 }
