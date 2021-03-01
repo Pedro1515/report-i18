@@ -226,11 +226,15 @@ function StepsCard({ steps = [] }) {
 
 function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
-  const [checkbox, setCheckbox] = useState(false);
+  const [checked, setChecked] = useState(false);
   const count = Math.random();
   const handleCheckbox = (e) => {
-    setCheckbox(e.target.checked);
+    setChecked(e.target.checked);
   };
+
+  const handleModal = (e) => {
+    alert('Modal')
+  }
   return (
     <>
       <input
@@ -238,12 +242,23 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
         id={`toggle${count}`}
         className="d-none"
         onChange={handleCheckbox}
-      />
-      <label className="cursor-pointer" htmlFor={`toggle${count}`}>
+        />
         <div className="m-3 p-2 rounded border">
           <div>
             <span>{name}</span>
-            <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span>
+            {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
+            <div className="h-8 flex float-right">
+              <span className="mr-3">
+                <label htmlFor={`toggle${count}`}>
+                  <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
+                </label>
+              </span>
+              <span className="mr-3">
+                  <button className="focus:outline-none" onClick={handleModal}>
+                    <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
+                  </button>
+              </span>
+            </div>
           </div>
           <div className="flex">
             <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
@@ -277,9 +292,8 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
               />
             ))}
           </div>
-          {checkbox && <StepsCard steps={steps} />}
+          {checked && <StepsCard steps={steps} />}
         </div>
-      </label>
     </>
   );
 }
