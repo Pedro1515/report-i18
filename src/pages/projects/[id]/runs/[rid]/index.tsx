@@ -592,7 +592,7 @@ function Run() {
             <div className="flex space-x-4">
               <span className="font-medium text-lg">{run?.name}</span>
             </div>
-            {errorState && <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>}
+            {errorState && <a href={`${asPath && asPath}/state`} target="blank" className="bg-blue-500 text-white font-medium py-0.5 px-2 rounded transition duration-300 hover:bg-blue-600">Error States</a>}
           </LayoutHeader>
           <LayoutContent scrollable>
             <SummaryWrapper>
