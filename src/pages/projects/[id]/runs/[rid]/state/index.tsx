@@ -243,11 +243,10 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
         <div className="m-3 p-2 rounded border">
           <div>
             <span>{name}</span>
-            <span className="feature-item-name">Feture: {fetureName}</span>
+            <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span>
           </div>
           <div className="flex">
-            {/* <span className="border p-1 pt-0 rounded"><small> id: {id} </small></span> */}
-            <span className="px-2 py-px inline-flex text-xs leading-5 font-semibold rounded border tracking-wide items-center m-2">id: {id}</span>
+            <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
             <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
               <div className="flex items-center">
                 <div className="w-4 h-4 text-gray-500 mr-2">
