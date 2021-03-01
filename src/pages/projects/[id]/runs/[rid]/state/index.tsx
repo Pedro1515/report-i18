@@ -234,68 +234,74 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
 
   const handleModal = (e) => {
     alert('Modal')
+    // setModal(!modal)
   }
-  return (
-    <>
-      <input
-        type="checkbox"
-        id={`toggle${count}`}
-        className="d-none"
-        onChange={handleCheckbox}
-        />
-        <div className="m-3 p-2 rounded border">
-          <div>
-            <span>{name}</span>
-            {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
-            <div className="h-8 flex float-right">
-              <span className="mr-3">
-                <label htmlFor={`toggle${count}`}>
-                  <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
-                </label>
-              </span>
-              <span className="mr-3">
-                  <button className="focus:outline-none" onClick={handleModal}>
-                    <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
-                  </button>
-              </span>
-            </div>
-          </div>
-          <div className="flex">
-            <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
-            <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
-              <div className="flex items-center">
-                <div className="w-4 h-4 text-gray-500 mr-2">
-                  <ClockIcon />
-                </div>
-                {formattedDuration ? (
-                  <span
-                    className="block text-gray-500 text-sm"
-                    title="Duration"
-                  >
-                    {formattedDuration}
-                  </span>
-                ) : null}
+    //modal
+  if (false) {
+    return <FormModal />
+  } else {
+    return (
+      <>
+        <input
+          type="checkbox"
+          id={`toggle${count}`}
+          className="d-none"
+          onChange={handleCheckbox}
+          />
+          <div className="m-3 p-2 rounded border">
+            <div>
+              <span>{name}</span>
+              {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
+              <div className="h-8 flex float-right">
+                <span className="mr-3">
+                  <label htmlFor={`toggle${count}`}>
+                    <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
+                  </label>
+                </span>
+                <span className="mr-3">
+                    <button className="focus:outline-none" onClick={handleModal}>
+                      <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
+                    </button>
+                </span>
               </div>
             </div>
-            {errorStates.map((error) => (
-              <Badge
-                key={error}
-                IconComponent={
-                  <div className="text-red-700 w-3 h-3 mr-2">
-                    <ExclamationSolidIcon />
+            <div className="flex">
+              <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
+              <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 text-gray-500 mr-2">
+                    <ClockIcon />
                   </div>
-                }
-                className="m-2"
-                uppercase={false}
-                color="red"
-                label={error}
-              />
-            ))}
+                  {formattedDuration ? (
+                    <span
+                      className="block text-gray-500 text-sm"
+                      title="Duration"
+                    >
+                      {formattedDuration}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              {errorStates.map((error) => (
+                <Badge
+                  key={error}
+                  IconComponent={
+                    <div className="text-red-700 w-3 h-3 mr-2">
+                      <ExclamationSolidIcon />
+                    </div>
+                  }
+                  className="m-2"
+                  uppercase={false}
+                  color="red"
+                  label={error}
+                />
+              ))}
+            </div>
+            {checked && <StepsCard steps={steps} />}
           </div>
-          {checked && <StepsCard steps={steps} />}
-        </div>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 function ScenarioContent({ scenario1, fetureName }) {
