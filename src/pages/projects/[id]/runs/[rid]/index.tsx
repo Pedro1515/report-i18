@@ -585,23 +585,23 @@ function Run() {
   // @ts-ignore
   const { uiData } = useUiData()
   return (
-    <Layout>
-      <div className={`h-full ${uiData && 'cursor-wait'}`}>
-        <LayoutHeader>
-          <div className="flex space-x-4">
-            <span className="font-medium text-lg">{run?.name}</span>
-          </div>
-            <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>
-        </LayoutHeader>
-        <LayoutContent scrollable>
-          <SummaryWrapper>
-            <Search selectedFeatureId={id} />
-            <Summary run={run} />
-          </SummaryWrapper>
-          <FeatureContent feature={feature} />
-        </LayoutContent>
-      </div>
-    </Layout>
+    <div className={`${uiData && 'cursor-wait'}`}>
+      <Layout>
+          <LayoutHeader>
+            <div className="flex space-x-4">
+              <span className="font-medium text-lg">{run?.name}</span>
+            </div>
+              <a href={`${asPath && asPath}/state`} target="blank" className="btn-state-page">Error States</a>
+          </LayoutHeader>
+          <LayoutContent scrollable>
+            <SummaryWrapper>
+              <Search selectedFeatureId={id} />
+              <Summary run={run} />
+            </SummaryWrapper>
+            <FeatureContent feature={feature} />
+          </LayoutContent>
+      </Layout>
+    </div>
   );
 }
 
