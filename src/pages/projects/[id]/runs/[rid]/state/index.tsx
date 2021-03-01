@@ -131,9 +131,9 @@ function NavMenu({ errorState }) {
     <nav>
       <div className="p-4">
         <span>States</span>
-        <span className="btn-Num float-right">
-          <div>{errorState.length}</div>
-        </span>
+        <p className="float-right text-white text-sm bg-blue-500 px-2 font-semibold rounded">
+          {errorState.length}
+        </p>
       </div>
       <ul>
         {errorState.map((error) => {
