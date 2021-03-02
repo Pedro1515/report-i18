@@ -245,7 +245,7 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
         <input
           type="checkbox"
           id={`toggle${count}`}
-          className="d-none"
+          className="hidden"
           onChange={handleCheckbox}
           />
           <div className="m-3 p-2 rounded border">
