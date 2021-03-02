@@ -459,6 +459,9 @@ function FormModal() {
   // @ts-ignore
   const { modal, setModal } = useModal();
   const { modalOpen, testName, run, project } = modal
+  const handleCloseModal = () => {
+    setModal({...modal,modalOpen:false})
+  }
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -473,7 +476,7 @@ function FormModal() {
           To: "opacity-0"
       --> */}
           <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={handleCloseModal}></div>
           </div>
 
           {/* <!-- This element is to trick the browser into centering the modal contents. --> */}
@@ -543,14 +546,14 @@ function FormModal() {
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
-                onClick={() => {setModal({...modal,modalOpen:false})}}
+                onClick={handleCloseModal}
                 type="button"
                 className="mr-6 bg-blue-500 text-white font-medium py-1 px-4 rounded transition duration-300 hover:bg-blue-600"
               >
                 Send
               </button>
               <button
-                onClick={() => {setModal({...modal,modalOpen:false})}}
+                onClick={handleCloseModal}
                 type="button"
                 className="mr-2 text-sm text-dark border font-medium py-0.5 px-2 rounded transition duration-300 hover:bg-gray-100"
               >
