@@ -66,6 +66,29 @@ function useTest() {
 }
 
 // @ts-ignore
+const ModalContext = React.createContext();
+
+function ModalProvider(props) {
+  const [modal, setModal] = React.useState({
+    modalOpen: false, 
+    run:'', 
+    project:'',
+    testName:'',
+    description:'',
+  });
+  const value = { modal, setModal };
+  return <ModalContext.Provider value={value} {...props} />;
+}
+
+function useModal() {
+  const context = React.useContext(ModalContext);
+  if (!context) {
+    throw new Error("useModal must be used within a ModalProvider");
+  }
+  return context;
+}
+
+// @ts-ignore
 const ScrollContext = React.createContext();
 
 function ScrollProvider(props) {
@@ -224,7 +247,7 @@ function StepsCard({ steps = [] }) {
   );
 }
 
-function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
+function TestCard({ id, name, errorStates, duration, steps, runName, fetureName }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   const [checked, setChecked] = useState(false);
   const count = Math.random();
@@ -232,76 +255,79 @@ function TestCard({ id, name, errorStates, duration, steps, fetureName }) {
     setChecked(e.target.checked);
   };
 
-  const handleModal = (e) => {
-    alert('Modal')
-    // setModal(!modal)
+  // @ts-ignore
+  const { modal, setModal } = useModal();
+  const { modalOpen, testName } = modal
+  
+  const handleModal = (name, runName) => {
+    setModal({
+      ...modal,
+      modalOpen: true,
+      testName: name,
+      run: runName,
+    })
   }
-    //modal
-  if (false) {
-    return <FormModal />
-  } else {
-    return (
-      <>
-        <input
-          type="checkbox"
-          id={`toggle${count}`}
-          className="hidden"
-          onChange={handleCheckbox}
-          />
-          <div className="m-3 p-2 rounded border">
-            <div>
-              <span>{name}</span>
-              {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
-              <div className="h-8 flex float-right">
-                <span className="mr-3">
-                  <label htmlFor={`toggle${count}`}>
-                    <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
-                  </label>
-                </span>
-                <span className="mr-3">
-                    <button className="focus:outline-none" onClick={handleModal}>
-                      <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
-                    </button>
-                </span>
-              </div>
-            </div>
-            <div className="flex">
-              <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
-              <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 text-gray-500 mr-2">
-                    <ClockIcon />
-                  </div>
-                  {formattedDuration ? (
-                    <span
-                      className="block text-gray-500 text-sm"
-                      title="Duration"
-                    >
-                      {formattedDuration}
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-              {errorStates.map((error) => (
-                <Badge
-                  key={error}
-                  IconComponent={
-                    <div className="text-red-700 w-3 h-3 mr-2">
-                      <ExclamationSolidIcon />
-                    </div>
-                  }
-                  className="m-2"
-                  uppercase={false}
-                  color="red"
-                  label={error}
-                />
-              ))}
-            </div>
-            {checked && <StepsCard steps={steps} />}
+  return modalOpen ? (<FormModal />) : (
+    <>
+      <input
+        type="checkbox"
+        id={`toggle${count}`}
+        className="hidden"
+        onChange={handleCheckbox}
+        />
+      <div className="m-3 p-2 rounded border">
+        <div>
+          <span>{name}</span>
+          {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
+          <div className="h-8 flex float-right">
+            <span className="mr-3">
+              <label htmlFor={`toggle${count}`}>
+                <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
+              </label>
+            </span>
+            <span className="mr-3">
+                <button className="focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
+                  <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
+                </button>
+            </span>
           </div>
-      </>
-    );
-  }
+        </div>
+        <div className="flex">
+          <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
+          <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
+            <div className="flex items-center">
+              <div className="w-4 h-4 text-gray-500 mr-2">
+                <ClockIcon />
+              </div>
+              {formattedDuration ? (
+                <span
+                  className="block text-gray-500 text-sm"
+                  title="Duration"
+                >
+                  {formattedDuration}
+                </span>
+              ) : null}
+            </div>
+          </div>
+          {errorStates.map((error) => (
+            <Badge
+              key={error}
+              IconComponent={
+                <div className="text-red-700 w-3 h-3 mr-2">
+                  <ExclamationSolidIcon />
+                </div>
+              }
+              className="m-2"
+              uppercase={false}
+              color="red"
+              label={error}
+            />
+          ))}
+        </div>
+        {checked && <StepsCard steps={steps} />}
+      </div>
+    </>
+  );
 }
 
 function ScenarioContent({ scenario1, fetureName }) {
@@ -316,6 +342,7 @@ function ScenarioContent({ scenario1, fetureName }) {
           duration,
           endTime,
           nodes: steps,
+          reportName:runName,
         } = tests;
 
         // @ts-ignore
@@ -335,6 +362,7 @@ function ScenarioContent({ scenario1, fetureName }) {
                 endTime,
                 steps,
                 fetureName,
+                runName,
               }}
             />
           );
@@ -405,8 +433,16 @@ const LayoutState = () => {
   const { query } = useRouter();
   const { run } = useRun(query.rid as string);
   const { project } = useProject(run?.project);
-  const { errorState } = project ?? {};
+  const { errorState, name } = project ?? {};
 
+  // @ts-ignore
+  const { modal, setModal } = useModal();
+  // const { project:projectName } = modal
+
+  useEffect(() => {
+    setModal({...modal, project:name})  
+  }, [name])
+  
   return (
     <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
         <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
@@ -419,7 +455,10 @@ const LayoutState = () => {
   );
 };
 
-function FormModal(params) {
+function FormModal() {
+  // @ts-ignore
+  const { modal, setModal } = useModal();
+  const { modalOpen, testName, run, project } = modal
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -474,6 +513,7 @@ function FormModal(params) {
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
                       placeholder="Project"
+                      value={project}
                     />
                   </div>
                   <div className="mt-3">
@@ -481,6 +521,7 @@ function FormModal(params) {
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
                       placeholder="Run"
+                      value={run}
                     />
                   </div>
                   <div className="mt-3">
@@ -488,6 +529,7 @@ function FormModal(params) {
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
                       placeholder="Test name"
+                      value={testName}
                     />
                   </div>
                   <div className="mt-3">
@@ -501,12 +543,14 @@ function FormModal(params) {
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
+                onClick={() => {setModal({...modal,modalOpen:false})}}
                 type="button"
                 className="mr-6 bg-blue-500 text-white font-medium py-1 px-4 rounded transition duration-300 hover:bg-blue-600"
               >
                 Send
               </button>
               <button
+                onClick={() => {setModal({...modal,modalOpen:false})}}
                 type="button"
                 className="mr-2 text-sm text-dark border font-medium py-0.5 px-2 rounded transition duration-300 hover:bg-gray-100"
               >
@@ -523,9 +567,11 @@ function RunWithProvider() {
     <FeatureProvider>
       <TestProvider>
         <ScrollProvider>
-          <Layout>
-            <LayoutState />
-          </Layout>
+          <ModalProvider>
+            <Layout>
+              <LayoutState />
+            </Layout>
+          </ModalProvider>
         </ScrollProvider>
       </TestProvider>
     </FeatureProvider>
