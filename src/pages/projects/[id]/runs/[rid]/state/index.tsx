@@ -290,6 +290,11 @@ function TestCard({ id, name, errorStates, duration, steps, runName, fetureName 
                   <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
                 </button>
             </span>
+            <span className="mr-3">
+                <button className="focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
+                  <img className="w-8 p-1 rounded opacity-90 bg-red-600 transition duration-300 hover:bg-red-700" src="/assets/trash.png" alt="trash"/>
+                </button>
+            </span>
           </div>
         </div>
         <div className="flex">
