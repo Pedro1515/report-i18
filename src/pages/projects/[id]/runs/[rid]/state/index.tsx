@@ -285,22 +285,16 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
           <span>{name}</span>
           {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
           <div className="h-6 flex float-right">
-            <span className="w-6 p-1 cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3">
-              <label htmlFor={`toggle${count}`}>
-                <img className="w-full" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "visible" : "invisible"}/>
-              </label>
-            </span>
-            <span className="flex-center h-full px-2 text-white rounded bg-blue-500 transition duration-300 hover:bg-blue-600 focus:outline-none mr-3">
-                <button className="flex-center" onClick={(e) => {handleModal(name, runName)}}>
-                  <img className="w-4 mr-1" src="/assets/share-option.png" alt="share-option"/>
-                  <p className="text-xs font-extrabold">Jira</p>
-                </button>
-            </span>
-            <span className="w-6 p-1 rounded opacity-90 bg-red-600 transition duration-300 hover:bg-red-700 mr-3">
-                <button className="flex-center focus:outline-none" onClick={(e) => {handleDeleteState(id, errorTest)}}>
-                  <img className="w-full" src="/assets/trash.png" alt="trash"/>
-                </button>
-            </span>
+           <label className="w-6 p-1 flex-center cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3" htmlFor={`toggle${count}`}>
+             <img className="w-full cursor-pointer" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "visible" : "invisible"}/>
+           </label>
+           <button className="px-2 flex-center cursor-pointer rounded bg-blue-500 transition duration-300 hover:bg-blue-600 focus:outline-none mr-3 focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
+             <img className="w-4 mr-1" src="/assets/share-option.png" alt="share-option"/>
+             <p className="text-xs text-white font-extrabold">Jira</p>
+           </button>
+           <button className="w-6 p-1 mr-3 flex-center cursor-pointer rounded bg-red-600 transition duration-300 hover:bg-red-700 focus:outline-none" onClick={(e) => {handleDeleteState(id, errorTest)}}>
+             <img className="w-full" src="/assets/trash.png" alt="trash"/>
+           </button>
           </div>
         </div>
         <div>
