@@ -303,8 +303,11 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
             </span>
           </div>
         </div>
-        <div className="flex">
-          <span className="px-2 inline-flex text-xs leading-5 font-medium rounded border tracking-wide items-center m-2">id: {id}</span>
+        <div>
+          <div className="px-2 py-px inline-flex text-xs leading-5 font-semibold rounded border text-gray-900 tracking-wide items-center">
+            <div className="h-3"></div>
+            id: {id}
+          </div>
           <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
             <div className="flex items-center">
               <div className="w-4 h-4 text-gray-500 mr-2">
