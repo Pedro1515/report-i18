@@ -464,9 +464,28 @@ const LayoutState = () => {
 function FormModal() {
   // @ts-ignore
   const { modal, setModal } = useModal();
-  const { modalOpen, testName, run, project } = modal
   const handleCloseModal = () => {
     setModal({...modal,modalOpen:false})
+  }
+  
+  const [form, setForm] = useState(modal);
+  const { testName, run, project, description } = form
+  const handleChange = ({ target }) => {
+      setForm({
+          ...form,
+          [ target.name ]: target.value
+      });
+  }
+  const handleSubmit = (e) => {
+    // .trim()
+    // testName || run || project || 
+    if (testName < 1 || run < 1 || project < 1 || description < 1) {
+      alert('Completar los campos')
+    } else {
+      alert('Enviado');
+      setModal({...modal,modalOpen:false})
+      console.log(form);
+    }
   }
     return (
       <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -521,8 +540,10 @@ function FormModal() {
                     <input
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
+                      name="project"
                       placeholder="Project"
                       value={project}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="mt-3">
@@ -530,7 +551,9 @@ function FormModal() {
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
                       placeholder="Run"
+                      name="run"
                       value={run}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="mt-3">
@@ -538,13 +561,17 @@ function FormModal() {
                       className="text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       type="text"
                       placeholder="Test name"
+                      name="testName"
                       value={testName}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="mt-3">
                     <textarea
                       className="h-20 text-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
                       placeholder="Description"
+                      name="description"
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -552,10 +579,11 @@ function FormModal() {
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
-                onClick={handleCloseModal}
-                type="button"
+                // onClick={handleCloseModal}
+                onClick={handleSubmit}
+                type="submit"
                 className="mr-6 bg-blue-500 text-white font-medium py-1 px-4 rounded transition duration-300 hover:bg-blue-600"
-              >
+                >
                 Send
               </button>
               <button
