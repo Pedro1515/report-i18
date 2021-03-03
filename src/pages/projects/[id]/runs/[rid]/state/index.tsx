@@ -235,8 +235,8 @@ function Logs({ logs }) {
   ));
 }
 
-function StepsCard({ steps = [] }) {
-  return (
+function StepsCard({ steps = [], bddType }) {
+  return bddType === "Scenario" ? (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
       <StepWrapper>
         {steps?.map(({ id, status, name, logs }) => (
@@ -244,10 +244,12 @@ function StepsCard({ steps = [] }) {
         ))}
       </StepWrapper>
     </div>
+  ) : (
+    <></>
   );
 }
 
-function TestCard({ id, name, errorStates, duration, steps, runName, featureId, fetureName, errorTest }) {
+function TestCard({ id, name, errorStates, duration, steps, runName, featureId, description, fetureName, errorTest, bddType }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   const [checked, setChecked] = useState(false);
   const count = Math.random();
@@ -332,7 +334,12 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
             />
           ))}
         </div>
-        {checked && <StepsCard steps={steps} />}
+        {checked && (
+          <div className="m-2">
+            <div dangerouslySetInnerHTML={{ __html: description }} />
+          </div>
+        )}
+        {checked && <StepsCard steps={steps} bddType={bddType}/>}
       </div>
     </>
   );
@@ -340,15 +347,16 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
 
 function ScenarioOutline({ scenario1, fetureName, featureId }) {
   const scenarioOutline = scenario1?.bddType;
-  const { nodes: scenario2, bddType } = scenario1;
 
   if (scenarioOutline === "Scenario Outline") {
     const {
       id,
       name,
       errorStates,
+      bddType,
       duration,
       endTime,
+      description,
       nodes: steps,
       reportName: runName,
     } = scenario1;
@@ -369,12 +377,14 @@ function ScenarioOutline({ scenario1, fetureName, featureId }) {
               id,
               name,
               errorStates,
+              bddType,
               duration,
               endTime,
               steps,
               fetureName,
               featureId,
               runName,
+              description,
               errorTest,
             }}
           />
@@ -387,13 +397,14 @@ function ScenarioOutline({ scenario1, fetureName, featureId }) {
 }
 
 function ScenarioContent({ scenario2, fetureName, featureId }) {
-  console.log(scenario2);
   return (
     <>
       {scenario2?.map((tests) => {
         const {
           id,
           name,
+          bddType,
+          description,
           errorStates,
           duration,
           endTime,
@@ -413,10 +424,12 @@ function ScenarioContent({ scenario2, fetureName, featureId }) {
               {...{
                 id,
                 name,
+                bddType,
                 errorStates,
                 duration,
                 endTime,
                 steps,
+                description,
                 fetureName,
                 featureId,
                 runName,
