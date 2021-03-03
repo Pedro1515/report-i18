@@ -338,8 +338,56 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
   );
 }
 
-function ScenarioContent({ scenario1, fetureName, featureId }) {
+function ScenarioOutline({ scenario1, fetureName, featureId }) {
+  const scenarioOutline = scenario1?.bddType;
   const { nodes: scenario2, bddType } = scenario1;
+
+  if (scenarioOutline === "Scenario Outline") {
+    const {
+      id,
+      name,
+      errorStates,
+      duration,
+      endTime,
+      nodes: steps,
+      reportName: runName,
+    } = scenario1;
+    
+    // @ts-ignore
+    const { test: errorTest } = useTest();
+    
+    // @ts-ignore
+    // const { setScroll } = useScroll();
+    // setScroll(true);
+
+    return (
+      <>
+        {errorStates?.includes(errorTest) && 
+        <TestCard
+            key={id}
+            {...{
+              id,
+              name,
+              errorStates,
+              duration,
+              endTime,
+              steps,
+              fetureName,
+              featureId,
+              runName,
+              errorTest,
+            }}
+          />
+        }
+      </>
+    )
+  } else {
+    return <></>;
+  }
+}
+
+function ScenarioContent({ scenario2, fetureName, featureId }) {
+  console.log(scenario2);
   return (
     <>
       {scenario2?.map((tests) => {
@@ -385,7 +433,7 @@ function ScenarioContent({ scenario1, fetureName, featureId }) {
   );
 }
 
-function Scenario({ features }) {
+function Scenarios({ features }) {
   const { id } = features ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
@@ -403,13 +451,22 @@ function Scenario({ features }) {
   } else {
     if (child) {
       return child?.map((scenario1) => {
+        const { nodes: scenario2 } = scenario1;
         return (
-          <ScenarioContent
-            key={scenario1.id}
-            scenario1={scenario1}
-            fetureName={name}
-            featureId={fId}
-          />
+          <>
+            <ScenarioContent
+              key={scenario2.id}
+              scenario2={scenario2}
+              fetureName={name}
+              featureId={fId}
+            />
+            <ScenarioOutline
+              key={scenario1.id}
+              scenario1={scenario1}
+              fetureName={name}
+              featureId={fId}
+            />
+          </>
         );
       });
     }
@@ -422,7 +479,7 @@ function Features({ feature }) {
   return (
     <div className={`h-full ${scroll && 'overflow-y-auto'}`}>
       {feature?.map((features) => {
-        return <Scenario key={features.id} features={features} />;
+        return <Scenarios key={features.id} features={features} />;
       })}
     </div>
   );
