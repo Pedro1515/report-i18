@@ -282,17 +282,17 @@ function TestCard({ id, name, errorStates, duration, steps, runName, fetureName 
           <div className="h-8 flex float-right">
             <span className="mr-3">
               <label htmlFor={`toggle${count}`}>
-                <img className="w-8 p-1 cursor-pointer rounded opacity-75  transition duration-300 hover:bg-gray-200" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "invisible" : "visible"}/>
+                <img className="w-6 p-1 cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "visible" : "invisible"}/>
               </label>
             </span>
             <span className="mr-3">
                 <button className="focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
-                  <img className="w-8 p-1 rounded opacity-90  transition duration-300 hover:bg-gray-200" src="/assets/share-option.png" alt="visible"/>
+                  <img className="w-6 p-1 rounded opacity-90 bg-blue-500 transition duration-300 hover:bg-blue-600" src="/assets/share-option.png" alt="share-option"/>
                 </button>
             </span>
             <span className="mr-3">
                 <button className="focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
-                  <img className="w-8 p-1 rounded opacity-90 bg-red-600 transition duration-300 hover:bg-red-700" src="/assets/trash.png" alt="trash"/>
+                  <img className="w-6 p-1 rounded opacity-90 bg-red-600 transition duration-300 hover:bg-red-700" src="/assets/trash.png" alt="trash"/>
                 </button>
             </span>
           </div>
