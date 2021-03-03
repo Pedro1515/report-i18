@@ -21,7 +21,7 @@ import {
   ExclamationSolidIcon,
 } from "src/components";
 import { customFormatDuration } from "src/utils";
-import { Feature, Run as ApiRun, Test } from "src/api";
+import { Feature, Run as ApiRun, Test, updateTest } from "src/api";
 import { useRouter } from "next/router";
 
 interface FeatureItemProps {
@@ -247,18 +247,23 @@ function StepsCard({ steps = [] }) {
   );
 }
 
-function TestCard({ id, name, errorStates, duration, steps, runName, fetureName }) {
+function TestCard({ id, name, errorStates, duration, steps, runName, featureId, fetureName, errorTest }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   const [checked, setChecked] = useState(false);
   const count = Math.random();
   const handleCheckbox = (e) => {
     setChecked(e.target.checked);
   };
+  const { mutateTests } = useTests({ "deep-populate": true, id: featureId });
 
   // @ts-ignore
   const { modal, setModal } = useModal();
   const { modalOpen, testName } = modal
   
+  const handleDeleteState = async (id, errorTest) => {
+    await updateTest({ id, errorStates: [errorTest] });
+    await mutateTests();
+  };
   const handleModal = (name, runName) => {
     setModal({
       ...modal,
@@ -292,7 +297,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, fetureName 
                 </button>
             </span>
             <span className="mr-3">
-                <button className="focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
+                <button className="focus:outline-none" onClick={(e) => {handleDeleteState(id, errorTest)}}>
                   <img className="w-6 p-1 rounded opacity-90 bg-red-600 transition duration-300 hover:bg-red-700" src="/assets/trash.png" alt="trash"/>
                 </button>
             </span>
@@ -336,7 +341,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, fetureName 
   );
 }
 
-function ScenarioContent({ scenario1, fetureName }) {
+function ScenarioContent({ scenario1, fetureName, featureId }) {
   const { nodes: scenario2, bddType } = scenario1;
   return (
     <>
@@ -368,7 +373,9 @@ function ScenarioContent({ scenario1, fetureName }) {
                 endTime,
                 steps,
                 fetureName,
+                featureId,
                 runName,
+                errorTest
               }}
             />
           );
@@ -388,6 +395,7 @@ function Scenario({ features }) {
   // const type = f ? f.bddType : [];
   const child = f ? f.nodes : [];
   const name = f ? f.name : {};
+  const fId = f ? f.id : {};
 
   if (isLoading) {
     return (
@@ -403,6 +411,7 @@ function Scenario({ features }) {
             key={scenario1.id}
             scenario1={scenario1}
             fetureName={name}
+            featureId={fId}
           />
         );
       });
