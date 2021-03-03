@@ -280,7 +280,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
         className="hidden"
         onChange={handleCheckbox}
         />
-      <div className="m-3 p-2 rounded border">
+      <div className="m-3 p-1 rounded border">
         <div>
           <span>{name}</span>
           {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
