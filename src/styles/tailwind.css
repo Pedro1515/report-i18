@@ -53,3 +53,7 @@
     height: 100px;
   }
 }
+
+li {
+  outline: none;
+}
