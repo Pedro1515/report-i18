@@ -288,7 +288,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
           {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
           <div className="h-6 flex float-right">
            <label className="w-6 p-1 flex-center cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3" htmlFor={`toggle${count}`}>
-             <img className="w-full cursor-pointer" src={checked ? "/assets/visible.png" : "/assets/invisible.png"}  alt={checked ? "visible" : "invisible"}/>
+             <img className="w-full cursor-pointer" src={checked ? "/assets/invisible.png" : "/assets/visible.png" }  alt={checked ? "invisible" : "visible"}/>
            </label>
            <button className="px-2 flex-center cursor-pointer rounded bg-blue-500 transition duration-300 hover:bg-blue-600 focus:outline-none mr-3 focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
              <img className="w-4 mr-1" src="/assets/share-option.png" alt="share-option"/>
