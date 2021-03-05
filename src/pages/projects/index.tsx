@@ -59,6 +59,11 @@ export function Home() {
     size: 5,
     name: ""
   });
+  const { query, route, asPath } = useRouter();
+  const { mutateProject } = useProject(query.id as string);
+  const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
+  const alert = useAlert();
+  const notitication = useNotification();
   const { projects, isLoading } = useProjects(filters);
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
@@ -70,11 +75,7 @@ export function Home() {
 
 
   const handleDeleteProject = ({ name, id }) => (e) => {
-    const { query, route, asPath } = useRouter();
-    const { mutateProject } = useProject(query.id as string);
-    const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
-    const alert = useAlert();
-    const notitication = useNotification();
+    
     const onConfirm = async () => {
       try {
         await removeProject(id);
