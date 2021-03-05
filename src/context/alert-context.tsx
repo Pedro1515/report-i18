@@ -30,23 +30,25 @@ function Alert({
 }: AlertProps) {
   return (
     <Modal {...{ visible, onClose }} {...props}>
-      <ModalWrapper>
-        <ModalTitle>{title}</ModalTitle>
-        <ModalBody>{body}</ModalBody>
-      </ModalWrapper>
-      <ModalFooter>
-        <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-          <Button
-            variant="primary"
-            color="red"
-            label={action ? action : "Aceptar"}
-            onClick={onConfirm}
-          />
-        </span>
-        <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-          <Button variant="white" label="Cancelar" onClick={onClose} />
-        </span>
-      </ModalFooter>
+      <div className="bg-white w-5/12 m-auto rounded-lg shadow-2xl">
+        <ModalWrapper>
+          <ModalTitle>{title}</ModalTitle>
+          <ModalBody>{body}</ModalBody>
+        </ModalWrapper>
+        <ModalFooter>
+          <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+            <Button
+              variant="primary"
+              color="red"
+              label={action ? action : "Aceptar"}
+              onClick={onConfirm}
+            />
+          </span>
+          <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+            <Button variant="white" label="Cancelar" onClick={onClose} />
+          </span>
+        </ModalFooter>
+      </div>
     </Modal>
   );
 }
