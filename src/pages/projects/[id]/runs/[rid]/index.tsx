@@ -576,7 +576,7 @@ function SummaryWrapper({ children }) {
 }
 
 function Run() {
-  const { query, asPath } = useRouter();
+  const { query, push, asPath } = useRouter();
   // @ts-ignore
   const { feature } = useFeature();
   const { id } = feature ?? {};
@@ -585,12 +585,21 @@ function Run() {
   const { errorState } = project ?? {};
   // @ts-ignore
   const { uiData } = useUiData()
+  const goToProject = () => push(`/projects/${project?.id}`);
   return (
     <div className={`${uiData && 'cursor-wait'}`}>
       <Layout>
           <LayoutHeader>
             <div className="flex space-x-4">
-              <span className="font-medium text-lg">{run?.name}</span>
+              {project?.name !== undefined && 
+              (<nav className="container">
+                <ol className="flex text-grey">
+                  <li className="px-2"><a onClick={goToProject} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>
+                  <li className="cursor-default font-semibold">{`>`}</li>
+                  <li className="px-2"><a href={asPath} className="no-underline text-indigo">{`${run?.name}`}</a></li>
+                </ol>
+              </nav>)
+              }
             </div>
             {errorState && <a href={`${asPath && asPath}/state`} target="blank" className="py-0.5 px-3 text-white tracking-tight font-medium rounded bg-blue-500 transition duration-300 hover:bg-blue-600">Error States</a>}
           </LayoutHeader>

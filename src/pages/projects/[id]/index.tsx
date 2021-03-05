@@ -395,14 +395,19 @@ function FailuresCard() {
 }
 
 function Project() {
-  const { query } = useRouter();
+  const { query, asPath } = useRouter();
   const { project } = useProject(query.id as string);
 
   return (
     <Layout>
       <LayoutHeader>
         <div className="flex space-x-4">
-          <span className="font-medium text-lg">{project?.name}</span>
+          <nav className="container">
+            <ol className="flex text-grey">
+              {project?.name !== undefined &&
+              <li className="px-2"><a href={asPath} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>}
+            </ol>
+          </nav>
         </div>
       </LayoutHeader>
       <LayoutContent scrollable>
