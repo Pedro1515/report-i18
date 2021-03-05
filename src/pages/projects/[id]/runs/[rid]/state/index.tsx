@@ -4,6 +4,7 @@ import {
   Badge,
   Spinner,
   MediaModal,
+  Modal,
 } from "src/components";
 import classNames from "classnames";
 import {
@@ -274,7 +275,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
       run: runName,
     })
   }
-  return modalOpen ? (<FormModal />) : (
+  return (
     <>
       <input
         type="checkbox"
@@ -544,66 +545,29 @@ function FormModal() {
     setModal({...modal,modalOpen:false})
   }
   
-  const [form, setForm] = useState(modal);
-  const { testName, run, project, description } = form
+  const { testName, run, project, description } = modal
   const handleChange = ({ target }) => {
-      setForm({
-          ...form,
-          [ target.name ]: target.value
-      });
+    setModal({
+      ...modal,
+      [ target.name ]: target.value
+    });
   }
   const handleSubmit = (e) => {
     // .trim()
-    // testName || run || project || 
     if (testName < 1 || run < 1 || project < 1 || description < 1) {
       alert('Completar los campos')
+      console.log(modal);
     } else {
       alert('Enviado');
+      console.log(modal);
       setModal({...modal,modalOpen:false})
-      console.log(form);
     }
   }
-    return (
-      <div className="fixed z-10 inset-0 overflow-y-auto">
-        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          {/* <!--
-        Background overlay, show/hide based on modal state.
-  
-        Entering: "ease-out duration-300"
-          From: "opacity-0"
-          To: "opacity-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100"
-          To: "opacity-0"
-      --> */}
-          <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={handleCloseModal}></div>
-          </div>
-
-          {/* <!-- This element is to trick the browser into centering the modal contents. --> */}
-          <span
-            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-            aria-hidden="true"
-          >
-            &#8203;
-          </span>
-          {/* <!--
-        Modal panel, show/hide based on modal state.
-  
-        Entering: "ease-out duration-300"
-          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100 translate-y-0 sm:scale-100"
-          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-      --> */}
-          <div
-            className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-headline"
-          >
-            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+  return (
+    <>
+      <Modal visible={modal?.modalOpen} onClose={() => {}}>
+          <div className="bg-white w-5/12 m-auto rounded-lg shadow-2xl">
+            <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
               <div className="sm:flex sm:items-start">
                 <div className="w-11/12 mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <h3
@@ -653,7 +617,7 @@ function FormModal() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button
                 // onClick={handleCloseModal}
                 onClick={handleSubmit}
@@ -671,9 +635,9 @@ function FormModal() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
-    );
+      </Modal>
+    </>
+  )
 }
 function RunWithProvider() {
   return (
@@ -683,6 +647,7 @@ function RunWithProvider() {
           <ModalProvider>
             <Layout>
               <LayoutState />
+              <FormModal />
             </Layout>
           </ModalProvider>
         </ScrollProvider>
