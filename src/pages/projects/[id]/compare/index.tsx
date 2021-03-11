@@ -25,7 +25,7 @@ function useTest() {
 
 function Logs({ logs }) {
   return logs?.map(({ test, status, details, media }) => (
-    <React.Fragment>
+    <React.Fragment key={test}>
       {details != "" ? (
         <li
           key={test}
