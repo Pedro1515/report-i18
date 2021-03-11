@@ -198,33 +198,31 @@ function Scenario2Item({scenario2}) {
   
   return (
     <>
-      <li>
-        <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
-        <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
-        <div className="px-2 pt-1">
-            <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
-              <div>
-                  <div className="mb-2 text-sm font-medium">{name}</div>
-              </div>
-              <div className="flow-root">
-                <div className="float-right text-sm">
-                  <label className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
-                    1
-                  </label>
-                  <label className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
-                    2
-                  </label>
-                </div>
-                <span className="float-left text-sm">
-                  <Badge
-                    label={status}
-                    color={status === "pass" ? "green" : "red"}
-                    />
-                </span>
-              </div>
+      <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
+      <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
+      <div className="px-2 pt-1">
+          <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
+            <div>
+                <div className="mb-2 text-sm font-medium">{name}</div>
             </div>
-        </div>
-      </li>
+            <div className="flow-root">
+              <div className="float-right text-sm">
+                <label className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
+                  1
+                </label>
+                <label className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
+                  2
+                </label>
+              </div>
+              <span className="float-left text-sm">
+                <Badge
+                  label={status}
+                  color={status === "pass" ? "green" : "red"}
+                  />
+              </span>
+            </div>
+          </div>
+      </div>
     </>
   )
 }
@@ -267,33 +265,31 @@ function Scenario1Item({scenario1}) {
   
   return (
     <>
-      <li>
-        <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
-        <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
-        <div className="px-2 pt-1">
-            <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
-              <div>
-                  <div className="text-sm font-medium">{name}</div>
-              </div>
-              <div className="flow-root">
-                <div className="float-right text-sm">
-                  <label className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest1(name, steps, description, duration, bddType)}} htmlFor={`toogle1${count1}`}>
-                    1
-                  </label>
-                  <label className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest2(name, steps, description, duration, bddType)}} htmlFor={`toogle2${count2}`}>
-                    2
-                  </label>
-                </div>
-                <span className="float-left text-sm">
-                  <Badge
-                    label={status}
-                    color={status === "pass" ? "green" : "red"}
-                    />
-                </span>
-              </div>
+      <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
+      <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
+      <div className="px-2 pt-1">
+          <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
+            <div>
+                <div className="text-sm font-medium">{name}</div>
             </div>
-        </div>
-      </li>
+            <div className="flow-root">
+              <div className="float-right text-sm">
+                <label className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest1(name, steps, description, duration, bddType)}} htmlFor={`toogle1${count1}`}>
+                  1
+                </label>
+                <label className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} onClick={()=>{handleTest2(name, steps, description, duration, bddType)}} htmlFor={`toogle2${count2}`}>
+                  2
+                </label>
+              </div>
+              <span className="float-left text-sm">
+                <Badge
+                  label={status}
+                  color={status === "pass" ? "green" : "red"}
+                  />
+              </span>
+            </div>
+          </div>
+      </div>
     </>
   )
 }
@@ -318,17 +314,17 @@ function Tests({ featureId:id }) {
               return (
                 scenario?.map(scenarios2 => {
                   return (
-                    <>
-                      <Scenario2Item key={count1} scenario2={scenarios2}/>
-                    </>
+                    <li key={scenarios2?.id}>
+                      <Scenario2Item scenario2={scenarios2}/>
+                    </li>
                   )
                 })
                 )
               } else {
                 return (
-                <>
-                  <Scenario1Item key={count2} scenario1={scenarios1}/>
-                </>
+                <li key={scenarios1?.id}>
+                 <Scenario1Item scenario1={scenarios1}/>
+                </li>
               )
             }
           })}
