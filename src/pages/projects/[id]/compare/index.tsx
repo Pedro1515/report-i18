@@ -131,32 +131,28 @@ function Content() {
       {name2 && (
         <>
           <div className="float-right w-1/2 p-2">
-            {test?.test2 && (
-              <>
-                <div className="w-full">
-                  <span>{name1}</span>
-                  {tags1?.map((tag) => (
-                    <Badge
-                      key={tag}
-                      IconComponent={
-                        <div className="text-gray-700 w-3 h-3 mr-2">
-                          <TagSolidIcon />
-                        </div>
-                      }
-                      className="m-2"
-                      uppercase={false}
-                      color="gray"
-                      label={tag}
-                    />
-                    ))}
-                  <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration1}</span>
-                </div>
-                <div className="m-2">
-                  <div dangerouslySetInnerHTML={{ __html: description2 }} />
-                </div>
-                {steps2.length !== 0 && <StepsCard steps={steps2} />}
-              </>
-            )}
+            <div className="w-full">
+              <span>{name2}</span>
+              {tags2?.map((tag) => (
+                <Badge
+                  key={tag}
+                  IconComponent={
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagSolidIcon />
+                    </div>
+                  }
+                  className="m-2"
+                  uppercase={false}
+                  color="gray"
+                  label={tag}
+                />
+                ))}
+              <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration2}</span>
+            </div>
+            <div className="m-2">
+              <div dangerouslySetInnerHTML={{ __html: description2 }} />
+            </div>
+            {steps2.length !== 0 && <StepsCard steps={steps2} />}
           </div>
         </>
       )}
