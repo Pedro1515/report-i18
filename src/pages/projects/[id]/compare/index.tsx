@@ -300,30 +300,38 @@ function Tests({ featureId:id }) {
   const child = f ? f.nodes : [];
   return(
     <>
-      <nav>
-        <ul>
-          {child?.map(scenarios1 => {
-            const { nodes: scenario, bddType:bddType1 } = scenarios1;
-            if (bddType1 === "Scenario Outline") {
-              return (
-                scenario?.map(scenarios2 => {
-                  return (
-                    <li key={scenarios2?.id}>
-                      <Scenario2Item scenario2={scenarios2}/>
-                    </li>
-                  )
-                })
-                )
-              } else {
+      {tests ? (
+        <nav>
+          <ul>
+            {child?.map(scenarios1 => {
+              const { nodes: scenario, bddType } = scenarios1;
+              if (bddType === "Scenario Outline") {
                 return (
-                <li key={scenarios1?.id}>
-                 <Scenario1Item scenario1={scenarios1}/>
-                </li>
-              )
-            }
-          })}
-        </ul>
-      </nav>
+                  scenario?.map(scenarios2 => {
+                    return (
+                      <li key={scenarios2?.id}>
+                        <Scenario2Item scenario2={scenarios2}/>
+                      </li>
+                    )
+                  })
+                  )
+                } else {
+                  return (
+                  <li key={scenarios1?.id}>
+                  <Scenario1Item scenario1={scenarios1}/>
+                  </li>
+                )
+              }
+            })}
+          </ul>
+        </nav>
+      ) : (
+        <div className="flex justify-center align-center my-2">
+          <div className="w-8 opacity-50">
+            <Spinner />
+          </div>
+        </div>
+      )}
     </>
   )
 }
