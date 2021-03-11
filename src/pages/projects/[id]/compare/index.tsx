@@ -330,14 +330,10 @@ function Tests({ featureId:id }) {
 
 function FeatureItem({features}) {
   const [actived, setActived] = useState(false)
-  const { id } = features ?? {};
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
-  const [f] = tests?.content ?? [];
-  const name = f ? f.name : '';
-  const status = f ? f.status : '';
-    return (
+  const { id, name, status } = features ?? {};
+  return (
     <>
-    {!isLoading ? (
+    {true ? (
       <li className={`rounded border-2 border-blue-500 mt-2 mx-1 px-2 py-1 cursor-pointer transition duration-200 hover:bg-gray-100`} onClick={()=>{setActived(!actived)}}>
         <div>
             <div className="text-sm font-medium">{name}</div>
@@ -353,13 +349,13 @@ function FeatureItem({features}) {
           </span>
         </div>
       </li>
-    ) : (
-      <div className="flex justify-center align-center my-1">
-        <div className="w-8">
-          <Spinner />
+      ) : (
+        <div className="flex justify-center align-center my-1">
+          <div className="w-8">
+            <Spinner />
+          </div>
         </div>
-      </div>
-    )
+      )
     }
       {actived && <Tests featureId={id} />}
     </>
