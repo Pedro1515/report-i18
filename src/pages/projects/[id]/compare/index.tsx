@@ -295,11 +295,9 @@ function Scenario1Item({scenario1}) {
 }
 
 function Tests({ featureId:id }) {
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const { tests } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
-  const count1 = Math.random();
-  const count2 = Math.random();
   return(
     <>
       <nav>
@@ -307,10 +305,6 @@ function Tests({ featureId:id }) {
           {child?.map(scenarios1 => {
             const { nodes: scenario, bddType:bddType1 } = scenarios1;
             if (bddType1 === "Scenario Outline") {
-              // console.log(scenario);
-              // useEffect(() => {
-              //   console.log(scenario);
-              // }, [scenario])
               return (
                 scenario?.map(scenarios2 => {
                   return (
@@ -349,9 +343,6 @@ function FeatureItem({features}) {
             <div className="text-sm font-medium">{name}</div>
         </div>
         <div className="flow-root">
-          {/* <p className="float-left text-sm"> */}
-            {/* {format(new Date(startTime), "dd/MM/yyyy HH:ss")}   */}
-          {/* </p> */}
           {!!status && (
             <span className="inline-block text-sm">
               <Badge label={status} color={status === "pass" ? "green" : "red"} />
