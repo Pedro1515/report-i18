@@ -93,68 +93,89 @@ function Content() {
   const {name:name2, steps:steps2, description:description2, duration:duration2, tags:tags2, bddType:bddType2} = test?.test2
   const formattedDuration1 = customFormatDuration({ start: 0, end: duration1 });
   const formattedDuration2 = customFormatDuration({ start: 0, end: duration2 });
+
+  const handleRemove1 = () => {
+    console.log('remove 1');
+  }
+  const handleRemove2 = () => {
+    console.log('remove 2');
+  }
   
   return (
     <>
       {name1 && (
-        <>
-          <div className="float-left w-1/2 p-2">
-            {test?.test1 && (
-              <>
+        <div className="float-left w-1/2 p-2">
+          {test?.test1 && (
+            <>
+              <div className="w-full">
                 <div className="w-full">
-                  <span>{name1}</span>
-                  {tags1?.map((tag) => (
-                    <Badge
-                      key={tag}
-                      IconComponent={
-                        <div className="text-gray-700 w-3 h-3 mr-2">
-                          <TagSolidIcon />
-                        </div>
-                      }
-                      className="m-2"
-                      uppercase={false}
-                      color="gray"
-                      label={tag}
-                    />
-                    ))}
-                  <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration1}</span>
+                  <div className="inline-block w-11/12">
+                    <span>{name1}</span>
+                  </div>
+                  <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove1()}}>
+                    <img className="w-full" src="/assets/remove.png" alt="remove"/>
+                  </button>
                 </div>
-                <div className="m-2">
-                  <div dangerouslySetInnerHTML={{ __html: description1 }} />
-                </div>
-                {steps1?.length !== 0 && <StepsCard steps={steps1} />}
-              </>
-            )}
-          </div>
-        </>
+                {tags1?.map((tag) => (
+                  <Badge
+                    key={tag}
+                    IconComponent={
+                      <div className="text-gray-700 w-3 h-3 mr-2">
+                        <TagSolidIcon />
+                      </div>
+                    }
+                    className="m-2"
+                    uppercase={false}
+                    color="gray"
+                    label={tag}
+                  />
+                  ))}
+                <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration1}</span>
+              </div>
+              <div className="m-2">
+                <div dangerouslySetInnerHTML={{ __html: description1 }} />
+              </div>
+              {steps1?.length !== 0 && <StepsCard steps={steps1} />}
+            </>
+          )}
+        </div>
       )}
       {name2 && (
-        <>
-          <div className="float-right w-1/2 p-2">
-            <div className="w-full">
-              <span>{name2}</span>
-              {tags2?.map((tag) => (
-                <Badge
-                  key={tag}
-                  IconComponent={
-                    <div className="text-gray-700 w-3 h-3 mr-2">
-                      <TagSolidIcon />
-                    </div>
-                  }
-                  className="m-2"
-                  uppercase={false}
-                  color="gray"
-                  label={tag}
-                />
-                ))}
-              <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration2}</span>
-            </div>
-            <div className="m-2">
-              <div dangerouslySetInnerHTML={{ __html: description2 }} />
-            </div>
-            {steps2.length !== 0 && <StepsCard steps={steps2} />}
-          </div>
-        </>
+        <div className="float-left w-1/2 p-2">
+          {test?.test2 && (
+            <>
+              <div className="w-full">
+                <div className="w-full">
+                  <div className="inline-block w-11/12">
+                    <span>{name2}</span>
+                  </div>
+                  <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove2()}}>
+                    <img className="w-full" src="/assets/remove.png" alt="remove"/>
+                  </button>
+                </div>
+                {tags2?.map((tag) => (
+                  <Badge
+                    key={tag}
+                    IconComponent={
+                      <div className="text-gray-700 w-3 h-3 mr-2">
+                        <TagSolidIcon />
+                      </div>
+                    }
+                    className="m-2"
+                    uppercase={false}
+                    color="gray"
+                    label={tag}
+                  />
+                  ))}
+                <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration2}</span>
+              </div>
+              <div className="m-2">
+                <div dangerouslySetInnerHTML={{ __html: description2 }} />
+              </div>
+              {steps2?.length !== 0 && <StepsCard steps={steps2} />}
+            </>
+          )}
+        </div>
       )}
     </>
   )
