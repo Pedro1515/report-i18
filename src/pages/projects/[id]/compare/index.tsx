@@ -95,14 +95,7 @@ function TestCard({name, steps, description, tags, formattedDuration}) {
       {name && (
         <>
           <div className="w-full">
-            <div className="w-full">
-              <div className="inline-block w-11/12">
-                <span>{name}</span>
-              </div>
-              <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove1()}}>
-                <img className="w-full" src="/assets/remove.png" alt="remove"/>
-              </button>
-            </div>
+            <span>{name}</span>
             {tags?.map((tag) => (
               <Badge
                 key={tag}
