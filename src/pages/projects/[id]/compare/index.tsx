@@ -349,12 +349,10 @@ function RunItem({ rid, name, status, startTime, isActive }) {
             </span>
           </div>
         </li>
-        <nav>
-            {actived && (
-            <ul>
-                {feature?.map(f => <FeatureItem key={f?.id} features={f}/>)}
-            </ul>
-            )}
+        <nav className={`${!actived && "hidden"}`}>
+          <ul>
+            {feature?.map(f => <FeatureItem key={f?.id} features={f}/>)}
+          </ul>
         </nav>
     </>
   );
