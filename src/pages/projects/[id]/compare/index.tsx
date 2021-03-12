@@ -182,6 +182,7 @@ function Content() {
 }
 
 function Scenario2Item({scenario2}) {
+  console.log('peticion para scenario dos');
   const {name, nodes:steps, status, description, duration, bddType, categoryNameList:tags} = scenario2
   
   const count1 = Math.random();
@@ -322,8 +323,7 @@ function Scenario1Item({scenario1}) {
     </>
   )
 }
-
-function Tests({ featureId:id }) {
+const Tests = React.memo(( {id}:{id:number} ) => {
   const { tests } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
@@ -363,7 +363,7 @@ function Tests({ featureId:id }) {
       )}
     </>
   )
-}
+})
 
 function FeatureItem({features}) {
   const [actived, setActived] = useState(false)
@@ -385,7 +385,9 @@ function FeatureItem({features}) {
           </span>
         </div>
       </li>
-      {actived && <Tests featureId={id} />}
+      <div className={ actived ? "" : "hidden"}>
+        <Tests id={id} />
+      </div>
     </>
   )
 }
