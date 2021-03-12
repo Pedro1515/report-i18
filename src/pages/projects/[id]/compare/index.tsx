@@ -253,7 +253,7 @@ function Scenario2({scenario2}) {
   )
 }
 
-const Tests = React.memo(( {id}:{id:number} ) => {
+function Tests({ featureid:id }){
   const { tests } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
@@ -293,7 +293,7 @@ const Tests = React.memo(( {id}:{id:number} ) => {
       )}
     </>
   )
-})
+}
 
 function FeatureItem({features}) {
   const [actived, setActived] = useState(false)
@@ -316,7 +316,7 @@ function FeatureItem({features}) {
         </div>
       </li>
       <div className={ actived ? "" : "hidden"}>
-        <Tests id={id} />
+        <Tests featureid={id} />
       </div>
     </>
   )
