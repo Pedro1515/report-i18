@@ -10,7 +10,10 @@ import classNames from "classnames";
 const TestContext = React.createContext();
 
 function TestProvider(props) {
-  const [test, setTest] = React.useState({test1:{steps: [], bddType: {}}, test2:{steps: [], bddType: {}}});
+  const [test, setTest] = React.useState({
+    test1:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}, 
+    test2:{id:[], name:'', steps:[], description:'', duration:'', tags:[]},
+  });
   const value = { test, setTest };
   return <TestContext.Provider value={value} {...props} />;
 }
@@ -86,104 +89,93 @@ function StepsCard({ steps = [] }) {
   )
 }
 
-function Content() {
+function TestCard({name, steps, description, tags, formattedDuration}) {
+  return (
+    <>
+      {name && (
+        <>
+          <div className="w-full">
+            <div className="w-full">
+              <div className="inline-block w-11/12">
+                <span>{name}</span>
+              </div>
+              <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove1()}}>
+                <img className="w-full" src="/assets/remove.png" alt="remove"/>
+              </button>
+            </div>
+            {tags?.map((tag) => (
+              <Badge
+                key={tag}
+                IconComponent={
+                  <div className="text-gray-700 w-3 h-3 mr-2">
+                    <TagSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="gray"
+                label={tag}
+              />
+              ))}
+            <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration}</span>
+          </div>
+          <div className="m-2">
+            <div dangerouslySetInnerHTML={{ __html: description }} />
+          </div>
+          {steps?.length !== 0 && <StepsCard steps={steps} />}
+        </>
+      )}
+    </>
+  )
+}
+
+function Test1() {
   // @ts-ignore
   const { test } = useTest();
-  const {name:name1, steps:steps1, description:description1, duration:duration1, tags:tags1, bddType:bddType1} = test?.test1
-  const {name:name2, steps:steps2, description:description2, duration:duration2, tags:tags2, bddType:bddType2} = test?.test2
-  const formattedDuration1 = customFormatDuration({ start: 0, end: duration1 });
-  const formattedDuration2 = customFormatDuration({ start: 0, end: duration2 });
+  const {id, name, steps, description, duration, tags} = test?.test1
+  const formattedDuration = customFormatDuration({ start: 0, end: duration });
+  
+  return (
+    <>
+      {id && (
+          <div className="float-left w-1/2 p-2">
+            <TestCard name={name} description={description} steps={steps} tags={tags} formattedDuration={formattedDuration}/>
+          </div>
+      )}
+    </>
+  )
+}
 
-  const handleRemove1 = () => {
-    console.log('remove 1');
-  }
-  const handleRemove2 = () => {
-    console.log('remove 2');
-  }
+function Test2() {
+  // @ts-ignore
+  const { test } = useTest();
+  const {id, name, steps, description, duration, tags} = test?.test2
+  const formattedDuration = customFormatDuration({ start: 0, end: duration });
+
+  return (
+    <>
+      {id && (
+          <div className="float-right w-1/2 p-2">
+            <TestCard name={name} description={description} steps={steps} tags={tags} formattedDuration={formattedDuration}/>
+          </div>
+      )}
+    </>
+  )
+}
+
+function Content() {
   
   return (
     <div className="w-full h-full overflow-y-auto">
-      {name1 && (
-        <div className="float-left w-1/2 p-2">
-          {test?.test1 && (
-            <>
-              <div className="w-full">
-                <div className="w-full">
-                  <div className="inline-block w-11/12">
-                    <span>{name1}</span>
-                  </div>
-                  <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove1()}}>
-                    <img className="w-full" src="/assets/remove.png" alt="remove"/>
-                  </button>
-                </div>
-                {tags1?.map((tag) => (
-                  <Badge
-                    key={tag}
-                    IconComponent={
-                      <div className="text-gray-700 w-3 h-3 mr-2">
-                        <TagSolidIcon />
-                      </div>
-                    }
-                    className="m-2"
-                    uppercase={false}
-                    color="gray"
-                    label={tag}
-                  />
-                  ))}
-                <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration1}</span>
-              </div>
-              <div className="m-2">
-                <div dangerouslySetInnerHTML={{ __html: description1 }} />
-              </div>
-              {steps1?.length !== 0 && <StepsCard steps={steps1} />}
-            </>
-          )}
-        </div>
-      )}
-      {name2 && (
-        <div className="float-right w-1/2 p-2">
-          {test?.test2 && (
-            <>
-              <div className="w-full">
-                <div className="w-full">
-                  <div className="inline-block w-11/12">
-                    <span>{name2}</span>
-                  </div>
-                  <button className="w-6 inline-block float-right focus:outline-none transition duration-200 hover:opacity-75" onClick={()=>{handleRemove2()}}>
-                    <img className="w-full" src="/assets/remove.png" alt="remove"/>
-                  </button>
-                </div>
-                {tags2?.map((tag) => (
-                  <Badge
-                    key={tag}
-                    IconComponent={
-                      <div className="text-gray-700 w-3 h-3 mr-2">
-                        <TagSolidIcon />
-                      </div>
-                    }
-                    className="m-2"
-                    uppercase={false}
-                    color="gray"
-                    label={tag}
-                  />
-                  ))}
-                <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration2}</span>
-              </div>
-              <div className="m-2">
-                <div dangerouslySetInnerHTML={{ __html: description2 }} />
-              </div>
-              {steps2?.length !== 0 && <StepsCard steps={steps2} />}
-            </>
-          )}
-        </div>
-      )}
+      <Test1 />
+      <Test2 />
     </div>
   )
 }
 
-function Scenario2Item({scenario2}) {
-  const {name, nodes:steps, status, description, duration, bddType, categoryNameList:tags} = scenario2
-  
+function Scenario1Item({scenario1}) {
+  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario1
+
   const count1 = Math.random();
   const count2 = Math.random();
 
@@ -202,18 +194,18 @@ function Scenario2Item({scenario2}) {
   // @ts-ignore
   const { test, setTest } = useTest();
 
-  const handleTest1 = (name, steps, description, duration, bddType, tags) => {
+  const handleTest1 = (id, name, steps, description, duration, tags) => {
     if (!checked1) {
-      setTest({...test, test1:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
+      setTest({...test, test1:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
     } else {
-      setTest({...test, test1:{name:'', steps: []}})
+      setTest({...test, test1:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
     }
   }
-  const handleTest2 = (name, steps, description, duration, bddType, tags) => {
+  const handleTest2 = (id, name, steps, description, duration, tags) => {
     if (!checked2) {
-      setTest({...test, test2:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
+      setTest({...test, test2:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
     } else {
-      setTest({...test, test2:{}})
+      setTest({...test, test2:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
     }
   }
   
@@ -230,12 +222,12 @@ function Scenario2Item({scenario2}) {
               <div className="float-right text-sm">
                 <label 
                   className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
+                  onClick={()=>{handleTest1(id, name, steps, description, duration, tags)}} htmlFor={`toogle1${count1}`}>
                   1
                 </label>
                 <label 
                   className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
+                  onClick={()=>{handleTest2(id, name, steps, description, duration, tags)}} htmlFor={`toogle2${count2}`}>
                   2
                 </label>
               </div>
@@ -252,9 +244,9 @@ function Scenario2Item({scenario2}) {
   )
 }
 
-function Scenario1Item({scenario1}) {
-  const {name, nodes:steps, status, description, duration, bddType, categoryNameList:tags} = scenario1
-  
+function Scenario2Item({scenario2}) {
+  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario2
+
   const count1 = Math.random();
   const count2 = Math.random();
 
@@ -273,18 +265,18 @@ function Scenario1Item({scenario1}) {
   // @ts-ignore
   const { test, setTest } = useTest();
 
-  const handleTest1 = (name, steps, description, duration, bddType, tags) => {
+  const handleTest1 = (id, name, steps, description, duration, tags) => {
     if (!checked1) {
-      setTest({...test, test1:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
+      setTest({...test, test1:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
     } else {
-      setTest({...test, test1:{name:'', steps: []}})
+      setTest({...test, test1:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
     }
   }
-  const handleTest2 = (name, steps, description, duration, bddType, tags) => {
+  const handleTest2 = (id, name, steps, description, duration, tags) => {
     if (!checked2) {
-      setTest({...test, test2:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
+      setTest({...test, test2:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
     } else {
-      setTest({...test, test2:{}})
+      setTest({...test, test2:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
     }
   }
   
@@ -301,12 +293,12 @@ function Scenario1Item({scenario1}) {
               <div className="float-right text-sm">
                 <label 
                   className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
+                  onClick={()=>{handleTest1(id, name, steps, description, duration, tags)}} htmlFor={`toogle1${count1}`}>
                   1
                 </label>
                 <label 
                   className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
+                  onClick={()=>{handleTest2(id, name, steps, description, duration, tags)}} htmlFor={`toogle2${count2}`}>
                   2
                 </label>
               </div>
