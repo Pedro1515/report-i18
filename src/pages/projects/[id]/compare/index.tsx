@@ -173,9 +173,7 @@ function Content() {
   )
 }
 
-function Scenario1Item({scenario1}) {
-  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario1
-
+function Scenarios({id, name, steps, status, description, duration, tags}) {
   const count1 = Math.random();
   const count2 = Math.random();
 
@@ -208,10 +206,10 @@ function Scenario1Item({scenario1}) {
       setTest({...test, test2:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
     }
   }
-  
+
   return (
     <>
-      <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
+    <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
       <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
       <div className="px-2 pt-1">
           <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
@@ -244,73 +242,20 @@ function Scenario1Item({scenario1}) {
   )
 }
 
-function Scenario2Item({scenario2}) {
-  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario2
-
-  const count1 = Math.random();
-  const count2 = Math.random();
-
-  const [checked1, setChecked1] = useState(false)
-  const [checked2, setChecked2] = useState(false)
-
-  const handleCheckbox1 = (e) => {
-    setChecked1(e.target.checked);
-  };
-
-  const handleCheckbox2 = (e) => {
-    setChecked2(e.target.checked);
-  };
-
-
-  // @ts-ignore
-  const { test, setTest } = useTest();
-
-  const handleTest1 = (id, name, steps, description, duration, tags) => {
-    if (!checked1) {
-      setTest({...test, test1:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
-    } else {
-      setTest({...test, test1:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
-    }
-  }
-  const handleTest2 = (id, name, steps, description, duration, tags) => {
-    if (!checked2) {
-      setTest({...test, test2:{id:id, name:name, steps:steps, description:description, duration:duration, tags:tags}})
-    } else {
-      setTest({...test, test2:{id:[], name:'', steps:[], description:'', duration:'', tags:[]}})
-    }
-  }
-  
+function Scenario1Item({scenario1}) {
+  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario1
   return (
     <>
-      <input type="checkbox" id={`toogle1${count1}`} className="hidden" onClick={handleCheckbox1}/>
-      <input type="checkbox" id={`toogle2${count2}`} className="hidden" onClick={handleCheckbox2}/>
-      <div className="px-2 pt-1">
-          <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
-            <div>
-                <div className="mb-2 text-sm font-medium">{name}</div>
-            </div>
-            <div className="flow-root">
-              <div className="float-right text-sm">
-                <label 
-                  className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest1(id, name, steps, description, duration, tags)}} htmlFor={`toogle1${count1}`}>
-                  1
-                </label>
-                <label 
-                  className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest2(id, name, steps, description, duration, tags)}} htmlFor={`toogle2${count2}`}>
-                  2
-                </label>
-              </div>
-              <span className="float-left text-sm">
-                <Badge
-                  label={status}
-                  color={status === "pass" ? "green" : "red"}
-                  />
-              </span>
-            </div>
-          </div>
-      </div>
+      <Scenarios id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
+    </>
+  )
+}
+
+function Scenario2Item({scenario2}) {
+  const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario2
+  return (
+    <>
+      <Scenarios id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
     </>
   )
 }
