@@ -430,6 +430,7 @@ function RunItem({ rid, name, status, startTime, isActive }) {
 
 function NavMenu({runs}) {
   return (
+    <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
       <nav>
           <ul>
             {runs?.map((runs) => {
@@ -446,7 +447,8 @@ function NavMenu({runs}) {
               );
             })}
           </ul>
-    </nav>
+      </nav>
+    </div>
   );
 }
 
@@ -471,10 +473,8 @@ function LayoutCompare() {
               </div>
             </LayoutHeader>
             <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
-                <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
-                  <NavMenu runs={rs} />
-                </div>
-                <Content />
+              <NavMenu runs={rs} />
+              <Content />
             </div>
         </>
     )
