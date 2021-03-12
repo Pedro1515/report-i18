@@ -253,7 +253,7 @@ function Scenario2Item({scenario2}) {
 }
 
 function Scenario1Item({scenario1}) {
-  const {name, nodes:steps, status, description, duration, bddType, categoryNameList} = scenario1
+  const {name, nodes:steps, status, description, duration, bddType, categoryNameList:tags} = scenario1
   
   const count1 = Math.random();
   const count2 = Math.random();
@@ -273,16 +273,16 @@ function Scenario1Item({scenario1}) {
   // @ts-ignore
   const { test, setTest } = useTest();
 
-  const handleTest1 = (name, steps, description, duration, bddType) => {
+  const handleTest1 = (name, steps, description, duration, bddType, tags) => {
     if (!checked1) {
-      setTest({...test, test1:{name:name, steps:steps, description:description, duration:duration, bddType:bddType}})
+      setTest({...test, test1:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
     } else {
       setTest({...test, test1:{name:'', steps: []}})
     }
   }
-  const handleTest2 = (name, steps, description, duration, bddType) => {
+  const handleTest2 = (name, steps, description, duration, bddType, tags) => {
     if (!checked2) {
-      setTest({...test, test2:{name:name, steps:steps, description:description, duration:duration, bddType:bddType}})
+      setTest({...test, test2:{name:name, steps:steps, description:description, duration:duration, bddType:bddType, tags:tags}})
     } else {
       setTest({...test, test2:{}})
     }
@@ -295,18 +295,18 @@ function Scenario1Item({scenario1}) {
       <div className="px-2 pt-1">
           <div className={`bg-blue-500 text-white rounded bg-white p-2`}>
             <div>
-                <div className="text-sm font-medium">{name}</div>
+                <div className="mb-2 text-sm font-medium">{name}</div>
             </div>
             <div className="flow-root">
               <div className="float-right text-sm">
                 <label 
                   className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest1(name, steps, description, duration, bddType)}} htmlFor={`toogle1${count1}`}>
+                  onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
                   1
                 </label>
                 <label 
                   className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
-                  onClick={()=>{handleTest2(name, steps, description, duration, bddType)}} htmlFor={`toogle2${count2}`}>
+                  onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
                   2
                 </label>
               </div>
@@ -322,6 +322,7 @@ function Scenario1Item({scenario1}) {
     </>
   )
 }
+
 const Tests = React.memo(( {id}:{id:number} ) => {
   const { tests } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
