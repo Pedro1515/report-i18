@@ -173,7 +173,7 @@ function Content() {
   )
 }
 
-function Scenarios({id, name, steps, status, description, duration, tags}) {
+function ScenarioItem({id, name, steps, status, description, duration, tags}) {
   const count1 = Math.random();
   const count2 = Math.random();
 
@@ -242,20 +242,20 @@ function Scenarios({id, name, steps, status, description, duration, tags}) {
   )
 }
 
-function Scenario1Item({scenario1}) {
+function Scenario1({scenario1}) {
   const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario1
   return (
     <>
-      <Scenarios id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
+      <ScenarioItem id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
     </>
   )
 }
 
-function Scenario2Item({scenario2}) {
+function Scenario2({scenario2}) {
   const {id, name, nodes:steps, status, description, duration, categoryNameList:tags} = scenario2
   return (
     <>
-      <Scenarios id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
+      <ScenarioItem id={id} name={name} steps={steps} status={status} description={description} duration={duration} tags={tags}/>
     </>
   )
 }
@@ -276,7 +276,7 @@ const Tests = React.memo(( {id}:{id:number} ) => {
                   scenario?.map(scenarios2 => {
                     return (
                       <li key={scenarios2?.id}>
-                        <Scenario2Item scenario2={scenarios2}/>
+                        <Scenario2 scenario2={scenarios2}/>
                       </li>
                     )
                   })
@@ -284,7 +284,7 @@ const Tests = React.memo(( {id}:{id:number} ) => {
                 } else {
                   return (
                   <li key={scenarios1?.id}>
-                  <Scenario1Item scenario1={scenarios1}/>
+                    <Scenario1 scenario1={scenarios1}/>
                   </li>
                 )
               }
