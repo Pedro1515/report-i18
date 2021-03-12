@@ -182,7 +182,6 @@ function Content() {
 }
 
 function Scenario2Item({scenario2}) {
-  console.log('peticion para scenario dos');
   const {name, nodes:steps, status, description, duration, bddType, categoryNameList:tags} = scenario2
   
   const count1 = Math.random();
@@ -230,12 +229,12 @@ function Scenario2Item({scenario2}) {
             <div className="flow-root">
               <div className="float-right text-sm">
                 <label 
-                  className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} 
+                  className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
                   onClick={()=>{handleTest1(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle1${count1}`}>
                   1
                 </label>
                 <label 
-                  className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} 
+                  className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
                   onClick={()=>{handleTest2(name, steps, description, duration, bddType, tags)}} htmlFor={`toogle2${count2}`}>
                   2
                 </label>
@@ -301,12 +300,12 @@ function Scenario1Item({scenario1}) {
             <div className="flow-root">
               <div className="float-right text-sm">
                 <label 
-                  className={`${checked1 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} 
+                  className={`${checked1 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
                   onClick={()=>{handleTest1(name, steps, description, duration, bddType)}} htmlFor={`toogle1${count1}`}>
                   1
                 </label>
                 <label 
-                  className={`${checked2 && "bg-gray-800 text-white"} mx-1 bg-white text-black text-sm bg-gray-200 px-2 font-semibold rounded cursor-pointer transition duration-200 hover:bg-gray-400`} 
+                  className={`${checked2 ? "bg-gray-800 text-white transition duration-200 hover:bg-gray-400 hover:text-black" : "bg-white text-black transition duration-200 hover:bg-gray-400"} mx-1 text-sm px-2 font-semibold rounded cursor-pointer`} 
                   onClick={()=>{handleTest2(name, steps, description, duration, bddType)}} htmlFor={`toogle2${count2}`}>
                   2
                 </label>
