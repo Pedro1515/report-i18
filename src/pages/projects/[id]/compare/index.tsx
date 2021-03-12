@@ -102,7 +102,7 @@ function Content() {
   }
   
   return (
-    <>
+    <div className="w-full h-full overflow-y-auto">
       {name1 && (
         <div className="float-left w-1/2 p-2">
           {test?.test1 && (
@@ -141,7 +141,7 @@ function Content() {
         </div>
       )}
       {name2 && (
-        <div className="float-left w-1/2 p-2">
+        <div className="float-right w-1/2 p-2">
           {test?.test2 && (
             <>
               <div className="w-full">
@@ -177,7 +177,7 @@ function Content() {
           )}
         </div>
       )}
-    </>
+    </div>
   )
 }
 
@@ -474,9 +474,7 @@ function LayoutCompare() {
                 <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
                   <NavMenu runs={rs} />
                 </div>
-                <div className="w-full h-full overflow-y-auto">
-                  <Content />
-                </div>
+                <Content />
             </div>
         </>
     )
