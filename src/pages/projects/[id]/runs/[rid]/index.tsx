@@ -558,7 +558,7 @@ function FeatureContent({ feature }) {
   );
 }
 
-function SummaryWrapper({ children }) {
+function FiltersWrapper({ children }) {
   return (
     <div
       className={classNames(
@@ -567,12 +567,32 @@ function SummaryWrapper({ children }) {
         "border-b",
         "w-full",
         "flex",
-        "space-x-10"
       )}
     >
       {children}
     </div>
   );
+}
+
+function Filters({errorState, asPath}) {
+  return (
+    <div className="py-4 w-1/2 self-center">
+      <div className="text-center">
+        <button className="mx-2 px-3 py-1 rounded bg-green-300 font-medium text-sm text-green-800 transition duration-200 hover:bg-green-400">Pass</button>
+        <button className="mx-2 px-3 py-1 rounded bg-red-300 font-medium text-sm text-red-800 transition duration-200 hover:bg-red-400">Fail</button>
+        {errorState && 
+          <button className="mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
+            <a 
+              href={`${asPath && asPath}/state`} 
+              target="blank" 
+            >
+                Error States
+            </a>
+          </button>
+        }
+      </div>
+    </div>
+  )
 }
 
 function Run() {
@@ -601,13 +621,13 @@ function Run() {
               </nav>)
               }
             </div>
-            {errorState && <a href={`${asPath && asPath}/state`} target="blank" className="py-0.5 px-3 text-white tracking-tight font-medium rounded bg-blue-500 transition duration-300 hover:bg-blue-600">Error States</a>}
+            <Summary run={run} />
           </LayoutHeader>
           <LayoutContent scrollable>
-            <SummaryWrapper>
+            <FiltersWrapper>
               <Search selectedFeatureId={id} />
-              <Summary run={run} />
-            </SummaryWrapper>
+              <Filters errorState={errorState} asPath={asPath} />
+            </FiltersWrapper>
             <FeatureContent feature={feature} />
           </LayoutContent>
       </Layout>

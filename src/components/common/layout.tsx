@@ -19,7 +19,7 @@ export function LayoutHeader({ children }) {
     <header
       className={classNames(
         "z-10",
-        "py-8",
+        "py-4",
         "bg-white",
         "dark:bg-gray-800",
         "border-b",
