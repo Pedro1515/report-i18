@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Layout,
   LayoutHeader,
@@ -71,6 +71,40 @@ function useUiData() {
   const context = React.useContext(UiDataContext);
   if (!context) {
     throw new Error("useUiData must be used within a UiDataProvider");
+  }
+  return context;
+}
+
+// @ts-ignore
+const FullFiltersContext = React.createContext();
+
+function FullFiltersProvider(props) {
+  const [fullFilters, setFullFilters] = React.useState({all:false, pass:false, fail:true});
+  const value = { fullFilters, setFullFilters };
+  return <FullFiltersContext.Provider value={value} {...props} />;
+}
+
+function useFullFilters() {
+  const context = React.useContext(FullFiltersContext);
+  if (!context) {
+    throw new Error("useFullFilters must be used within a FullFiltersProvider");
+  }
+  return context;
+}
+
+// @ts-ignore
+const FiltersContext = React.createContext();
+
+function FiltersProvider(props) {
+  const [filters, setFilters] = React.useState({all:false, pass:false, fail:true});
+  const value = { filters, setFilters };
+  return <FiltersContext.Provider value={value} {...props} />;
+}
+
+function useFilters() {
+  const context = React.useContext(FiltersContext);
+  if (!context) {
+    throw new Error("Filters must be used within a FiltersProvider");
   }
   return context;
 }
@@ -229,7 +263,8 @@ const Summary = React.memo(function Summary({ run }: SummaryProps) {
 });
 
 function StepWrapper({ children }) {
-  return <ul className="space-y-2 py-4">{children}</ul>;
+  return <ul>{children}</ul>;
+  // return <ul className="space-y-2 py-4">{children}</ul>;
 }
 
 function Step({ status, name, logs }) {
@@ -451,7 +486,7 @@ function ScenarioContent({ scenario }) {
   );
 }
 
-function ScenarioCard({ scenario }) {
+function ScenarioCard({ scenario, featureName }) {
   const {
     id,
     name,
@@ -475,9 +510,24 @@ function ScenarioCard({ scenario }) {
           errors: errorStates,
         }}
       />
-      <ScenarioOutlineContent {...{ bddType, nodes, description }} />
-      <ScenarioContent {...{ scenario }} />
+      {featureName && <p className="mt-4">Feature: {featureName}</p>}
+      <ScenarioOutlineContent {...{ bddType, nodes, description, featureName }} />
+      <ScenarioContent {...{ scenario, featureName }} />
 
+    </div>
+  );
+}
+
+function FeatureEmptyPlaceholder() {
+  return (
+    <div className="h-full flex-center flex-col font-medium text-gray-500 bg-gray-100">
+      <div className="w-16 h-16 mb-4">
+        <BeakerIcon />
+      </div>
+      <p className="text-center">
+        Selecciona una feature del buscador <br />
+        para ver el detalle.
+      </p>
     </div>
   );
 }
@@ -517,20 +567,6 @@ function FeatureHeading({ created, name, tags }) {
   );
 }
 
-function FeatureEmptyPlaceholder() {
-  return (
-    <div className="h-full flex-center flex-col font-medium text-gray-500 bg-gray-100">
-      <div className="w-16 h-16 mb-4">
-        <BeakerIcon />
-      </div>
-      <p className="text-center">
-        Selecciona una feature del buscador <br />
-        para ver el detalle.
-      </p>
-    </div>
-  );
-}
-
 function FeatureContent({ feature }) {
   const { name, startTime, categoryNameList, id } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
@@ -550,10 +586,85 @@ function FeatureContent({ feature }) {
           </div>
         ) : (
           child?.map((scenario) => {
-            return <ScenarioCard key={scenario.id} scenario={scenario} />;
+            return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null} />;
           })
         )}
       </div>
+    </div>
+  );
+}
+
+function AllContent({ feature }) {
+  const { name, startTime, categoryNameList, id } = feature ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const child = f ? f.nodes : [];
+  if (!feature) {
+    return <FeatureEmptyPlaceholder />;
+  }
+
+  return (
+    <div className="px-6 py-4 flex-auto">
+      <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
+      <div className="space-y-8">
+        {isLoading ? (
+          <div className="flex-center mt-20">
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        ) : (
+          child?.map((scenario) => {
+            return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null}/>;
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PassContent({ feature }) {
+  const { name, startTime, categoryNameList, id, status } = feature ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const child = f ? f.nodes : [];
+  if (!feature) {
+    return <FeatureEmptyPlaceholder />;
+  }
+
+  return (
+    <div className="px-6 py-4 flex-auto">
+      {isLoading ? (
+        <div className="flex-center mt-20">
+          <Spinner className="h-10 w-10 text-gray-500" />
+        </div>
+      ) : (
+        child?.map((scenario) => {
+          return scenario?.status === "pass" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
+        })
+      )}
+    </div>
+  );
+}
+
+function FailContent({ feature }) {
+  const { name, startTime, categoryNameList, id, status } = feature ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const child = f ? f.nodes : [];
+  if (!feature) {
+    return <FeatureEmptyPlaceholder />;
+  }
+
+  return (
+    <div className="px-6 py-4 flex-auto">
+      {isLoading ? (
+        <div className="flex-center mt-20">
+          <Spinner className="h-10 w-10 text-gray-500" />
+        </div>
+      ) : (
+        child?.map((scenario) => {
+          return scenario?.status === "fail" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
+        })
+      )}
     </div>
   );
 }
@@ -575,11 +686,30 @@ function FiltersWrapper({ children }) {
 }
 
 function Filters({errorState, asPath}) {
+  // @ts-ignore
+  const { setFullFilters } = useFullFilters()
+
+  // @ts-ignore
+  const { setFilters } = useFilters()
+
+  const handleAll = () => {
+    setFullFilters({all:true, pass:false, fail:false})
+    setFilters({all:true, pass:false, fail:false})
+  }
+  const handlePass = () => {
+    setFullFilters({all:false, pass:true, fail:false})
+    setFilters({all:false, pass:true, fail:false})
+  }
+  const handleFail = () => {
+    setFullFilters({all:false, pass:false, fail:true})
+    setFilters({all:false, pass:false, fail:true})
+  }
   return (
     <div className="py-4 w-1/2 self-center">
       <div className="text-center">
-        <button className="mx-2 px-3 py-1 rounded bg-green-300 font-medium text-sm text-green-800 transition duration-200 hover:bg-green-400">Pass</button>
-        <button className="mx-2 px-3 py-1 rounded bg-red-300 font-medium text-sm text-red-800 transition duration-200 hover:bg-red-400">Fail</button>
+        <button onClick={handleAll} className="mx-2 px-3 py-1 rounded bg-gray-600 font-medium text-sm text-white transition duration-200 hover:bg-gray-700">All Tests</button>
+        <button onClick={handlePass} className="mx-2 px-3 py-1 rounded bg-green-300 font-medium text-sm text-green-800 transition duration-200 hover:bg-green-400">Pass</button>
+        <button onClick={handleFail} className="mx-2 px-3 py-1 rounded bg-red-300 font-medium text-sm text-red-800 transition duration-200 hover:bg-red-400">Fail</button>
         {errorState && 
           <button className="mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
             <a 
@@ -595,8 +725,45 @@ function Filters({errorState, asPath}) {
   )
 }
 
+function FilterFeaturesFull({features}) {
+  // @ts-ignore
+  const { fullFilters } = useFullFilters()
+  const {all, fail, pass} = fullFilters
+  return (
+    <>
+      {all && <AllContent feature={features} />}
+      {fail && <FailContent feature={features}/>}
+      {pass && <PassContent feature={features}/>}
+    </>
+  )
+}
+
+function FilterFeature({feature}) {
+    // @ts-ignore
+    const { filters } = useFilters()
+    const {all, fail, pass} = filters
+  return (
+    <>
+      {all && <FeatureContent feature={feature} />}
+      {fail && <FailContent feature={feature}/>}
+      {pass && <PassContent feature={feature}/>}
+    </>
+  )
+}
+
+function FeatureWrapper({feature, features}) {
+  return (
+    <>
+      {feature ? <FilterFeature feature={feature} /> : features?.content.map((f)=>{
+        return <FilterFeaturesFull key={f?.id} features={f}/>
+      })}
+    </>
+  )
+}
+
 function Run() {
   const { query, push, asPath } = useRouter();
+  const { features } = useFeatures(query.rid as string);
   // @ts-ignore
   const { feature } = useFeature();
   const { id } = feature ?? {};
@@ -628,7 +795,7 @@ function Run() {
               <Search selectedFeatureId={id} />
               <Filters errorState={errorState} asPath={asPath} />
             </FiltersWrapper>
-            <FeatureContent feature={feature} />
+            <FeatureWrapper feature={feature} features={features}/>
           </LayoutContent>
       </Layout>
     </div>
@@ -638,9 +805,13 @@ function Run() {
 function RunWithProvider() {
   return (
     <FeatureProvider>
-      <UiDataProvider>
-        <Run />
-      </UiDataProvider>
+      <FullFiltersProvider>
+        <FiltersProvider >
+          <UiDataProvider>
+            <Run />
+          </UiDataProvider>
+        </FiltersProvider>
+      </FullFiltersProvider>
     </FeatureProvider>
   );
 }
