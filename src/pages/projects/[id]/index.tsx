@@ -400,12 +400,11 @@ function Project() {
   const { runs } = useRuns({
     projectId: query.id as string,
   });
-  console.log(asPath);
 
   return (
     <Layout>
       <LayoutHeader>
-        <div className="flex space-x-4">
+        <div className="flex p-4 space-x-4">
           <nav className="container">
             <ol className="flex text-grey">
               {project?.name !== undefined &&
