@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -56,6 +56,9 @@ function RunsTable() {
     size: 5,
   });
   const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
+  useEffect(() => {
+    console.log(runs)
+  }, [runs])
   const { PaginationComponent, currentPage } = usePagination<Run[]>({
     paginatedObject: runs,
   });

@@ -312,7 +312,7 @@ function Logs({logs}) {
     
     logs?.map(({test, status, details, media}) =>  (
 
-      <React.Fragment>
+      <React.Fragment key={test}>
 
           {details != '' ? 
                 <li className="flex items-center text-sm" 

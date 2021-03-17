@@ -15,3 +15,16 @@ export function useTests(query) {
     mutateTests,
   };
 }
+
+export function useTestsNodes(id) {
+  const { data, error, mutate: mutateTests } = useSWR(
+    `/rest/tests/nodes?id=${id}`
+  );
+
+  return {
+    testsNodes: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutateTests,
+  };
+}
