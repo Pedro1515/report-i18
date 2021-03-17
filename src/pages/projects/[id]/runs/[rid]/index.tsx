@@ -670,17 +670,21 @@ function FailFullContent({ feature }) {
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
   return (
-    <div className="px-6 py-4 h-full flex-none">
+    <>
       {isLoading ? (
-        <div className="flex-center" style={{height: "80%"}}>
-          <Spinner className="h-10 w-10 text-gray-500" />
+        <div className="px-6 py-4 h-full flex-none">
+          <div className="flex-center" style={{height: "80%"}}>
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
         </div>
-      ) : (
-        child?.map((scenario) => {
-          return scenario?.status === "fail" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
-        })
+        ) : (
+        <div className="px-6 py-4 flex-auto">
+          {child?.map((scenario) => {
+            return scenario?.status === "fail" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
+          })}
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
