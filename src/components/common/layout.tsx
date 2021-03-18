@@ -47,7 +47,7 @@ export function LayoutContent({
   return (
     <main
       className={classNames("flex", "flex-col", "h-full", "overflow-hidden", {
-        "overflow-y-auto": scrollable,
+        "overflow-y-overlay": scrollable,
       })}
       {...props}
     />

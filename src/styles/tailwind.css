@@ -72,3 +72,7 @@ li {
   outline: 2px solid #718096;
   outline-style: auto;
 }
+
+.overflow-y-overlay {
+  overflow-y: overlay;
+}
