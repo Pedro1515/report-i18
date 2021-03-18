@@ -756,19 +756,21 @@ function ButtonsFilters({errorState, asPath}) {
   return (
     <div className="py-4 w-1/2 self-center">
         <div className='ml-3 inline-block'>
-          <button onClick={handleAll} className={`${all && "border-2 border-gray-600"} mx-2 px-3 py-1 rounded bg-gray-100 font-medium text-sm text-gray-700 focus:outline-none transition duration-200 hover:bg-gray-100`}>All Scenarios</button>
-          <button onClick={handlePass} className={`${pass && "border-2 border-green-500"} mx-2 px-3 py-1 rounded bg-green-300 font-medium text-sm text-green-800 focus:outline-none transition duration-200 hover:bg-green-400`}>Pass</button>
-          <button onClick={handleFail} className={`${fail && "border-2 border-red-500"} mx-2 px-3 py-1 rounded bg-red-300 font-medium text-sm text-red-800 focus:outline-none transition duration-200 hover:bg-red-400`}>Fail</button>
+          <span onClick={handleAll} className={`${all && "outline-gray"} mx-2 px-3 py-1 cursor-pointer rounded bg-gray-100 font-medium text-sm text-gray-700 transition duration-200 hover:bg-gray-100`}>All Scenarios</span>
+          <span onClick={handlePass} className={`${pass && "outline-green"} mx-2 px-3 py-1 cursor-pointer rounded bg-green-300 font-medium text-sm text-green-800 transition duration-200 hover:bg-green-400`}>Pass</span>
+          <span onClick={handleFail} className={`${fail && "outline-red"} mx-2 px-3 py-1 cursor-pointer rounded bg-red-300 font-medium text-sm text-red-800 transition duration-200 hover:bg-red-400`}>Fail</span>
         </div>
-        {errorState && 
-          <button className="float-right mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
-            <a 
-              href={`${asPath && asPath}/state`} 
-              target="blank" 
-            >
-                Error States
-            </a>
-          </button>
+        {errorState &&
+          <div className="float-right">
+            <span className="cursor-pointer mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
+              <a 
+                href={`${asPath && asPath}/state`} 
+                target="blank" 
+              >
+                  Error States
+              </a>
+            </span>
+          </div>
         }
     </div>
   )

@@ -57,3 +57,18 @@
 li {
   outline: none;
 }
+
+.outline-red {
+  outline: 2px solid #F56565;
+  outline-style: auto;
+}
+
+.outline-green {
+  outline: 2px solid #48BB78;
+  outline-style: auto;
+}
+
+.outline-gray {
+  outline: 2px solid #718096;
+  outline-style: auto;
+}
