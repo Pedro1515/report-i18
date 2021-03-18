@@ -142,22 +142,21 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
   );
 }
 
-function ErrorStateMenuIcon({ id, errors }) {
+function ErrorStateMenuIcon({ id, errors, featureId }) {
   const { query } = useRouter();
+  const { mutateTests:mutateAllTests } = useTests({ "deep-populate": true, id: featureId });
   // @ts-ignore
-    const { setUiData } = useUiData()
-  // @ts-ignore
-  const { feature } = useFeature();
-  const { id: featureId } = feature ?? {};
-  const { mutateTests } = useTests({ "deep-populate": true, id: featureId });
+  const { setUiData } = useUiData()
+
   const { run } = useRun(query.rid as string);
   const { project } = useProject(run?.project);
   const { errorState } = project ?? {};
 
   const handleErrorState = (error) => async (event) => {
     setUiData(true)
-    await updateTest({ id, errorStates: [error] });
-    const done = await mutateTests();
+    updateTest({ id, errorStates: [error] });
+    
+    const done = await mutateAllTests()
     if (done) {
       setUiData(false)
     }
@@ -332,14 +331,15 @@ function Logs({logs}) {
   );
 }
 
-function TestCard({ id, name, steps = [], errors }) {
+function TestCard({ id, name, steps = [], errors, featureName, featureId }) {
   return (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
-      <div className="flex flex-col">
+      <div className="mb-3">
         <div className="flex justify-between items-center">
           <div className="text-sm font-medium">{name}</div>
-          {errors && <ErrorStateMenuIcon {...{ id, errors }} />}
+          {errors && <ErrorStateMenuIcon {...{ id, errors, featureId }} />}
         </div>
+        {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
         {errors?.length > 0 && (
           <div className="flex items-center">
             <div className="font-medium text-sm">Excepciones</div>
@@ -374,10 +374,10 @@ function TestCard({ id, name, steps = [], errors }) {
   );
 }
 
-function ScenarioHeader({ id, name, duration, tags, status, errors }) {
+function ScenarioHeader({ id, name, duration, tags, status, errors, featureName }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
-    <div className="flex flex-col border-b -mx-4 py-3 px-4">
+    <div className="border-b -mx-4 py-3 px-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="font-medium text-sm">{name}</div>
@@ -408,8 +408,9 @@ function ScenarioHeader({ id, name, duration, tags, status, errors }) {
           ))}
           <StatusBadge status={status} />
         </div>
-        {errors && <ErrorStateMenuIcon {...{ id, errors }} />}
+        {/* {errors && <ErrorStateMenuIcon {...{ id, errors }} />} */}
       </div>
+      {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
       {errors?.length > 0 && (
         <div className="flex items-center">
           <div className="font-medium text-sm">Excepciones</div>
@@ -433,7 +434,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors }) {
   );
 }
 
-function ScenarioOutlineContent({ bddType, nodes, description }) {
+function ScenarioOutlineContent({ bddType, nodes, description, featureName, featureId }) {
   if (bddType === "Scenario Outline") {
     return (
       <div className="py-6">
@@ -442,7 +443,7 @@ function ScenarioOutlineContent({ bddType, nodes, description }) {
         {nodes?.map((test) => {
           const { id, name, nodes: steps, errorStates } = test;
           return (
-            <TestCard key={id} {...{ id, name, steps, errors: errorStates }} />
+            <TestCard key={id} {...{ id, name, steps, errors: errorStates, featureName, featureId }} />
           );
         })}
       </div>
@@ -463,13 +464,10 @@ function ScenarioOutlineContent({ bddType, nodes, description }) {
   );
 }
 
-function ScenarioContent({ scenario }) {
+function ScenarioContent({ scenario, featureName, featureId }) {
   const {
     id,
     name,
-    status,
-    duration,
-    categoryNameList,
     description,
     nodes,
     bddType,
@@ -479,7 +477,7 @@ function ScenarioContent({ scenario }) {
     return (
       <div className="py-6">
         <div dangerouslySetInnerHTML={{ __html: description }} />
-            <TestCard key={id} {...{ id, name, steps: nodes, errors: errorStates }} />
+            <TestCard key={id} {...{ id, name, steps: nodes, errors: errorStates, featureId }} featureName={null} />
       </div>
     );
   }
@@ -498,7 +496,7 @@ function ScenarioContent({ scenario }) {
   );
 }
 
-function ScenarioCard({ scenario, featureName }) {
+function ScenarioCard({ scenario, featureName, featureId }) {
   // @ts-ignore
   const { setScrollable } = useScrollable()
   useEffect(() => {
@@ -525,11 +523,11 @@ function ScenarioCard({ scenario, featureName }) {
           status,
           tags: categoryNameList,
           errors: errorStates,
+          featureName
         }}
       />
-      {featureName && <p className="mt-4">Feature: {featureName}</p>}
-      <ScenarioOutlineContent {...{ bddType, nodes, description, featureName }} />
-      <ScenarioContent {...{ scenario, featureName }} />
+      <ScenarioOutlineContent {...{ bddType, nodes, description, featureName, featureId }} />
+      <ScenarioContent {...{ scenario, featureName, featureId }} />
 
     </div>
   );
@@ -583,8 +581,81 @@ function FeatureHeading({ created, name, tags }) {
     </div>
   );
 }
+// ============ componentes para todos los features ============
+function AllFeaturesContent({ features }) {
+  const { name, startTime, categoryNameList, id } = features ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const child = f ? f.nodes : [];
+  return (
+    <>
+      {isLoading ? (
+        <div className="px-6 py-4 h-full flex-none">
+          <div className="flex-center" style={{height: "80%"}}>
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        </div>
+      ) : (
+        <div className="px-6 py-4 flex-auto">
+          {/* <FeatureHeading name={name} created={startTime} tags={categoryNameList} /> */}
+          <div className="space-y-8">
+              {child?.map((scenario) => {
+                return <ScenarioCard key={scenario.id} scenario={scenario} featureName={name} featureId={id}/>;
+              })}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
-function FeatureContent({ feature }) {
+function AllFilterContent({ features, status }) {
+  const { name, startTime, categoryNameList, id, status:featureStatus } = features ?? {};
+  const { tests, isLoading } = useTests({ "deep-populate": true, id });
+  const [f] = tests?.content ?? [];
+  const child = f ? f.nodes : [];
+  return (
+    <>
+      {isLoading ? (
+        <div className="px-6 py-4 h-full flex-none">
+          <div className="flex-center" style={{height: "80%"}}>
+            <Spinner className="h-10 w-10 text-gray-500" />
+          </div>
+        </div>
+      ) : (
+        <div className="px-6 py-4 flex-auto">
+          <div className="space-y-8">
+            {child?.map((scenario) => {
+              if (scenario?.status === status) {
+                return <ScenarioCard key={scenario.id} featureName={name} featureId={id} scenario={scenario} />
+              }
+            })}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function AllFeatures({features}) {
+  // @ts-ignore
+  const { filters } = useFilters()
+  const { all, fail, pass} = filters
+  
+  if (!fail && !pass) {
+    return all && <AllFeaturesContent features={features} />
+  } else {
+    return (
+      <>
+        {fail && <AllFilterContent features={features} status={'fail'}/>}
+        {pass && <AllFilterContent features={features} status={'pass'}/>}
+      </>
+    )
+  }
+}
+
+// ============ componentes para un solo featurea ============ 
+function OneFeatureContent({ feature }) {
   const { name, startTime, categoryNameList, id } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
@@ -603,7 +674,7 @@ function FeatureContent({ feature }) {
           </div>
         ) : (
           child?.map((scenario) => {
-            return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null} />;
+            return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null} featureId={id} />;
           })
         )}
       </div>
@@ -611,8 +682,8 @@ function FeatureContent({ feature }) {
   );
 }
 
-function AllContent({ feature }) {
-  const { name, startTime, categoryNameList, id } = feature ?? {};
+function OneFilterContent({ feature, status }) {
+  const { name, startTime, categoryNameList, id, status:featureStatus } = feature ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
   const child = f ? f.nodes : [];
@@ -627,35 +698,11 @@ function AllContent({ feature }) {
       ) : (
         <div className="px-6 py-4 flex-auto">
           <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
-          <div className="space-y-8">
-              {child?.map((scenario) => {
-                return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null}/>;
-              })}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function PassFullContent({ feature }) {
-  const { name, startTime, categoryNameList, id, status } = feature ?? {};
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
-  const [f] = tests?.content ?? [];
-  const child = f ? f.nodes : [];
-  return (
-    <>
-      {isLoading ? (
-        <div className="px-6 py-4 h-full flex-none">
-          <div className="flex-center" style={{height: "80%"}}>
-            <Spinner className="h-10 w-10 text-gray-500" />
-          </div>
-        </div>
-      ) : (
-        <div className="px-6 py-4 flex-auto">
           <div className="space-y-8">
             {child?.map((scenario) => {
-              return scenario?.status === "pass" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
+              if (scenario?.status === status) {
+                return <ScenarioCard key={scenario.id} featureName={null} featureId={id} scenario={scenario} />
+              }
             })}
           </div>
         </div>
@@ -664,101 +711,35 @@ function PassFullContent({ feature }) {
   );
 }
 
-function FailFullContent({ feature }) {
-  const { name, startTime, categoryNameList, id, status } = feature ?? {};
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
-  const [f] = tests?.content ?? [];
-  const child = f ? f.nodes : [];
+function OneFeature({feature}) {
+  // @ts-ignore
+  const { filters } = useFilters()
+  const { all, fail, pass} = filters
+
+    if (!fail && !pass) {
+      return !all && <OneFeatureContent feature={feature} />
+    } else {
+      return (
+        <>
+          {fail && <OneFilterContent feature={feature} status={'fail'}/>}
+          {pass && <OneFilterContent feature={feature} status={'pass'}/>}
+        </>
+      )
+    }
+}
+
+// ============ wrapper para los dos tipos de features ============ 
+function FeatureWrapper({feature, features}) {
   return (
     <>
-      {isLoading ? (
-        <div className="px-6 py-4 h-full flex-none">
-          <div className="flex-center" style={{height: "80%"}}>
-            <Spinner className="h-10 w-10 text-gray-500" />
-          </div>
-        </div>
-        ) : (
-        <div className="px-6 py-4 flex-auto">
-          {child?.map((scenario) => {
-            return scenario?.status === "fail" && <ScenarioCard key={scenario.id} featureName={name} scenario={scenario} />
-          })}
-        </div>
-      )}
+      {feature ? <OneFeature feature={feature} /> : features?.content.map((f)=>{
+        return <AllFeatures key={f?.id} features={f}/>
+      })}
     </>
-  );
+  )
 }
 
-function PassContent({ feature }) {
-  const { name, startTime, categoryNameList, id, status } = feature ?? {};
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
-  const [f] = tests?.content ?? [];
-  const child = f ? f.nodes : [];
-  return (
-    <>
-      {isLoading ? (
-        <div className="px-6 py-4 h-full flex-none">
-          <div className="flex-center" style={{height: "80%"}}>
-            <Spinner className="h-10 w-10 text-gray-500" />
-          </div>
-        </div>
-      ) : (
-        <div className="px-6 py-4 flex-auto">
-          <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
-          <div className="space-y-8">
-              {child?.map((scenario) => {
-                return scenario?.status === "pass" && <ScenarioCard key={scenario.id} featureName={null} scenario={scenario} />
-            })}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function FailContent({ feature }) {
-  const { name, startTime, categoryNameList, id, status } = feature ?? {};
-  const { tests, isLoading } = useTests({ "deep-populate": true, id });
-  const [f] = tests?.content ?? [];
-  const child = f ? f.nodes : [];
-  return (
-    <>
-      {isLoading ? (
-        <div className="px-6 py-4 h-full flex-none">
-          <div className="flex-center" style={{height: "80%"}}>
-            <Spinner className="h-10 w-10 text-gray-500" />
-          </div>
-        </div>
-      ) : (
-        <div className="px-6 py-4 flex-auto">
-          <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
-          <div className="space-y-8">
-              {child?.map((scenario) => {
-                return scenario?.status === "fail" && <ScenarioCard key={scenario.id} featureName={null} scenario={scenario} />
-            })}
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
-
-function Buttonsrapper({ children }) {
-  return (
-    <div
-      className={classNames(
-        "px-6",
-        "py-4",
-        "border-b",
-        "w-full",
-        "flex",
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Filters({errorState, asPath}) {
+function ButtonsFilters({errorState, asPath}) {
   // @ts-ignore
   const { filters, setFilters } = useFilters()
   const {all, fail, pass} = filters
@@ -775,7 +756,7 @@ function Filters({errorState, asPath}) {
   return (
     <div className="py-4 w-1/2 self-center">
         <div className='ml-3 inline-block'>
-          <button onClick={handleAll} className={`${all && "border-2 border-gray-600"} mx-2 px-3 py-1 rounded bg-gray-100 font-medium text-sm text-gray-700 focus:outline-none transition duration-200 hover:bg-gray-100`}>All Tests</button>
+          <button onClick={handleAll} className={`${all && "border-2 border-gray-600"} mx-2 px-3 py-1 rounded bg-gray-100 font-medium text-sm text-gray-700 focus:outline-none transition duration-200 hover:bg-gray-100`}>All Scenarios</button>
           <button onClick={handlePass} className={`${pass && "border-2 border-green-500"} mx-2 px-3 py-1 rounded bg-green-300 font-medium text-sm text-green-800 focus:outline-none transition duration-200 hover:bg-green-400`}>Pass</button>
           <button onClick={handleFail} className={`${fail && "border-2 border-red-500"} mx-2 px-3 py-1 rounded bg-red-300 font-medium text-sm text-red-800 focus:outline-none transition duration-200 hover:bg-red-400`}>Fail</button>
         </div>
@@ -793,48 +774,20 @@ function Filters({errorState, asPath}) {
   )
 }
 
-function FilterFeaturesFull({features}) {
-  // @ts-ignore
-  const { filters } = useFilters()
-  const { all, fail, pass} = filters
-
-    if (!fail && !pass) {
-      return all && <AllContent feature={features} />
-    } else {
-      return (
-        <>
-          {fail && <FailFullContent feature={features}/>}
-          {pass && <PassFullContent feature={features}/>}
-        </>
-      )
-    }
-}
-
-function FilterFeature({feature}) {
-  // @ts-ignore
-  const { filters } = useFilters()
-  const { all, fail, pass} = filters
-
-    if (!fail && !pass) {
-      return !all && <FeatureContent feature={feature} />
-    } else {
-      return (
-        <>
-          {fail && <FailContent feature={feature}/>}
-          {pass && <PassContent feature={feature}/>}
-        </>
-      )
-    }
-}
-
-function FeatureWrapper({feature, features}) {
+function ButtonsWrapper({ children }) {
   return (
-    <>
-      {feature ? <FilterFeature feature={feature} /> : features?.content.map((f)=>{
-        return <FilterFeaturesFull key={f?.id} features={f}/>
-      })}
-    </>
-  )
+    <div
+      className={classNames(
+        "px-6",
+        "py-4",
+        "border-b",
+        "w-full",
+        "flex",
+      )}
+    >
+      {children}
+    </div>
+  );
 }
 
 function Run() {
@@ -871,10 +824,10 @@ function Run() {
             <Summary run={run} />
           </LayoutHeader>
           <LayoutContent scrollable={scrollable}>
-            <Buttonsrapper>
+            <ButtonsWrapper>
               <Search selectedFeatureId={id} />
-              <Filters errorState={errorState} asPath={asPath} />
-            </Buttonsrapper>
+              <ButtonsFilters errorState={errorState} asPath={asPath} />
+            </ButtonsWrapper>
             <FeatureWrapper feature={feature} features={features}/>
           </LayoutContent>
       </Layout>
@@ -885,13 +838,13 @@ function Run() {
 function RunWithProvider() {
   return (
     <FeatureProvider>
-      <FiltersProvider >
-        <ScrollableProvider>
-          <UiDataProvider>
+      <UiDataProvider>
+        <FiltersProvider >
+          <ScrollableProvider>
             <Run />
-          </UiDataProvider>
-        </ScrollableProvider>
-      </FiltersProvider>
+          </ScrollableProvider>
+        </FiltersProvider>
+      </UiDataProvider>
     </FeatureProvider>
   );
 }
