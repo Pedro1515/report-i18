@@ -19,6 +19,7 @@ import {
   useTests,
   useRun,
   useProject,
+  useRuns,
 } from "src/utils/hooks";
 import { ProtectRoute } from "src/context";
 import {
@@ -33,6 +34,7 @@ import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "src/utils";
 import { Feature, Run as ApiRun, updateTest} from "src/api";
 import { useRouter } from "next/router";
+import { Transition } from '@headlessui/react';
 
 interface FeatureItemProps {
   name: string;
@@ -792,9 +794,66 @@ function ButtonsWrapper({ children }) {
   );
 }
 
+function Dropdown({run, runs}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activedStyle, setActivedStyle] = useState(false)
+
+  useEffect(() => {
+    if (runs?.content.length >= 8) {
+      setActivedStyle(true)
+    }
+  }, [runs])
+
+  const handleFocus = (e) => {
+    setIsOpen(true)
+  }
+
+  const handleBlur = (e) => {
+    setIsOpen(false)
+  }
+
+  return (
+    <div className="ml-3 relative">
+      <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
+        {run?.name}
+      </button>
+
+      <Transition
+        show={isOpen}
+        enter="transition ease-out duration-100 transform"
+        enterFrom="opacity-0 scale-95"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-75 transform"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
+      >
+        <div className={`${activedStyle && "h-screen"} absolute right-0 mt-2 w-56 origin-top-right`}>
+          <nav style={{height: "70%"}} className="rounded-md shadow-lg">
+          <div style={{right: "-45px"}} className="inline-block bg-white absolute p-2 w-8 border shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
+            <img className="w-full cursor-pointer" src="/assets/close1.png"  alt="close"/>
+          </div>
+            <ul className="h-full overflow-y-overlay rounded-md bg-white shadow-xs">
+              {runs?.content.map(run => {
+                return (
+                <a  className="w-full" key={run?.id} href={`${run?.id}`}>
+                  <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
+                </a>
+                )
+              })}
+            </ul>
+          </nav>
+        </div>
+      </Transition>
+    </div>
+  )
+}
+
 function Run() {
   const { query, push, asPath } = useRouter();
   const { features } = useFeatures(query.rid as string);
+  const { runs } = useRuns({
+    projectId: query.id as string,
+  });
   
   // @ts-ignore
   const { feature } = useFeature();
@@ -818,7 +877,7 @@ function Run() {
                 <ol className="flex text-grey">
                   <li className="px-2"><a onClick={goToProject} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>
                   <li className="cursor-default font-semibold">{`>`}</li>
-                  <li className="px-2"><a href={asPath} className="no-underline text-indigo">{`${run?.name}`}</a></li>
+                  <Dropdown run={run} runs={runs} />
                 </ol>
               </nav>)
               }
