@@ -827,7 +827,7 @@ function Dropdown({run, runs}) {
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-95"
       >
-        <div className={`${activedStyle && "h-screen"} absolute right-0 mt-2 w-56 origin-top-right`}>
+        <div className={`${activedStyle && "h-screen"} absolute left-0 mt-2 w-56 origin-top-right`}>
           <nav style={{height: "70%"}} className="rounded-md shadow-lg">
           <div style={{right: "-45px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
             <span className="leading-none text-xl font-extrabold" aria-hidden="true">&times;</span>
