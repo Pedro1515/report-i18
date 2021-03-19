@@ -813,7 +813,7 @@ function Dropdown({run, runs}) {
   }
 
   return (
-    <div className="ml-3 relative">
+    <>
       <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
         {run?.name}
       </button>
@@ -844,7 +844,7 @@ function Dropdown({run, runs}) {
           </nav>
         </div>
       </Transition>
-    </div>
+    </>
   )
 }
 
@@ -871,13 +871,15 @@ function Run() {
     <div className={`${uiData && 'cursor-wait'}`}>
       <Layout>
           <LayoutHeader>
-            <div className="flex space-x-4">
+            <div className="w-1/2 mr-4 flex space-x-4">
               {project?.name !== undefined && 
-              (<nav className="container">
-                <ol className="flex text-grey">
-                  <li className="px-2"><a onClick={goToProject} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>
-                  <li className="cursor-default font-semibold">{`>`}</li>
+              (<nav className="w-full">
+                <ol className="w-full flex text-grey">
+                  <li className="max-w-50"><a onClick={goToProject} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>
+                  <li className="ml-2 cursor-default font-semibold">{`>`}</li>
+                  <li className="max-w-50 ml-3 relative">
                   <Dropdown run={run} runs={runs} />
+                  </li>
                 </ol>
               </nav>)
               }

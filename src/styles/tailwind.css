@@ -76,3 +76,7 @@ li {
 .overflow-y-overlay {
   overflow-y: overlay;
 }
+
+.max-w-50{
+  max-width: 50%;
+}
