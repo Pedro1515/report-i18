@@ -556,10 +556,8 @@ function FormModal() {
     // .trim()
     if (testName < 1 || run < 1 || project < 1 || description < 1) {
       alert('Completar los campos')
-      console.log(modal);
     } else {
       alert('Enviado');
-      console.log(modal);
       setModal({...modal,modalOpen:false})
     }
   }

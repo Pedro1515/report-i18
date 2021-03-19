@@ -56,9 +56,6 @@ function RunsTable() {
     size: 5,
   });
   const { runs, isLoading: isLoadingRuns, mutateRuns } = useRuns(filters);
-  useEffect(() => {
-    console.log(runs)
-  }, [runs])
   const { PaginationComponent, currentPage } = usePagination<Run[]>({
     paginatedObject: runs,
   });
