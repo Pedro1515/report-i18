@@ -814,42 +814,47 @@ function Dropdown({run, runs}) {
 
   return (
     <>
-      <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
-        {run?.name}
-      </button>
+      <li className="self-center max-w-50 relative">
+        <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
+          {run?.name}
+        </button>
 
-      <Transition
-        show={isOpen}
-        enter="transition ease-out duration-100 transform"
-        enterFrom="opacity-0 scale-95"
-        enterTo="opacity-100 scale-100"
-        leave="transition ease-in duration-75 transform"
-        leaveFrom="opacity-100 scale-100"
-        leaveTo="opacity-0 scale-95"
-      >
-        <div style={{height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 w-56 origin-top-right`}>
-          <nav style={{height: "70%"}} className="rounded-md border">
-          <div style={{right: "-45px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
-            <span className="leading-none text-xl font-extrabold" aria-hidden="true">&times;</span>
+        <Transition
+          show={isOpen}
+          enter="transition ease-out duration-100 transform"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-100 scale-100"
+          leave="transition ease-in duration-75 transform"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-95"
+        >
+          <div style={{height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 w-56 origin-top-right`}>
+            <nav style={{height: "70%"}} className="rounded-md border">
+            <div style={{right: "-45px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
+              <span className="leading-none text-xl font-extrabold" aria-hidden="true">&times;</span>
+            </div>
+              <ul className="h-full overflow-y-overlay rounded-md bg-white">
+                {runs?.content.map(run => {
+                  return (
+                  <a  className="w-full" key={run?.id} href={`${run?.id}`}>
+                    <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
+                  </a>
+                  )
+                })}
+              </ul>
+            </nav>
           </div>
-            <ul className="h-full overflow-y-overlay rounded-md bg-white">
-              {runs?.content.map(run => {
-                return (
-                <a  className="w-full" key={run?.id} href={`${run?.id}`}>
-                  <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
-                </a>
-                )
-              })}
-            </ul>
-          </nav>
-        </div>
-      </Transition>
+        </Transition>
+      </li>
+      <li className="self-center w-3 mx-2">
+        <img className="w-full cursor-pointer" src={isOpen ? "/assets/arrow-down.png" : "/assets/arrow-right.png" }  alt={isOpen ? "arrow-down" : "arrow-right"}/>
+      </li>
     </>
   )
 }
 
 function Run() {
-  const { query, push, asPath } = useRouter();
+  const { query, asPath } = useRouter();
   const { features } = useFeatures(query.rid as string);
   const { runs } = useRuns({
     projectId: query.id as string,
@@ -863,7 +868,6 @@ function Run() {
   const { errorState } = project ?? {};
   // @ts-ignore
   const { uiData } = useUiData()
-  const goToProject = () => push(`/projects/${project?.id}`);
 
   // @ts-ignore
   const { scrollable } = useScrollable()
@@ -874,12 +878,14 @@ function Run() {
             <div className="w-1/2 mr-4 flex space-x-4">
               {project?.name !== undefined && 
               (<nav className="w-full">
-                <ol className="w-full flex text-grey">
-                  <li className="max-w-50"><a onClick={goToProject} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>
-                  <li className="ml-2 cursor-default font-semibold">{`>`}</li>
-                  <li className="max-w-50 ml-3 relative">
-                  <Dropdown run={run} runs={runs} />
+                <ol className="flex w-full text-grey">
+                  <li className="self-center max-w-50">
+                    <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${project?.name}`}</a></button>
                   </li>
+                  <li className="self-center w-3 mx-2">
+                    <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
+                  </li>
+                    <Dropdown run={run} runs={runs} />
                 </ol>
               </nav>)
               }
