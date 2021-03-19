@@ -819,7 +819,7 @@ function Dropdown({run, runs}) {
       </button>
 
       <Transition
-        show={isOpen}
+        show={true}
         enter="transition ease-out duration-100 transform"
         enterFrom="opacity-0 scale-95"
         enterTo="opacity-100 scale-100"
@@ -828,11 +828,11 @@ function Dropdown({run, runs}) {
         leaveTo="opacity-0 scale-95"
       >
         <div className={`${activedStyle && "h-screen"} absolute left-0 mt-2 w-56 origin-top-right`}>
-          <nav style={{height: "70%"}} className="rounded-md shadow-lg">
+          <nav style={{height: "70%"}} className="rounded-md shadow">
           <div style={{right: "-45px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
             <span className="leading-none text-xl font-extrabold" aria-hidden="true">&times;</span>
           </div>
-            <ul className="h-full overflow-y-overlay rounded-md bg-white shadow-xs">
+            <ul className="h-full overflow-y-overlay rounded-md bg-white">
               {runs?.content.map(run => {
                 return (
                 <a  className="w-full" key={run?.id} href={`${run?.id}`}>
