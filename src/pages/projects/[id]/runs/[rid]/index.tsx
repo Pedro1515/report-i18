@@ -830,7 +830,7 @@ function Dropdown({run, runs}) {
         <div className={`${activedStyle && "h-screen"} absolute right-0 mt-2 w-56 origin-top-right`}>
           <nav style={{height: "70%"}} className="rounded-md shadow-lg">
           <div style={{right: "-45px"}} className="inline-block bg-white absolute p-2 w-8 border shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
-            <img className="w-full cursor-pointer" src="/assets/close1.png"  alt="close"/>
+            <img className="w-full cursor-pointer" src="/assets/close.png"  alt="close"/>
           </div>
             <ul className="h-full overflow-y-overlay rounded-md bg-white shadow-xs">
               {runs?.content.map(run => {
