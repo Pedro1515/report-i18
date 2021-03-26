@@ -239,12 +239,12 @@ function Search({ selectedFeatureId }) {
 
 function DataDisplay({ label, value }) {
   return (
-    <div className="flex flex-col py-3 px-6 xs:w-full">
-      <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
+    <span className="ml-6">
+      <span className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
         {label}
-      </div>
-      <div className="mt-2 font-medium text-2xl leading-none">{value}</div>
-    </div>
+      </span>
+      <span className="ml-2 font-medium text-xl">{value}</span>
+    </span>
   );
 }
 
@@ -254,24 +254,16 @@ interface SummaryProps {
 
 const Summary = React.memo(function Summary({ run }: SummaryProps) {
   return (
-    <div className="w-1/2">
-      <div className="flex mt-2 -mx-6">
-        <div className="w-1/3">
-          <DataDisplay
-            label="Total features"
-            value={getTotalBy("feature", run)}
-          />
-        </div>
-        <div className="w-1/3">
-          <DataDisplay
-            label="Total scenarios"
-            value={getTotalBy("scenario", run)}
-          />
-        </div>
-        <div className="w-1/3">
-          <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
-        </div>
-      </div>
+    <div>
+      <DataDisplay
+        label="Total features"
+        value={getTotalBy("feature", run)}
+      />
+      <DataDisplay
+        label="Total scenarios"
+        value={getTotalBy("scenario", run)}
+      />
+      <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
     </div>
   );
 });
@@ -881,7 +873,7 @@ function Run() {
     <div className={`${uiData && 'cursor-wait'}`}>
       <Layout>
           <LayoutHeader>
-            <div className="w-1/2 mr-4 flex space-x-4">
+            <div className="w-1/2 flex space-x-4">
               {project?.name !== undefined && 
               (<nav className="w-full">
                 <ol className="flex w-full text-grey">
