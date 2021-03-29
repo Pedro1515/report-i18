@@ -254,7 +254,7 @@ interface SummaryProps {
 
 const Summary = React.memo(function Summary({ run }: SummaryProps) {
   return (
-    <div>
+    <div className="leading-none">
       <DataDisplay
         label="Total features"
         value={getTotalBy("feature", run)}
