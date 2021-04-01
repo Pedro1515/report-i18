@@ -8,21 +8,74 @@ import format from "date-fns/format";
 import classNames from "classnames";
 
 // @ts-ignore
-const TestContext = createContext();
+const Test1Context = createContext();
 
-function TestProvider(props) {
-  const [test, setTest] = useState({
-    test1:{id:null, name:'', count:[], description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''},
-    test2:{id:null, name:'', count:[], description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''},
-  })
-  const value = { test, setTest };
-  return <TestContext.Provider value={value} {...props} />;
+function Test1Provider(props) {
+  const [test1, setTest1] = useState({
+    id:null, name:'', description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''
+})
+  const value = { test1, setTest1 };
+  return <Test1Context.Provider value={value} {...props} />;
 }
 
-function useTest() {
-  const context = useContext(TestContext);
+function useTest1() {
+  const context = useContext(Test1Context);
   if (!context) {
-    throw new Error("Test must be used within a testProvider");
+    throw new Error("Test1 must be used within a test1Provider");
+  }
+  return context;
+}
+
+// @ts-ignore
+const Test2Context = createContext();
+
+function Test2Provider(props) {
+  const [test2, setTest2] = useState({
+    id:null, name:'', description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''
+  },
+)
+  const value = { test2, setTest2 };
+  return <Test2Context.Provider value={value} {...props} />;
+}
+
+function useTest2() {
+  const context = useContext(Test2Context);
+  if (!context) {
+    throw new Error("Test2 must be used within a test2Provider");
+  }
+  return context;
+}
+
+// @ts-ignore
+const TestActived1Context = createContext();
+
+function TestActived1Provider(props) {
+  const [testActived1, setTestActived1] = useState({actived:false, count:0, tname:'', name:'', startTime:'',})
+  const value = { testActived1, setTestActived1 };
+  return <TestActived1Context.Provider value={value} {...props} />;
+}
+
+function useTestActived1() {
+  const context = useContext(TestActived1Context);
+  if (!context) {
+    throw new Error("TestActived1 must be used within a TestActived1Provider");
+  }
+  return context;
+}
+
+// @ts-ignore
+const TestActived2Context = createContext();
+
+function TestActived2Provider(props) {
+  const [testActived2, setTestActived2] = useState({actived:false, count:0, tname:'', name:'', startTime:'',})
+  const value = { testActived2, setTestActived2 };
+  return <TestActived2Context.Provider value={value} {...props} />;
+}
+
+function useTestActived2() {
+  const context = useContext(TestActived2Context);
+  if (!context) {
+    throw new Error("TestActived2 must be used within a TestActived2Provider");
   }
   return context;
 }
@@ -32,7 +85,7 @@ function Logs({ logs }) {
     <React.Fragment key={id}>
       {details != "" ? (
         <li
-          className="flex items-center text-sm"
+          className="flex items-center text-sm details-node-html"
           dangerouslySetInnerHTML={{ __html: details }}
         ></li>
       ) : (
@@ -95,6 +148,7 @@ function TestCard({name, steps, description, tags, formattedDuration, errorState
       {name && (
         <>
           <p className="text-md font-medium">{runName}</p>
+          <p className="block text-gray-500 text-sm" title="Duration">{format(new Date(runStartTime), "dd/MM/yyyy HH:ss")}</p>
           <div className="w-full">
             {tags?.map((tag) => (
               <Badge
@@ -128,7 +182,7 @@ function Test1({test}) {
   return (
     <>
       <div className="float-left w-1/2 p-2">
-        <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runName} formattedDuration={formattedDuration}/>
+        <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runStartTime} formattedDuration={formattedDuration}/>
       </div>
     </>
   )
@@ -140,7 +194,7 @@ function Test2({test}) {
   return (
     <>
       <div className="float-right w-1/2 p-2">
-        <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runName} formattedDuration={formattedDuration}/>
+        <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runStartTime} formattedDuration={formattedDuration}/>
       </div>
     </>
   )
@@ -148,8 +202,11 @@ function Test2({test}) {
 
 function Content() {
   // @ts-ignore
-  const { test } = useTest();
-  const { test1, test2 } = test
+  const { test1 } = useTest1();
+
+  // @ts-ignore
+  const { test2 } = useTest2();
+  
   return (
     <div className={`w-full h-full overflow-y-auto`}>
       <Transition
@@ -178,7 +235,8 @@ function Content() {
   )
 }
 
-function SetScenariotoContent({ count1, count2, scenario, testActived, runName, runStartTime}) {
+function SetScenariotoContent({count1, count2, scenario, testActived, runName, runStartTime}) {
+
   const {
     id,
     name,
@@ -188,37 +246,38 @@ function SetScenariotoContent({ count1, count2, scenario, testActived, runName, 
     errorStates,
     duration,
   } = scenario;
+
   // @ts-ignore
-  const { test, setTest } = useTest()
-  useEffect(() => {
-    if (testActived === "test-1-Actived") {
-      setTest({...test, test1:{count:count1, id, name, description, errorStates, duration, steps, tags, runName, runStartTime,}})
-    } else if (testActived === 'test-1-inActived') {
-      setTest({...test, test1:{id:null, name:'', description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''}})
-    }
-  }, [testActived])
+  const { setTest1 } = useTest1();
+  
+  // @ts-ignore
+  const { setTest2 } = useTest2();
 
   useEffect(() => {
-    if (testActived === "test-2-Actived") {
-      setTest({...test, test2:{count:count2, id, name, description, errorStates, duration, steps, tags, runName, runStartTime,}})
-    } else if (testActived === 'test-2-inActived') {
-      setTest({...test, test2:{id:null, name:'', description:'', errorStates:[], steps:[], duration:[], tags:[], runName:'', runStartTime:''}})
+    if (testActived === "true1") {
+      setTest1({id, name, description, errorStates, duration, steps, tags, runName, runStartTime,})
     }
-  }, [testActived])
+  }, [count1])
+
+  useEffect(() => {
+    if (testActived === "true2") {
+      setTest2({id, name, description, errorStates, duration, steps, tags, runName, runStartTime,})
+    }
+  }, [count2])
 
   return (
     <></>
   )
 }
 
-function ScenarioOutline({ count1, count2,  scenario, tname, runName, testActived, runStartTime }) {
+function ScenarioOutline({ count1, count2, scenario, tname, runName, testActived, runStartTime }) {
   return (
     <>
       {scenario?.bddType === "Scenario Outline" && (
         scenario?.nodes.map((scenario) => {
             if (scenario?.name === tname) {
               return (
-                <SetScenariotoContent count1={count1} count2={count2} key={scenario?.id} {...{scenario, runName, testActived, runStartTime}}/>
+                <SetScenariotoContent  count1={count1} count2={count2} key={scenario?.id} scenario={scenario} runName={runName} testActived={testActived} runStartTime={runStartTime}/>
               )
             } else {
             return (
@@ -234,7 +293,7 @@ function Scenario({ count1, count2, scenario, tname, runName, testActived, runSt
   if (scenario?.bddType === "Scenario") {
     if (scenario?.name === tname) {
       return (
-          <SetScenariotoContent {...{count1, count2, scenario, runName, testActived, runStartTime}}/>
+          <SetScenariotoContent count1={count1} count2={count2} scenario={scenario} runName={runName} testActived={testActived} runStartTime={runStartTime}/>
           )
     } else {
     return (
@@ -247,7 +306,7 @@ function Scenario({ count1, count2, scenario, tname, runName, testActived, runSt
   }
 }
 
-function ScenariosContent({ count1, count2, id, tname, runName, testActived, startTime:runStartTime}) {
+function ScenariosContent({count1, count2, id, tname, runName, testActived, startTime:runStartTime}) {
   const { tests } = useTests({ "deep-populate": true, id });
   return (
     <>
@@ -258,8 +317,8 @@ function ScenariosContent({ count1, count2, id, tname, runName, testActived, sta
             {child?.map((scenario) => {
               return (
                 <>
-                  <ScenarioOutline count1={count1} count2={count2} key={`${scenario?.id} outline`} {...{ scenario, runStartTime, tname, testActived, runName }} />
-                  <Scenario count1={count1} count2={count2} key={`${scenario?.id}`} {...{ scenario, runStartTime, tname, testActived, runName }} />
+                  <ScenarioOutline  count1={count1} count2={count2} key={`${scenario?.id} outline`} scenario={scenario} runStartTime={runStartTime} tname={tname} testActived={testActived} runName={runName} />
+                  <Scenario  count1={count1} count2={count2} key={`${scenario?.id}`} scenario={scenario} runStartTime={runStartTime} tname={tname} testActived={testActived} runName={runName} />
                 </>
               )
             })}
@@ -270,7 +329,7 @@ function ScenariosContent({ count1, count2, id, tname, runName, testActived, sta
   )
 }
 
-function Features({ count1, count2, rid, tname, runName, testActived, startTime}) {
+function Features({count1, count2, rid, tname, name:runName, startTime, testActived}) {
   const { features } = useFeatures(rid as string)
   return (
     <>
@@ -278,7 +337,7 @@ function Features({ count1, count2, rid, tname, runName, testActived, startTime}
         const id = f ? f.id : '';
         return (
           <>
-            <ScenariosContent  count1={count1} count2={count2} key={id} id={id} tname={tname} runName={runName} startTime={startTime} testActived={testActived}/>
+            <ScenariosContent count1={count1} count2={count2} key={id} id={id} tname={tname} runName={runName} startTime={startTime} testActived={testActived}/>
           </>
         )
       })}
@@ -286,22 +345,94 @@ function Features({ count1, count2, rid, tname, runName, testActived, startTime}
   )
 }
 
-function RunItem({ i1, i2, rid, tname, name, status, startTime }) {
-  const [checked1, setChecked1] = useState(false)
-  const [checked2, setChecked2] = useState(false)
+function ActivateTest1({state, tname, name, startTime,}) {
+  // @ts-ignore
+  const { setTestActived1 } = useTestActived1();
+  useEffect(() => {
+    setTestActived1({...state, tname, name, startTime})
+  }, [state])
 
+  return (
+    <>
+    </>
+  )
+}
+
+interface RadioButton1Props {
+  i1?: string;
+  onChange?: any;
+  tname?:string; 
+  name?:string; 
+  status?:string; 
+  startTime?:string;
+}
+
+const RadioButton1 = React.memo(({ i1, tname, name, startTime, }: RadioButton1Props) => {
+  const [state, setstate] = useState({actived:false,count:0})
+
+  const count = Math.random()
   const handleCheckbox1 = (e) => {
-    setChecked1(e.target.checked);
-  };
-
-  const handleCheckbox2 = (e) => {
-    setChecked2(e.target.checked);
+    setstate({actived:e.target.checked,count:count})
   };
 
   return (
     <>
-      <input type="checkbox" id={i1} className="hidden" onClick={handleCheckbox1}/>
-      <input type="checkbox" id={i2} className="hidden" onClick={handleCheckbox2}/>
+      <input type="radio" name="radio1" id={i1} className="form-radio border-blue-500 h-4 w-4 cursor-pointer mr-2" onClick={handleCheckbox1}/>
+      {state.actived && <ActivateTest1 state={state} tname={tname} name={name} startTime={startTime}/>}
+    </>
+  )
+})
+
+function ActivateTest2({state, tname, name, startTime,}) {
+  // @ts-ignore
+  const { setTestActived2 } = useTestActived2();
+  useEffect(() => {
+    setTestActived2({...state, tname, name, startTime})
+  }, [state])
+
+  return (
+    <>
+    </>
+  )
+}
+
+interface RadioButton2Props {
+  i2?: string;
+  onChange?: any;
+  tname?:string; 
+  name?:string; 
+  status?:string; 
+  startTime?:string;
+}
+
+const RadioButton2 = React.memo(({ i2, tname, name, startTime, }: RadioButton2Props) => {
+  const [state, setstate] = useState({actived:false,count:0})
+
+  const count = Math.random()
+  const handleCheckbox2 = (e) => {
+    setstate({actived:e.target.checked,count:count})
+  };
+
+  return (
+    <>
+      <input type="radio" name="radio2" id={i2} className="form-radio border-blue-500 h-4 w-4 cursor-pointer mr-2" onClick={handleCheckbox2}/>
+      {state.actived && <ActivateTest2 state={state} tname={tname} name={name} startTime={startTime}/>}
+    </>
+  )
+})
+
+function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
+  // @ts-ignore
+  const { testActived1 } = useTestActived1();
+
+  // @ts-ignore
+  const { testActived2 } = useTestActived2();
+
+  const { actived:actived1, count:count1, tname:tname1, name:name1, startTime:startTime1, } = testActived1
+  const { actived:actived2, count:count2, tname:tname2, name:name2, startTime:startTime2, } = testActived2
+
+  return (
+    <>
       <li className={`p-2`}>
         <p className="text-sm font-medium cursor-default">
           {name}
@@ -311,22 +442,8 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime }) {
         </p>
         <div className="flow-root">
           <div className="float-left">
-            <label
-              className={`${checked1 
-                ? "bg-gray-700 border border-gray-700 text-white hover:border-gray-800 transition duration-200 hover:bg-gray-800" 
-                : "bg-gray-white border text-black hover:border-gray-800 transition duration-200 hover:bg-gray-800 hover:text-white"} 
-                text-sm px-2 pt-px pb-px font-semibold rounded cursor-pointer select-none`} 
-              htmlFor={i1}>
-              1
-            </label>
-            <label
-              className={`${checked2 
-                ? "bg-gray-700 border border-gray-700 text-white hover:border-gray-800 transition duration-200 hover:bg-gray-800" 
-                : "bg-gray-white border text-black hover:border-gray-800 transition duration-200 hover:bg-gray-800 hover:text-white"} 
-                ml-2 text-sm px-2 pt-px pb-px font-semibold rounded cursor-pointer select-none`} 
-              htmlFor={i2}>
-              2
-            </label>
+            <RadioButton1 i1={i1} tname={tname} name={name} status={status} startTime={startTime}/>
+            <RadioButton2 i2={i2} tname={tname} name={name} status={status} startTime={startTime}/>
           </div>
           <span className="float-right cursor-default">
             <Badge
@@ -336,8 +453,8 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime }) {
           </span>
         </div>
       </li>
-      <Features count1={i1} count2={i2} rid={rid} tname={tname} runName={name} startTime={startTime} testActived={checked1 ? 'test-1-Actived' : 'test-1-inActived'}/>
-      <Features count1={i1} count2={i2} rid={rid} tname={tname} runName={name} startTime={startTime} testActived={checked2 ? 'test-2-Actived' : 'test-2-inActived'}/>
+      <Features rid={rid} count1={count1} count2={count2} tname={tname1} name={name1} startTime={startTime1} testActived={actived1 ? "true1" : "false1"}/>
+      <Features rid={rid} count1={count1} count2={count2} tname={tname2} name={name2} startTime={startTime2} testActived={actived2 ? "true2" : "false2"}/>
     </>
   );
 }
@@ -353,15 +470,13 @@ function NavMenu({runs, tname }) {
       </div>
       <nav>
           <ul>
-            {runs?.map((runs) => {
+            {runs?.map((runs, i) => {
             const {id, name, status, startTime} = runs
-            const count1 = Math.random()
-            const count2 = Math.random()
               return (
                 <>
                   <RunItem
-                    i1={count1}
-                    i2={count2}
+                    i1={Math.random()}
+                    i2={Math.random()}
                     key={id}
                     rid={id}
                     tname={tname}
@@ -411,11 +526,17 @@ function LayoutCompare() {
 
 function Compare() {
   return (
-  <TestProvider>
-    <Layout>
-      <LayoutCompare />
-    </Layout>
-  </TestProvider>
+    <TestActived1Provider>
+      <TestActived2Provider>
+        <Test1Provider>
+          <Test2Provider>
+            <Layout>
+              <LayoutCompare />
+            </Layout>
+          </Test2Provider>
+        </Test1Provider>
+      </TestActived2Provider>
+    </TestActived1Provider>
   );
 }
   

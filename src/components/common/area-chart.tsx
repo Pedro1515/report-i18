@@ -25,7 +25,7 @@ export interface AreaChartProps {
 function CustomTooltip({
   xAxisDataKey,
   active,
-  payload,
+  payload = [],
   label,
   ...props
 }) {

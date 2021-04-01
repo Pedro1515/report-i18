@@ -97,8 +97,8 @@ export function PieChart({ data, height }: PieChartProps) {
           <RPieChart>
             <Pie
               data={data}
-              innerRadius={60}
-              outerRadius={90}
+              innerRadius={30}
+              outerRadius={50}
               fill="#8884d8"
               paddingAngle={2}
               dataKey="value"

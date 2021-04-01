@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -29,7 +29,7 @@ import { config } from "src/utils/tailwind";
 import { customFormatDuration, getTotalBy } from "src/utils";
 
 function DataDisplayWrapper(props) {
-  return <div className="flex flex-wrap mt-4 -mx-6" {...props} />;
+  return <div className="flex flex-wrap -mx-6" {...props} />;
 }
 
 function DataDisplay({ label, value }) {
@@ -38,7 +38,7 @@ function DataDisplay({ label, value }) {
       <div className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
         {label}
       </div>
-      <div className="mt-2 font-medium text-2xl leading-none">{value}</div>
+      <div className="mt-2 font-medium text-xl leading-none">{value}</div>
     </div>
   );
 }
@@ -237,52 +237,58 @@ function GeneralCard() {
 
   return (
     <Card className="flex-col w-1/3 border-r divide-y">
-      <div className="flex-1 p-6">
-        <Title className="text-gray-700 font-semibold">General</Title>
-        <Caption>
-          Creado el {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
-        </Caption>
-        <DataDisplayWrapper>
-          <DataDisplay label="Project Runs" value={runQuantity} />
-          <DataDisplay label="Project Tests" value={testQuantity} />
-        </DataDisplayWrapper>
-      </div>
-      <div className="flex-1 p-6">
-        <Title className="text-gray-700 font-semibold">Tags</Title>
-        <div className="flex flex-wrap mt-4 -mx-2">
-          {categoryNameList?.map((tag) => (
-            <Badge
-              key={tag}
-              IconComponent={
-                <div className="text-gray-700 w-3 h-3 mr-2">
-                  <TagSolidIcon />
-                </div>
-              }
-              className="m-2"
-              uppercase={false}
-              color="gray"
-              label={tag}
-            />
-          ))}
+      <div className="flex items-center justify-center p-2">
+        <div className="w-11/12">
+          <Title className="text-gray-700 font-semibold">General</Title>
+          <Caption>
+            Creado el {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
+          </Caption>
+          <DataDisplayWrapper>
+            <DataDisplay label="Project Runs" value={runQuantity} />
+            <DataDisplay label="Project Tests" value={testQuantity} />
+          </DataDisplayWrapper>
         </div>
       </div>
-      <div className="flex-1 p-6">
-        <Title className="text-gray-700 font-semibold">Excepciones</Title>
-        <div className="flex flex-wrap mt-4 -mx-2">
-          {errorState?.map((error) => (
-            <Badge
-              key={error}
-              IconComponent={
-                <div className="text-red-700 w-3 h-3 mr-2">
-                  <ExclamationSolidIcon />
-                </div>
-              }
-              className="m-2"
-              uppercase={false}
-              color="red"
-              label={error}
-            />
-          ))}
+      <div className="flex items-center justify-center p-2">
+        <div className="w-11/12">
+          <Title className="text-gray-700 font-semibold">Tags</Title>
+          <div className="flex flex-wrap mt-4 -mx-2">
+            {categoryNameList?.map((tag) => (
+              <Badge
+                key={tag}
+                IconComponent={
+                  <div className="text-gray-700 w-3 h-3 mr-2">
+                    <TagSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="gray"
+                label={tag}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-center p-2">
+        <div className="w-11/12">
+          <Title className="text-gray-700 font-semibold">Excepciones</Title>
+          <div className="flex flex-wrap mt-4 -mx-2">
+            {errorState?.map((error) => (
+              <Badge
+                key={error}
+                IconComponent={
+                  <div className="text-red-700 w-3 h-3 mr-2">
+                    <ExclamationSolidIcon />
+                  </div>
+                }
+                className="m-2"
+                uppercase={false}
+                color="red"
+                label={error}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </Card>
@@ -313,49 +319,51 @@ function LastRunCard() {
   const { lastRun: { startTime = "", status = "" } = {} } = project ?? {};
 
   return (
-    <Card className="flex-col w-1/3 border-r p-6">
-      <div className="flex flex-col">
-        <div className="inline-flex justify-between">
-          <div>
-            <Title className="text-gray-700 font-semibold">Ultimo run</Title>
-            <Badge
-              className="ml-2"
-              label={status}
-              color={status === "pass" ? "green" : "red"}
-            />
+    <Card className="flex-col w-1/3 border-r p-2 px-6">
+      <div>
+        <div className="flex flex-col">
+          <div className="inline-flex justify-between">
+            <div>
+              <Title className="text-gray-700 font-semibold">Ultimo run</Title>
+              <Badge
+                className="ml-2"
+                label={status}
+                color={status === "pass" ? "green" : "red"}
+              />
+            </div>
+            <div className="w-1/3">
+              <Select
+                name="filter"
+                options={[
+                  { label: "Feature", value: "Parent" },
+                  { label: "Scenario", value: "Child" },
+                ]}
+                selected={runFilter}
+                onSelect={(option) => setRunFilter(option)}
+              />
+            </div>
           </div>
-          <div className="w-1/3">
-            <Select
-              name="filter"
-              options={[
-                { label: "Feature", value: "Parent" },
-                { label: "Scenario", value: "Child" },
-              ]}
-              selected={runFilter}
-              onSelect={(option) => setRunFilter(option)}
-            />
-          </div>
+          <Caption>
+            Iniciado el {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
+          </Caption>
         </div>
-        <Caption>
-          Iniciado el {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
-        </Caption>
-      </div>
-      <DataDisplayWrapper>
-        <DataDisplay
-          label="Total features"
-          value={getTotalBy("feature", project?.lastRun)}
-        />
-        <DataDisplay
-          label="Total scenarios"
-          value={getTotalBy("scenario", project?.lastRun)}
-        />
-        <DataDisplay
-          label="Total steps"
-          value={getTotalBy("steps", project?.lastRun)}
-        />
-      </DataDisplayWrapper>
-      <div className="flex-center">
-        <PieChart height={250} data={pieChartData} />
+        <DataDisplayWrapper>
+          <DataDisplay
+            label="Total features"
+            value={getTotalBy("feature", project?.lastRun)}
+          />
+          <DataDisplay
+            label="Total scenarios"
+            value={getTotalBy("scenario", project?.lastRun)}
+          />
+          <DataDisplay
+            label="Total steps"
+            value={getTotalBy("steps", project?.lastRun)}
+          />
+        </DataDisplayWrapper>
+        <div className="flex-center">
+          <PieChart height={110} data={pieChartData} />
+        </div>
       </div>
     </Card>
   );
@@ -375,10 +383,12 @@ function FailuresCard() {
   }));
 
   return (
-    <Card className="flex-col w-1/3 p-6">
-      <Title className="text-gray-700 font-semibold">Fallos</Title>
-      <Caption>De los ultimos {size} runs</Caption>
-      <div className="flex-center flex-1">
+    <Card className="flex-col w-1/3 p-2">
+      <div className="px-6">
+        <Title className="text-gray-700 font-semibold">Fallos</Title>
+        <Caption>De los ultimos {size} runs</Caption>
+      </div>
+      <div className="flex-center mt-6 mr-6">
         <AreaChart
           data={data}
           xAxisDataKey="idx"
@@ -395,22 +405,14 @@ function FailuresCard() {
 }
 
 function Project() {
-  const { query, asPath } = useRouter();
+  const { query } = useRouter();
   const { project } = useProject(query.id as string);
-  const { runs } = useRuns({
-    projectId: query.id as string,
-  });
 
   return (
     <Layout>
       <LayoutHeader>
-        <div className="flex p-4 space-x-4">
-          <nav className="container">
-            <ol className="flex text-grey">
-              {project?.name !== undefined &&
-              <li className="px-2"><a href={asPath} className="cursor-pointer font-semibold">{`${project?.name}`}</a></li>}
-            </ol>
-          </nav>
+        <div className="flex space-x-4">
+          <span className="font-medium text-lg">{project?.name}</span>
         </div>
       </LayoutHeader>
       <LayoutContent scrollable>

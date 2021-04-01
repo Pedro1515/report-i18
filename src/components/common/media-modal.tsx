@@ -55,31 +55,42 @@ export class MediaModal extends Component<IMedia> {
         </div>
 
         <Modal visible={this.state.isOpen} onClose={() => {}}>
-          <div className={`${this.state.base64String == "" ? "" : "h-screen"} text-center shadow-2xl`}>
+          <div onClick={this.closeModal} className={`${this.state.base64String == "" ? "" : "h-screen"} text-center shadow-2xl`}>
             <div
-              className="bg-gray-200 inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform sm:align-middle"
+              className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform sm:align-middle"
               style={{ height: "96%" }}
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
             >
               {this.state.base64String == "" ? (
-                <div className="flex-center flex-1">
+                <div onClick={this.closeModal} className="flex-center flex-1">
                   <Spinner className="m-5 h-10 w-10 text-gray-500" />
                 </div>
               ) : (
-                <div className="h-full">
-                  <img
-                    style={{ height: "96%" }}
-                    src={this.state.base64String}
-                  />
-                  <div
-                    onClick={this.closeModal}
-                    style={{ height: "4%" }}
-                    className="w-full text-center float-right text-white font-bold cursor-pointer bg-red-600 transition duration-300 hover:bg-red-700"
-                  >
-                    Close
+                <>
+                  <div className="h-full">
+                    <img
+                      className="h-full"
+                      src={this.state.base64String}
+                    />
                   </div>
+                </>
+              )}
+            </div>
+            <div
+              className="ml-2 inline-block align-bottom text-left overflow-hidden transform sm:align-middle"
+              style={{ height: "96%" }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="modal-headline"
+            >
+              {this.state.base64String == "" ? (
+                <>
+                </>
+              ) : (
+                <div onClick={this.closeModal} className="inline-block bg-white py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
+                  <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
                 </div>
               )}
             </div>

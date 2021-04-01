@@ -83,7 +83,7 @@ export function Select({ name, options, selected, onSelect }: SelectProps) {
             "bg-white",
             "pl-3",
             "pr-10",
-            "py-2",
+            "py-1",
             "text-left",
             "focus:outline-none",
             "focus:shadow-outline-blue",
@@ -153,7 +153,7 @@ export function Select({ name, options, selected, onSelect }: SelectProps) {
                   "cursor-pointer",
                   "select-none",
                   "relative",
-                  "py-2",
+                  "py-1",
                   "pl-3",
                   "pr-9",
                   "hover:bg-gray-200"

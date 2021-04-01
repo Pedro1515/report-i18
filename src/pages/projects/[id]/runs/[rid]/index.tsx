@@ -239,12 +239,12 @@ function Search({ selectedFeatureId }) {
 
 function DataDisplay({ label, value }) {
   return (
-    <span className="ml-6">
+    <>
       <span className="font-medium text-xs uppercase tracking-wider leading-none text-gray-500">
         {label}
       </span>
       <span className="ml-2 font-medium text-xl">{value}</span>
-    </span>
+    </>
   );
 }
 
@@ -255,15 +255,21 @@ interface SummaryProps {
 const Summary = React.memo(function Summary({ run }: SummaryProps) {
   return (
     <div className="leading-none">
-      <DataDisplay
-        label="Total features"
-        value={getTotalBy("feature", run)}
-      />
-      <DataDisplay
-        label="Total scenarios"
-        value={getTotalBy("scenario", run)}
-      />
-      <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
+      <span className="">
+        <DataDisplay
+          label="Total features"
+          value={getTotalBy("feature", run)}
+        />
+      </span>
+      <span className="ml-6">
+        <DataDisplay
+          label="Total scenarios"
+          value={getTotalBy("scenario", run)}
+        />
+      </span>
+      <span className="ml-6">
+        <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
+      </span>
     </div>
   );
 });
@@ -308,7 +314,7 @@ function Logs({logs}) {
       <React.Fragment key={test}>
 
           {details != '' ? 
-                <li className="flex items-center text-sm" 
+                <li className="flex items-center text-sm details-node-html" 
                     dangerouslySetInnerHTML={{__html: details}}></li>   
           :""}
 
@@ -812,7 +818,7 @@ function Dropdown({run, runs}) {
 
   return (
     <>
-      <li className="self-center max-w-50 relative">
+      <li className="self-center relative">
         <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
           {run?.name}
         </button>
@@ -826,7 +832,7 @@ function Dropdown({run, runs}) {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div style={{height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 w-56 origin-top-right`}>
+          <div style={{width:"355px", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
             <nav style={{height: "70%"}} className="rounded-md border">
             <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
               <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
@@ -844,10 +850,26 @@ function Dropdown({run, runs}) {
           </div>
         </Transition>
       </li>
-      <li className="self-center w-3 mx-2">
+      <span className="self-center w-3 mx-2">
         <img className="w-full cursor-pointer" src={isOpen ? "/assets/arrow-down.png" : "/assets/arrow-right.png" }  alt={isOpen ? "arrow-down" : "arrow-right"}/>
-      </li>
+      </span>
     </>
+  )
+}
+
+function Breadcrumd({name, run, runs}) {
+  return (
+    <nav className="w-full">
+      <ol className="flex w-full text-grey">
+        <li className="flex self-center">
+          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${name}`}</a></button>
+          <span className="self-center w-3 mx-2">
+            <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
+          </span>
+        </li>
+        <Dropdown run={run} runs={runs} />
+      </ol>
+    </nav>
   )
 }
 
@@ -873,20 +895,8 @@ function Run() {
     <div className={`${uiData && 'cursor-wait'}`}>
       <Layout>
           <LayoutHeader>
-            <div className="w-1/2 flex space-x-4">
-              {project?.name !== undefined && 
-              (<nav className="w-full">
-                <ol className="flex w-full text-grey">
-                  <li className="self-center max-w-50">
-                    <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${project?.name}`}</a></button>
-                  </li>
-                  <li className="self-center w-3 mx-2">
-                    <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
-                  </li>
-                    <Dropdown run={run} runs={runs} />
-                </ol>
-              </nav>)
-              }
+            <div style={{width:"56%"}} className="flex space-x-4">
+              {project?.name !== undefined && <Breadcrumd name={project.name} run={run} runs={runs}/>}
             </div>
             <Summary run={run} />
           </LayoutHeader>
