@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, TagSolidIcon } from "src/components";
+import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, Spinner, TagSolidIcon } from "src/components";
 import { ProtectRoute } from "src/context";
 import { customFormatDuration, useFeatures, useProject, useRuns, useTests } from "src/utils";
 import format from "date-fns/format";
@@ -79,6 +79,24 @@ function useTestActived2() {
   }
   return context;
 }
+
+// @ts-ignore
+const LoadingContext = createContext();
+
+function LoadingProvider(props) {
+  const [loading, setLoading] = useState(false)
+  const value = { loading, setLoading };
+  return <LoadingContext.Provider value={value} {...props} />;
+}
+
+function useLoading() {
+  const context = useContext(LoadingContext);
+  if (!context) {
+    throw new Error("Loading must be used within a LoadingProvider");
+  }
+  return context;
+}
+
 
 function Logs({ logs }) {
   return logs?.map(({ id, test, status, details, media }) => (
@@ -206,6 +224,18 @@ function Content() {
 
   // @ts-ignore
   const { test2 } = useTest2();
+
+  // @ts-ignore
+  const { setLoading } = useLoading()
+
+  useEffect(() => {
+    if (!!test1?.id) {
+      setLoading(false)
+    }
+    if (!!test2?.id) {
+      setLoading(false)
+    }
+  }, [test1, test2])
   
   return (
     <div className={`w-full h-full overflow-y-auto`}>
@@ -330,7 +360,16 @@ function ScenariosContent({count1, count2, id, tname, runName, testActived, star
 }
 
 function Features({count1, count2, rid, tname, name:runName, startTime, testActived}) {
+  // @ts-ignore
+  const { setLoading } = useLoading()
+  
+  useEffect(() => {
+    setLoading(true)
+  }, [rid])
+
   const { features } = useFeatures(rid as string)
+  
+
   return (
     <>
       {features?.content.map(f => {
@@ -358,17 +397,17 @@ function ActivateTest1({rid, state, tname, name, startTime,}) {
   )
 }
 
-interface RadioButton1Props {
-  i1?: string;
-  onChange?: any;
-  tname?:string; 
-  name?:string; 
-  status?:string; 
-  startTime?:string;
-  rid?:string;
-}
+// interface RadioButton1Props {
+//   i1?: string;
+//   onChange?: any;
+//   tname?:string; 
+//   name?:string; 
+//   status?:string; 
+//   startTime?:string;
+//   rid?:string;
+// }
 
-const RadioButton1 = React.memo(({ rid, i1, tname, name, startTime, }: RadioButton1Props) => {
+const RadioButton1 = ({ rid, i1, tname, name, startTime, }) => {
   const [state, setstate] = useState({actived:false,count:0})
 
   const count = Math.random()
@@ -382,7 +421,7 @@ const RadioButton1 = React.memo(({ rid, i1, tname, name, startTime, }: RadioButt
       {state.actived && <ActivateTest1 rid={rid} state={state} tname={tname} name={name} startTime={startTime}/>}
     </>
   )
-})
+}
 
 function ActivateTest2({rid, state, tname, name, startTime,}) {
   // @ts-ignore
@@ -397,17 +436,17 @@ function ActivateTest2({rid, state, tname, name, startTime,}) {
   )
 }
 
-interface RadioButton2Props {
-  i2?: string;
-  onChange?: any;
-  tname?:string; 
-  name?:string; 
-  status?:string; 
-  startTime?:string;
-  rid?:string;
-}
+// interface RadioButton2Props {
+//   i2?: string;
+//   onChange?: any;
+//   tname?:string; 
+//   name?:string; 
+//   status?:string; 
+//   startTime?:string;
+//   rid?:string;
+// }
 
-const RadioButton2 = React.memo(({ rid, i2, tname, name, startTime, }: RadioButton2Props) => {
+const RadioButton2 = ({ rid, i2, tname, name, startTime, }) => {
   const [state, setstate] = useState({actived:false,count:0})
 
   const count = Math.random()
@@ -421,7 +460,7 @@ const RadioButton2 = React.memo(({ rid, i2, tname, name, startTime, }: RadioButt
       {state.actived && <ActivateTest2 rid={rid} state={state} tname={tname} name={name} startTime={startTime}/>}
     </>
   )
-})
+}
 
 function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
   // @ts-ignore
@@ -436,18 +475,18 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
   return (
     <>
       <li className={`p-2`}>
-        <p className="text-sm font-medium cursor-default">
+        <p className="text-sm font-medium">
           {name}
         </p>
-        <p className="text-xs cursor-default">
+        <p className="text-xs">
             {format(new Date(startTime), "dd/MM/yyyy HH:ss")}  
         </p>
         <div className="flow-root">
           <div className="float-left">
-            <RadioButton1 i1={i1} rid={rid} tname={tname} name={name} status={status} startTime={startTime}/>
-            <RadioButton2 i2={i2} rid={rid} tname={tname} name={name} status={status} startTime={startTime}/>
+            <RadioButton1 i1={i1} rid={rid} tname={tname} name={name} startTime={startTime}/>
+            <RadioButton2 i2={i2} rid={rid} tname={tname} name={name} startTime={startTime}/>
           </div>
-          <span className="float-right cursor-default">
+          <span className="float-right">
             <Badge
               label={status}
               color={status === "pass" ? "green" : "red"}
@@ -486,7 +525,6 @@ function NavMenu({runs, tname }) {
                     status={status}
                     startTime={startTime}
                   />
-                  {/* <Features rid={id} tname={tname} /> */}
                 </>
               );
             })}
@@ -497,6 +535,9 @@ function NavMenu({runs, tname }) {
 }
 
 function LayoutCompare() {
+    // @ts-ignore
+    const { loading } = useLoading()
+
     const { query } = useRouter()
     const { id, tname } = query
     const { project } = useProject(id as string)
@@ -504,37 +545,40 @@ function LayoutCompare() {
       projectId: id as string,
     });
     return (
-        <>
-            <LayoutHeader>
-                <div className="w-1/2 mr-4 flex space-x-4">
-                  {project?.name !== undefined &&
-                  (<nav className="w-full">
-                    <ol className="flex w-full text-grey">
-                      <li className="self-center max-w-50">
-                        <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${project?.name}`}</a></button>
-                      </li>
-                    </ol>
-                  </nav>)
-                  }
-                </div>
-            </LayoutHeader>
-            <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
-              <NavMenu tname={tname} runs={runs?.content.map(r => r )} />
-              <Content />
-            </div>
-        </>
+      <div className={`${loading && "cursor-wait"}`}>
+        <Layout>
+          <LayoutHeader>
+              <div className="w-1/2 mr-4 flex space-x-4">
+                {project?.name !== undefined &&
+                (<nav className="w-full">
+                  <ol className="flex w-full text-grey">
+                    <li className="self-center max-w-50">
+                      <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${project?.name}`}</a></button>
+                    </li>
+                  </ol>
+                </nav>)
+                }
+              </div>
+          </LayoutHeader>
+          <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
+            <NavMenu tname={tname} runs={runs?.content.map(r => r )} />
+            <Content />
+          </div>
+        </Layout>
+      </div>
     )
 }
 
 function Compare() {
+
   return (
     <TestActived1Provider>
       <TestActived2Provider>
         <Test1Provider>
           <Test2Provider>
-            <Layout>
+            <LoadingProvider>
               <LayoutCompare />
-            </Layout>
+            </LoadingProvider>
           </Test2Provider>
         </Test1Provider>
       </TestActived2Provider>
