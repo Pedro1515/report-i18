@@ -50,7 +50,7 @@ function useTest2() {
 const TestActived1Context = createContext();
 
 function TestActived1Provider(props) {
-  const [testActived1, setTestActived1] = useState({actived:false, count:0, tname:'', name:'', startTime:'',})
+  const [testActived1, setTestActived1] = useState({actived:false, count:0, tname:'', name:'', startTime:'', rid:0,})
   const value = { testActived1, setTestActived1 };
   return <TestActived1Context.Provider value={value} {...props} />;
 }
@@ -67,7 +67,7 @@ function useTestActived1() {
 const TestActived2Context = createContext();
 
 function TestActived2Provider(props) {
-  const [testActived2, setTestActived2] = useState({actived:false, count:0, tname:'', name:'', startTime:'',})
+  const [testActived2, setTestActived2] = useState({actived:false, count:0, tname:'', name:'', startTime:'', rid:0,})
   const value = { testActived2, setTestActived2 };
   return <TestActived2Context.Provider value={value} {...props} />;
 }
@@ -345,11 +345,11 @@ function Features({count1, count2, rid, tname, name:runName, startTime, testActi
   )
 }
 
-function ActivateTest1({state, tname, name, startTime,}) {
+function ActivateTest1({rid, state, tname, name, startTime,}) {
   // @ts-ignore
   const { setTestActived1 } = useTestActived1();
   useEffect(() => {
-    setTestActived1({...state, tname, name, startTime})
+    setTestActived1({...state, rid, tname, name, startTime})
   }, [state])
 
   return (
@@ -365,9 +365,10 @@ interface RadioButton1Props {
   name?:string; 
   status?:string; 
   startTime?:string;
+  rid?:string;
 }
 
-const RadioButton1 = React.memo(({ i1, tname, name, startTime, }: RadioButton1Props) => {
+const RadioButton1 = React.memo(({ rid, i1, tname, name, startTime, }: RadioButton1Props) => {
   const [state, setstate] = useState({actived:false,count:0})
 
   const count = Math.random()
@@ -378,16 +379,16 @@ const RadioButton1 = React.memo(({ i1, tname, name, startTime, }: RadioButton1Pr
   return (
     <>
       <input type="radio" name="radio1" id={i1} className="form-radio border-blue-500 h-4 w-4 cursor-pointer mr-2" onClick={handleCheckbox1}/>
-      {state.actived && <ActivateTest1 state={state} tname={tname} name={name} startTime={startTime}/>}
+      {state.actived && <ActivateTest1 rid={rid} state={state} tname={tname} name={name} startTime={startTime}/>}
     </>
   )
 })
 
-function ActivateTest2({state, tname, name, startTime,}) {
+function ActivateTest2({rid, state, tname, name, startTime,}) {
   // @ts-ignore
   const { setTestActived2 } = useTestActived2();
   useEffect(() => {
-    setTestActived2({...state, tname, name, startTime})
+    setTestActived2({...state, rid, tname, name, startTime})
   }, [state])
 
   return (
@@ -403,9 +404,10 @@ interface RadioButton2Props {
   name?:string; 
   status?:string; 
   startTime?:string;
+  rid?:string;
 }
 
-const RadioButton2 = React.memo(({ i2, tname, name, startTime, }: RadioButton2Props) => {
+const RadioButton2 = React.memo(({ rid, i2, tname, name, startTime, }: RadioButton2Props) => {
   const [state, setstate] = useState({actived:false,count:0})
 
   const count = Math.random()
@@ -416,7 +418,7 @@ const RadioButton2 = React.memo(({ i2, tname, name, startTime, }: RadioButton2Pr
   return (
     <>
       <input type="radio" name="radio2" id={i2} className="form-radio border-blue-500 h-4 w-4 cursor-pointer mr-2" onClick={handleCheckbox2}/>
-      {state.actived && <ActivateTest2 state={state} tname={tname} name={name} startTime={startTime}/>}
+      {state.actived && <ActivateTest2 rid={rid} state={state} tname={tname} name={name} startTime={startTime}/>}
     </>
   )
 })
@@ -428,8 +430,8 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
   // @ts-ignore
   const { testActived2 } = useTestActived2();
 
-  const { actived:actived1, count:count1, tname:tname1, name:name1, startTime:startTime1, } = testActived1
-  const { actived:actived2, count:count2, tname:tname2, name:name2, startTime:startTime2, } = testActived2
+  const { actived:actived1, rid:rid1, count:count1, tname:tname1, name:name1, startTime:startTime1, } = testActived1
+  const { actived:actived2, rid:rid2, count:count2, tname:tname2, name:name2, startTime:startTime2, } = testActived2
 
   return (
     <>
@@ -442,8 +444,8 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
         </p>
         <div className="flow-root">
           <div className="float-left">
-            <RadioButton1 i1={i1} tname={tname} name={name} status={status} startTime={startTime}/>
-            <RadioButton2 i2={i2} tname={tname} name={name} status={status} startTime={startTime}/>
+            <RadioButton1 i1={i1} rid={rid} tname={tname} name={name} status={status} startTime={startTime}/>
+            <RadioButton2 i2={i2} rid={rid} tname={tname} name={name} status={status} startTime={startTime}/>
           </div>
           <span className="float-right cursor-default">
             <Badge
@@ -453,8 +455,8 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
           </span>
         </div>
       </li>
-      <Features rid={rid} count1={count1} count2={count2} tname={tname1} name={name1} startTime={startTime1} testActived={actived1 ? "true1" : "false1"}/>
-      <Features rid={rid} count1={count1} count2={count2} tname={tname2} name={name2} startTime={startTime2} testActived={actived2 ? "true2" : "false2"}/>
+      {actived1 && <Features rid={rid1} count1={count1} count2={count2} tname={tname1} name={name1} startTime={startTime1} testActived={actived1 ? "true1" : "false1"}/>}
+      {actived2 && <Features rid={rid2} count1={count1} count2={count2} tname={tname2} name={name2} startTime={startTime2} testActived={actived2 ? "true2" : "false2"}/>}
     </>
   );
 }
