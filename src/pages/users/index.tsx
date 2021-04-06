@@ -9,10 +9,10 @@ export default function Users() {
   return (
     <Layout>
       <LayoutHeader>
-        <span className="font-medium text-lg">Usuarios</span>
+        <span className="font-medium text-lg">Usernames</span>
         <div>
           <Button
-            label="Crear usuario"
+            label="Crear Username"
             variant="primary"
             color="indigo"
             onClick={goToCreate}

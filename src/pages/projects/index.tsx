@@ -44,7 +44,7 @@ function Search({ onSearch }) {
         fullWidth
         inputProps={getInputProps({
           onChange: filter,
-          placeholder: "Buscar",
+          placeholder: "Search",
         })}
         resetterProps={getResetterProps({ onClick: () => {} })}
       />
@@ -107,7 +107,7 @@ export function Home() {
   const columns = useMemo(
     () => [
       {
-        Header: "Nombre",
+        Header: "Name",
         accessor: "name",
         Cell: ({ row }) => {
           const { name, runQuantity, testQuantity, id } = row.original;
@@ -129,12 +129,12 @@ export function Home() {
         },
       },
       {
-        Header: "Usuarios",
+        Header: "Usernames",
         id: "members",
         Cell: ({ row }) => <Members members={row.original.users} />,
       },
       {
-        Header: "Ultimo build",
+        Header: "Last Build",
         id: "status",
         Cell: ({ row }) => {
           const {
@@ -146,7 +146,7 @@ export function Home() {
         },
       },
       {
-        Header: "Creado",
+        Header: "Created",
         id: "created",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
@@ -172,7 +172,7 @@ export function Home() {
   return (
     <Layout>
       <LayoutHeader>
-        <span className="font-medium text-lg">Proyectos</span>
+        <span className="font-medium text-lg">Projects</span>
         <div>
           &nbsp;
           {/* <Button label="Crear proyecto" variant="primary" color="indigo" /> */}
@@ -180,7 +180,7 @@ export function Home() {
       </LayoutHeader>
       <LayoutContent>
         <div className="px-6 py-4">
-          <Title>filtros</Title>
+          <Title>Filters</Title>
           <Search onSearch={(search: string) => setFilters({page:0, size: 5, name: search})} />
         </div>
         <div className="flex flex-1 overflow-y-auto">

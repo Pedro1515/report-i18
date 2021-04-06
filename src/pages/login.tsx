@@ -23,10 +23,12 @@ export default function Login() {
       const response = await login(username, password);
       mutateUser(response);
     } catch (error) {
+      console.log('error');
+      console.log(error);
       show({
         type: "error",
         title: "Error",
-        message: "Ha ocurrido un error al intentar iniciar sesion",
+        message: "An error occurred while trying to log in",
       });
       setValue("password", "");
     }
@@ -48,24 +50,24 @@ export default function Login() {
             <Input
               type="text"
               ref={register({ required: true })}
-              aria-label="Usuario"
+              aria-label="Username"
               name="username"
               className={classNames("rounded-t-md")}
-              placeholder="Usuario"
+              placeholder="Username"
             />
             <div className="-mt-px relative">
               <Input
                 type="password"
                 name="password"
                 ref={register({ required: true })}
-                aria-label="Contraseña"
+                aria-label="Password"
                 className={classNames("rounded-b-md")}
-                placeholder="Contraseña"
+                placeholder="Password"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                 <Link href="/recover-password">
                   <a className="text-gray-900 underline">
-                    Olvidaste tu contraseña?
+                    Forgot Password?
                   </a>
                 </Link>
               </div>
@@ -99,7 +101,7 @@ export default function Login() {
                   {loading ? <Spinner /> : <LockIcon />}
                 </div>
               </span>
-              Iniciar sesion
+              Log In
             </button>
           </div>
         </form>

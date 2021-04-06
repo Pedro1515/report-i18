@@ -13,11 +13,10 @@ export default function Login() {
           alt="lippia"
         />
         <h2 className="mt-10 text-3xl font-semibold text-center leading-9 font-display">
-          Recuperar contraseña
+          Recover password
         </h2>
         <p className="mt-5 text-sm leading-5 text-center text-gray-600">
-          Ingresa tu email y te enviaremos un link para que cambies tu
-          contraseña.
+          Enter your email and we'll send you a link to get back into your account..
         </p>
         <form className="mt-5">
           <div className="rounded-md shadow-sm">
@@ -38,7 +37,7 @@ export default function Login() {
                   <LockIcon />
                 </div>
               </span>
-              Recuperar password
+              Recover password
             </button>
           </div>
         </form>

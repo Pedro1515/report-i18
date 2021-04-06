@@ -10,7 +10,7 @@ export function NoAccount() {
         </div>
         <div className="relative flex justify-center text-sm leading-5">
           <span className="px-2 bg-gray-100 text-gray-500">
-            No tenes cuenta?
+            Don't have an account?
           </span>
         </div>
       </div>
@@ -36,7 +36,7 @@ export function NoAccount() {
             "sm:leading-5"
           )}
         >
-          Contacta a nuestro equipo de ventas
+          Contact our sales team
         </a>
       </div>
     </div>

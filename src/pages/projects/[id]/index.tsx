@@ -241,7 +241,7 @@ function GeneralCard() {
         <div className="w-11/12">
           <Title className="text-gray-700 font-semibold">General</Title>
           <Caption>
-            Creado el {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
+            Created el {format(new Date(createdAt || null), "dd/MM/yyyy HH:ss")}
           </Caption>
           <DataDisplayWrapper>
             <DataDisplay label="Project Runs" value={runQuantity} />
@@ -272,7 +272,7 @@ function GeneralCard() {
       </div>
       <div className="flex items-center justify-center p-2">
         <div className="w-11/12">
-          <Title className="text-gray-700 font-semibold">Excepciones</Title>
+          <Title className="text-gray-700 font-semibold">Exceptions</Title>
           <div className="flex flex-wrap mt-4 -mx-2">
             {errorState?.map((error) => (
               <Badge
@@ -344,7 +344,7 @@ function LastRunCard() {
             </div>
           </div>
           <Caption>
-            Iniciado el {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
+            Started on {format(new Date(startTime || null), "dd/MM/yyyy HH:ss")}
           </Caption>
         </div>
         <DataDisplayWrapper>
@@ -386,7 +386,7 @@ function FailuresCard() {
     <Card className="flex-col w-1/3 p-2">
       <div className="px-6">
         <Title className="text-gray-700 font-semibold">Fallos</Title>
-        <Caption>De los ultimos {size} runs</Caption>
+        <Caption>Last  {size} runs</Caption>
       </div>
       <div className="flex-center mt-6 mr-6">
         <AreaChart

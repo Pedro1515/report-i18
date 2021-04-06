@@ -89,10 +89,10 @@ export function Sidebar() {
         <div className="space-y-3">
           <SidebarItem
             href="/projects"
-            label="Proyectos"
+            label="Projects"
             IconComponent={<ArchiveIcon />}
           />
-          {/* <SidebarItem href="/users" label="Gestionar usuarios" IconComponent={<UsersIcon />} /> */}
+          {/* <SidebarItem href="/users" label="Gestionar Usernames" IconComponent={<UsersIcon />} /> */}
         </div>
       </div>
     </aside>

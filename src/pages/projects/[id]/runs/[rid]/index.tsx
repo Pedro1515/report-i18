@@ -209,7 +209,7 @@ function Search({ selectedFeatureId }) {
         inputProps={getInputProps({
           onChange: (e) => console.log(e.target.value),
           onFocus: () => setVisible(true),
-          placeholder: "Buscar feature...",
+          placeholder: "Search feature...",
         })}
         resetterProps={getResetterProps({})}
         fullWidth
@@ -348,7 +348,7 @@ function TestCard({ id, name, steps = [], errors, featureName, featureId }) {
         {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
         {errors?.length > 0 && (
           <div className="flex items-center">
-            <div className="font-medium text-sm">Excepciones</div>
+            <div className="font-medium text-sm">Exceptions</div>
             {errors.map((error) => (
               <Badge
                 key={error}
@@ -419,7 +419,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
       {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
       {errors?.length > 0 && (
         <div className="flex items-center">
-          <div className="font-medium text-sm">Excepciones</div>
+          <div className="font-medium text-sm">Exceptions</div>
           {errors.map((error) => (
             <Badge
               key={error}
@@ -560,7 +560,7 @@ function FeatureHeading({ created, name, tags }) {
         <div>
           <div className="text-base font-medium">{name}</div>
           <div className="text-sm mt-1">
-            Creado el {format(new Date(created), "dd/MM/yyyy HH:ss")}
+            Created el {format(new Date(created), "dd/MM/yyyy HH:ss")}
           </div>
           <div className="-mx-2">
             {tags?.map((tag) => (

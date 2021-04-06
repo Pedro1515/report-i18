@@ -13,28 +13,28 @@ export default function Create() {
   return (
     <Layout>
       <LayoutHeader>
-        <span className="font-medium text-lg">Crear usuario</span>
+        <span className="font-medium text-lg">Crear Username</span>
       </LayoutHeader>
       <LayoutContent>
         <div className="p-6">
-          <FormSection title="Perfil" subtitle="Datos personales del usuario">
+          <FormSection title="Perfil" subtitle="Datos personales del Username">
             <FormControl
               label="Username"
               component={
                 <FormInput
-                  id="Nombre de usuario"
+                  id="Name de Username"
                   type="text"
-                  placeholder="Ingrese nombre de usuario"
+                  placeholder="Ingrese Name de Username"
                 />
               }
             />
             <FormControl
-              label="Nombre"
+              label="Name"
               component={
                 <FormInput
                   id="username"
                   type="text"
-                  placeholder="Ingrese nombre"
+                  placeholder="Ingrese Name"
                 />
               }
             />
