@@ -534,6 +534,18 @@ function NavMenu({runs, tname }) {
   );
 }
 
+function Breadcrumd({name}) {
+  return (
+    <nav className="w-full">
+      <ol className="flex w-full text-grey">
+        <li className="flex self-center">
+          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../../../`}>{`${name}`}</a></button>
+        </li>
+      </ol>
+    </nav>
+  )
+}
+
 function LayoutCompare() {
     // @ts-ignore
     const { loading } = useLoading()
@@ -548,17 +560,7 @@ function LayoutCompare() {
       <div className={`${loading && "cursor-wait"}`}>
         <Layout>
           <LayoutHeader>
-              <div className="w-1/2 mr-4 flex space-x-4">
-                {project?.name !== undefined &&
-                (<nav className="w-full">
-                  <ol className="flex w-full text-grey">
-                    <li className="self-center max-w-50">
-                      <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${project?.name}`}</a></button>
-                    </li>
-                  </ol>
-                </nav>)
-                }
-              </div>
+            {project?.name !== undefined && <Breadcrumd name={project.name}/>}
           </LayoutHeader>
           <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
             <NavMenu tname={tname} runs={runs?.content.map(r => r )} />
