@@ -585,7 +585,7 @@ function Breadcrumd({name, run, runs}) {
     <nav className="w-full">
       <ol className="flex w-full text-grey">
         <li className="flex self-center">
-          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${name}`}</a></button>
+          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../../`}>{`${name}`}</a></button>
           <span className="self-center w-3 mx-2">
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
