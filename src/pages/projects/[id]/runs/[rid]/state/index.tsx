@@ -50,20 +50,20 @@ function useFeature() {
 }
 
 // @ts-ignore
-const TestContext = React.createContext();
+const ErrorStateTestContext = React.createContext();
 
-function TestProvider(props) {
-  const [test, setTest] = React.useState<Test>(null);
-  const value = { test, setTest };
-  return <TestContext.Provider value={value} {...props} />;
+function ErrorStateTestProvider(props) {
+  const [errorStateTest, setErrorStateTest] = React.useState(null);
+  const value = { errorStateTest, setErrorStateTest };
+  return <ErrorStateTestContext.Provider value={value} {...props} />;
 }
 
-function useTest() {
-  const contextTest = React.useContext(TestContext);
-  if (!contextTest) {
-    throw new Error("useTest must be used within a TestProvider");
+function useErrorStateTest() {
+  const contextErrorStateTest = React.useContext(ErrorStateTestContext);
+  if (!contextErrorStateTest) {
+    throw new Error("useErrorStateTest must be used within a ErrorStateTestProvider");
   }
-  return contextTest;
+  return contextErrorStateTest;
 }
 
 // @ts-ignore
@@ -141,15 +141,15 @@ function StateItem({ name, isActive, onClick }) {
 
 function NavMenu({ errorState }) {
   // @ts-ignore
-  const { setTest } = useTest();
+  const { setErrorStateTest } = useErrorStateTest();
 
   // @ts-ignore
-  const { test } = useTest();
+  const { errorStateTest } = useErrorStateTest();
   const handleSelect = (error) => (event) => {
     event.stopPropagation();
 
     // agregando tests o datos de los tests al context
-    setTest(error);
+    setErrorStateTest(error);
   };
   return (
     <nav>
@@ -165,7 +165,7 @@ function NavMenu({ errorState }) {
             <StateItem
               key={error}
               name={error}
-              isActive={error === test}
+              isActive={error === errorStateTest}
               onClick={handleSelect(error)}
             />
           );
@@ -177,11 +177,11 @@ function NavMenu({ errorState }) {
 
 function TestEmptyPlaceholder() {
   return (
-    <div className="h-full flex-center flex-col font-medium text-gray-500 bg-gray-100">
+    <div className="h-full flex-center flex-col font-medium text-gray-600">
       <div className="w-16 h-16 mb-4">
         <BeakerIcon />
       </div>
-      <p className="text-center">Sin test por mostrar</p>
+      <p className="text-center">Select an error status</p>
     </div>
   );
 }
@@ -250,7 +250,7 @@ function StepsCard({ steps = [], bddType }) {
   );
 }
 
-function TestCard({ id, name, errorStates, duration, steps, runName, featureId, description, fetureName, errorTest, bddType }) {
+function TestCard({ id, name, errorStates, duration, steps, runName, featureId, description, fetureName, errorStateTest, bddType }) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   const [checked, setChecked] = useState(false);
   const count = Math.random();
@@ -261,10 +261,9 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
 
   // @ts-ignore
   const { modal, setModal } = useModal();
-  const { modalOpen, testName } = modal
   
-  const handleDeleteState = async (id, errorTest) => {
-    await updateTest({ id, errorStates: [errorTest] });
+  const handleDeleteState = async (id, errorStateTest) => {
+    await updateTest({ id, errorStates: [errorStateTest] });
     await mutateTests();
   };
   const handleModal = (name, runName) => {
@@ -285,8 +284,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
         />
       <div className="m-3 p-1 rounded border">
         <div>
-          <span>{name}</span>
-          {/* <span className="float-right text-white text-sm bg-blue-500 px-2 inline-flex leading-5 font-semibold rounded">Feture: {fetureName}</span> */}
+          <span className="ml-2 text-sm font-medium">{name}</span>
           <div className="h-6 flex float-right">
            <label className="w-6 p-1 flex-center cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3" htmlFor={`toggle${count}`}>
              <img className="w-full cursor-pointer" src={checked ? "/assets/invisible.png" : "/assets/visible.png" }  alt={checked ? "invisible" : "visible"}/>
@@ -295,19 +293,18 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
              <img className="w-4 mr-1" src="/assets/share-option.png" alt="share-option"/>
              <p className="text-xs text-white font-extrabold">Jira</p>
            </button>
-           <button className="w-6 p-1 mr-3 flex-center cursor-pointer rounded bg-red-600 transition duration-300 hover:bg-red-700 focus:outline-none" onClick={(e) => {handleDeleteState(id, errorTest)}}>
+           <button className="w-6 p-1 mr-3 flex-center cursor-pointer rounded bg-red-600 transition duration-300 hover:bg-red-700 focus:outline-none" onClick={(e) => {handleDeleteState(id, errorStateTest)}}>
              <img className="w-full" src="/assets/trash.png" alt="trash"/>
            </button>
           </div>
         </div>
         <div>
-          <div className="px-2 py-px inline-flex text-xs leading-5 font-medium rounded border text-gray-900 tracking-wide items-center">
-            <div className="h-3"></div>
-            id: {id}
+          <div className="ml-2 inline-flex text-sm leading-5 font-normal text-gray-800 tracking-wide items-center">
+            {fetureName}
           </div>
-          <div className="inline-flex leading-5 rounded tracking-wide items-center m-2">
-            <div className="flex items-center">
-              <div className="w-4 h-4 text-gray-500 mr-2">
+          <div className="inline-flex leading-5 items-center m-2">
+            <div className="flex">
+              <div className="w-4 h-4 text-gray-500 mr-1">
                 <ClockIcon />
               </div>
               {formattedDuration ? (
@@ -349,6 +346,11 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
 function ScenarioOutline({ scenario1, fetureName, featureId }) {
   const scenarioOutline = scenario1?.bddType;
 
+  // @ts-ignore
+  const { errorStateTest } = useErrorStateTest();
+
+  // @ts-ignore
+  const { setScroll } = useScroll();
   if (scenarioOutline === "Scenario Outline") {
     const {
       id,
@@ -361,17 +363,10 @@ function ScenarioOutline({ scenario1, fetureName, featureId }) {
       nodes: steps,
       reportName: runName,
     } = scenario1;
-    
-    // @ts-ignore
-    const { test: errorTest } = useTest();
-    
-    // @ts-ignore
-    // const { setScroll } = useScroll();
-    // setScroll(true);
 
-    return (
-      <>
-        {errorStates?.includes(errorTest) && 
+    if (errorStates?.includes(errorStateTest)) {
+      setScroll(true)
+      return (
         <TestCard
             key={id}
             {...{
@@ -386,18 +381,21 @@ function ScenarioOutline({ scenario1, fetureName, featureId }) {
               featureId,
               runName,
               description,
-              errorTest,
+              errorStateTest,
             }}
           />
-        }
-      </>
-    )
-  } else {
-    return <></>;
-  }
+      )
+    } else {return <></>}
+  } else {return <></>}
 }
 
 function ScenarioContent({ scenario2, fetureName, featureId }) {
+  // @ts-ignore
+  const { errorStateTest } = useErrorStateTest();
+  
+  // @ts-ignore
+  const { setScroll } = useScroll();
+
   return (
     <>
       {scenario2?.map((tests) => {
@@ -413,11 +411,7 @@ function ScenarioContent({ scenario2, fetureName, featureId }) {
           reportName:runName,
         } = tests;
 
-        // @ts-ignore
-        const { test: errorTest } = useTest();
-        if (errorStates?.includes(errorTest)) {
-          // @ts-ignore
-          const { setScroll } = useScroll();
+        if (errorStates?.includes(errorStateTest)) {
           setScroll(true)
           return (
             <TestCard
@@ -434,14 +428,14 @@ function ScenarioContent({ scenario2, fetureName, featureId }) {
                 fetureName,
                 featureId,
                 runName,
-                errorTest
+                errorStateTest
               }}
             />
           );
         }
-        // else {
-        //   return <TestEmptyPlaceholder />;
-        // }
+        else {
+          return <></>;
+        }
       })}
     </>
   );
@@ -451,7 +445,6 @@ function Scenarios({ features }) {
   const { id } = features ?? {};
   const { tests, isLoading } = useTests({ "deep-populate": true, id });
   const [f] = tests?.content ?? [];
-  // const type = f ? f.bddType : [];
   const child = f ? f.nodes : [];
   const name = f ? f.name : {};
   const fId = f ? f.id : {};
@@ -504,8 +497,12 @@ function Content() {
   const { features } = useFeatures(query.rid as string);
   // @ts-ignore
   const { feature } = useFeature();
+
+  // @ts-ignore
+  const { errorStateTest } = useErrorStateTest();
   return (
     <>
+      {!errorStateTest && <TestEmptyPlaceholder/>}
       <Features feature={feature} />
       {features && <SetFeatues features={features.content} /> }
     </>
@@ -520,7 +517,6 @@ const LayoutState = () => {
 
   // @ts-ignore
   const { modal, setModal } = useModal();
-  // const { project:projectName } = modal
 
   useEffect(() => {
     setModal({...modal, project:name})  
@@ -640,7 +636,7 @@ function FormModal() {
 function RunWithProvider() {
   return (
     <FeatureProvider>
-      <TestProvider>
+      <ErrorStateTestProvider>
         <ScrollProvider>
           <ModalProvider>
             <Layout>
@@ -649,7 +645,7 @@ function RunWithProvider() {
             </Layout>
           </ModalProvider>
         </ScrollProvider>
-      </TestProvider>
+      </ErrorStateTestProvider>
     </FeatureProvider>
   );
 }
