@@ -5,6 +5,7 @@ import {
   Spinner,
   MediaModal,
   Modal,
+  LayoutHeader,
 } from "src/components";
 import classNames from "classnames";
 import {
@@ -12,6 +13,7 @@ import {
   useTests,
   useRun,
   useProject,
+  useRuns,
 } from "src/utils/hooks";
 import { ProtectRoute } from "src/context";
 import {
@@ -24,6 +26,7 @@ import {
 import { customFormatDuration } from "src/utils";
 import { Feature, Run as ApiRun, Test, updateTest } from "src/api";
 import { useRouter } from "next/router";
+import { Transition } from "@headlessui/react";
 
 interface FeatureItemProps {
   name: string;
@@ -518,6 +521,81 @@ function Features({ feature }) {
   );
 }
 
+function Dropdown({run, runs}) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [activedStyle, setActivedStyle] = useState(false)
+
+  useEffect(() => {
+    if (runs?.content.length >= 8) {
+      setActivedStyle(true)
+    }
+  }, [runs])
+
+  const handleFocus = (e) => {
+    setIsOpen(true)
+  }
+
+  const handleBlur = (e) => {
+    setIsOpen(false)
+  }
+
+  return (
+    <>
+      <li className="self-center relative">
+        <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
+          {run?.name}
+        </button>
+
+        <Transition
+          show={isOpen}
+          enter="transition ease-out duration-100 transform"
+          enterFrom="opacity-0 scale-95"
+          enterTo="opacity-100 scale-100"
+          leave="transition ease-in duration-75 transform"
+          leaveFrom="opacity-100 scale-100"
+          leaveTo="opacity-0 scale-95"
+        >
+          <div style={{width:"355px", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
+            <nav style={{height: "70%"}} className="rounded-md border">
+            <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
+              <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
+            </div>
+              <ul className="h-full overflow-y-overlay rounded-md bg-white">
+                {runs?.content.map(run => {
+                  return (
+                  <a  className="w-full" key={run?.id} href={`${run?.id}`}>
+                    <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
+                  </a>
+                  )
+                })}
+              </ul>
+            </nav>
+          </div>
+        </Transition>
+      </li>
+      <span className="self-center w-3 mx-2">
+        <img className="w-full cursor-pointer" src={isOpen ? "/assets/arrow-down.png" : "/assets/arrow-right.png" }  alt={isOpen ? "arrow-down" : "arrow-right"}/>
+      </span>
+    </>
+  )
+}
+
+function Breadcrumd({name, run, runs}) {
+  return (
+    <nav className="w-full">
+      <ol className="flex w-full text-grey">
+        <li className="flex self-center">
+          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${name}`}</a></button>
+          <span className="self-center w-3 mx-2">
+            <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
+          </span>
+        </li>
+        <Dropdown run={run} runs={runs} />
+      </ol>
+    </nav>
+  )
+}
+
 function Content() {
   const { query } = useRouter();
   const { features } = useFeatures(query.rid as string);
@@ -543,9 +621,13 @@ const LayoutState = () => {
   const { run } = useRun(query.rid as string);
   const { project } = useProject(run?.project);
   const { errorState, name } = project ?? {};
+  const { runs } = useRuns({
+    projectId: query.id as string,
+  });
 
   // @ts-ignore
   const { modal, setModal } = useModal();
+
 
   useEffect(() => {
     setModal({...modal, project:name})  
@@ -554,8 +636,11 @@ const LayoutState = () => {
   return (
     <div className={`${loading && "cursor-wait"}`}>
       <Layout>
+        <LayoutHeader>
+          {project?.name !== undefined && <Breadcrumd name={project.name} run={run} runs={runs}/>}
+        </LayoutHeader>
         <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
-            <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
+            <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border-r">
               {errorState && <NavMenu errorState={errorState} />}
             </div>
             <div className="w-full h-full">
