@@ -563,7 +563,7 @@ function Dropdown({run, runs}) {
               <ul className="h-full overflow-y-overlay rounded-md bg-white">
                 {runs?.content.map(run => {
                   return (
-                  <a  className="w-full" key={run?.id} href={`${run?.id}`}>
+                  <a  className="w-full" key={run?.id} href={`../${run?.id}`}>
                     <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
                   </a>
                   )
