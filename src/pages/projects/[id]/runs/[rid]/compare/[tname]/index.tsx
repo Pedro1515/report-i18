@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, Spinner, TagSolidIcon, ExclamationSolidIcon } from "src/components";
+import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, ClockIcon, TagSolidIcon, ExclamationSolidIcon } from "src/components";
 import { ProtectRoute } from "src/context";
 import { customFormatDuration, useFeatures, useProject, useRun, useRuns, useTests } from "src/utils";
 import format from "date-fns/format";
@@ -150,7 +150,7 @@ function StepWrapper({ children }) {
 
 function StepsCard({ steps = [] }) {
   return  (
-    <div className="mt-4 border border-gray-300 rounded-md p-4">
+    <div className="mt-2 border border-gray-300 border-b-0 shadow-md rounded-md p-4">
       <StepWrapper>
         {steps?.map(({ id, status, name, logs }) => (
           <Step key={id} {...{ id, status, name, logs }} />
@@ -160,47 +160,61 @@ function StepsCard({ steps = [] }) {
   )
 }
 
-function TestCard({name, steps, description, tags, formattedDuration, errorState = [], runName, runStartTime}) {
+function TestCard({name, steps, description, tags, formattedDuration, errorState, runName, runStartTime}) {
   return (
     <>
       {name && (
         <>
           <p className="text-md font-medium">{runName}</p>
-          <p className="block text-gray-500 text-sm" title="Duration">{format(new Date(runStartTime), "dd/MM/yyyy HH:ss")}</p>
-          <div className="w-full">
-            {tags?.map((tag) => (
-              <Badge
-                key={tag}
-                IconComponent={
-                  <div className="text-gray-700 w-3 h-3 mr-2">
-                    <TagSolidIcon />
-                  </div>
-                }
-                className="m-2"
-                uppercase={false}
-                color="gray"
-                label={tag}
-              />
+          <p className="text-gray-500 text-sm" title="Duration">{format(new Date(runStartTime), "dd/MM/yyyy HH:ss")}</p>
+          <div className="block w-100 mt-1 inline-flex leading-5 items-center">
+            <div className="flex">
+              <div className="w-4 h-4 text-gray-500 mr-1">
+                <ClockIcon />
+              </div>
+              <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration}</span>
+            </div>
+          </div>
+          {!!tags && (
+            <div className="w-full">
+              {tags?.map((tag ) => (
+                <Badge
+                  key={tag}
+                  IconComponent={
+                    <div className="text-gray-700 w-3 h-3 mr-2">
+                      <TagSolidIcon />
+                    </div>
+                  }
+                  className="mr-2"
+                  uppercase={false}
+                  color="gray"
+                  label={tag}
+                />
+                ))}
+            </div>
+          )}
+          {!!errorState && (
+            <div className="mt-2 w-full">
+              {errorState.map((error) => (
+                <Badge
+                  key={error}
+                  IconComponent={
+                    <div className="text-red-700 w-3 h-3 mr-2">
+                      <ExclamationSolidIcon />
+                    </div>
+                  }
+                  className="mr-2"
+                  uppercase={false}
+                  color="red"
+                  label={error}
+                />
               ))}
-            <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration}</span>
-            {errorState.map((error) => (
-            <Badge
-              key={error}
-              IconComponent={
-                <div className="text-red-700 w-3 h-3 mr-2">
-                  <ExclamationSolidIcon />
-                </div>
-              }
-              className="mr-2"
-              uppercase={false}
-              color="red"
-              label={error}
-            />
-          ))}
-          </div>
-          <div className="m-2">
+            </div>
+          )}
+          {description && (
+          <div className="mt-2">
             <div dangerouslySetInnerHTML={{ __html: description }} />
-          </div>
+          </div>)}
           {steps?.length !== 0 && <StepsCard steps={steps} />}
         </>
       )}
@@ -213,7 +227,7 @@ function Test1({test}) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
     <>
-      <div className="float-left w-1/2 p-2">
+      <div className="float-left w-1/2 p-2 pb-10">
         <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runStartTime} formattedDuration={formattedDuration}/>
       </div>
     </>
@@ -225,7 +239,7 @@ function Test2({test}) {
   const formattedDuration = customFormatDuration({ start: 0, end: duration });
   return (
     <>
-      <div className="float-right w-1/2 p-2">
+      <div className="float-right w-1/2 p-2 pb-10">
         <TestCard name={name} description={description} steps={steps} tags={tags} errorState={errorStates} runName={runName} runStartTime={runStartTime} formattedDuration={formattedDuration}/>
       </div>
     </>
