@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, Spinner, TagSolidIcon } from "src/components";
+import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, Spinner, TagSolidIcon, ExclamationSolidIcon } from "src/components";
 import { ProtectRoute } from "src/context";
 import { customFormatDuration, useFeatures, useProject, useRun, useRuns, useTests } from "src/utils";
 import format from "date-fns/format";
@@ -160,7 +160,7 @@ function StepsCard({ steps = [] }) {
   )
 }
 
-function TestCard({name, steps, description, tags, formattedDuration, errorState, runName, runStartTime}) {
+function TestCard({name, steps, description, tags, formattedDuration, errorState = [], runName, runStartTime}) {
   return (
     <>
       {name && (
@@ -183,6 +183,20 @@ function TestCard({name, steps, description, tags, formattedDuration, errorState
               />
               ))}
             <span className="block text-gray-500 text-sm" title="Duration">{formattedDuration}</span>
+            {errorState.map((error) => (
+            <Badge
+              key={error}
+              IconComponent={
+                <div className="text-red-700 w-3 h-3 mr-2">
+                  <ExclamationSolidIcon />
+                </div>
+              }
+              className="mr-2"
+              uppercase={false}
+              color="red"
+              label={error}
+            />
+          ))}
           </div>
           <div className="m-2">
             <div dangerouslySetInnerHTML={{ __html: description }} />
