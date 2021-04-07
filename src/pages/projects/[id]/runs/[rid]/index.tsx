@@ -340,7 +340,7 @@ function TestCard({ id, name, steps = [], errors, featureName, featureId }) {
           <span className="text-sm font-medium">{name}</span>
           <div className="flex float-right">
             <div className="self-center">
-              <a className="mx-3 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700" href={`${asPath && asPath}/compare/${name}`} target="blank" >Compare</a>
+              <a className="mx-3 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700" href={`${asPath && asPath}/compare/${name}`} >Compare</a>
             </div>
             <span>{errors && <ErrorStateMenuIcon {...{ id, errors, featureId }} />}</span>
           </div>
@@ -770,8 +770,7 @@ function ButtonsFilters({errorState, asPath}) {
           <div className="float-right">
             <span className="cursor-pointer mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
               <a 
-                href={`${asPath && asPath}/state`} 
-                target="blank" 
+                href={`${asPath && asPath}/state`}
               >
                   Error States
               </a>
