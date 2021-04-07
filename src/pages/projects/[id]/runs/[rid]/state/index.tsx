@@ -106,6 +106,23 @@ function useScroll() {
   return contextScroll;
 }
 
+// @ts-ignore
+const LoadingContext = React.createContext();
+
+function LoadingProvider(props) {
+  const [loading, setLoading] = React.useState(false);
+  const value = { loading, setLoading };
+  return <LoadingContext.Provider value={value} {...props} />;
+}
+
+function useLoading() {
+  const contextLoading = React.useContext(LoadingContext);
+  if (!contextLoading) {
+    throw new Error("useLoading must be used within a LoadingProvider");
+  }
+  return contextLoading;
+}
+
 // agregando features al context
 function SetFeatues({ features }) {
   // @ts-ignore
@@ -261,11 +278,20 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
 
   // @ts-ignore
   const { modal, setModal } = useModal();
+
+  // @ts-ignore
+  const { loading, setLoading } = useLoading()
   
   const handleDeleteState = async (id, errorStateTest) => {
-    await updateTest({ id, errorStates: [errorStateTest] });
-    await mutateTests();
+    setLoading(true)
+    updateTest({ id, errorStates: [errorStateTest] });
+    
+    const done = await mutateTests()
+    if (done) {
+      setLoading(false)
+    }
   };
+  
   const handleModal = (name, runName) => {
     setModal({
       ...modal,
@@ -286,14 +312,14 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
         <div>
           <span className="ml-2 text-sm font-medium">{name}</span>
           <div className="h-6 flex float-right">
-           <label className="w-6 p-1 flex-center cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3" htmlFor={`toggle${count}`}>
-             <img className="w-full cursor-pointer" src={checked ? "/assets/invisible.png" : "/assets/visible.png" }  alt={checked ? "invisible" : "visible"}/>
+           <label className={`${loading && "cursor-wait"} w-6 p-1 flex-center cursor-pointer rounded opacity-75 bg-gray-300 transition duration-300 hover:bg-gray-400 mr-3`} htmlFor={`toggle${count}`}>
+             <img className="w-full" src={checked ? "/assets/invisible.png" : "/assets/visible.png" }  alt={checked ? "invisible" : "visible"}/>
            </label>
-           <button className="px-2 flex-center cursor-pointer rounded bg-blue-500 transition duration-300 hover:bg-blue-600 focus:outline-none mr-3 focus:outline-none" onClick={(e) => {handleModal(name, runName)}}>
+           <button className={`${loading && "cursor-wait"} px-2 flex-center cursor-pointer rounded bg-blue-500 transition duration-300 hover:bg-blue-600 focus:outline-none mr-3 focus:outline-none`} onClick={(e) => {handleModal(name, runName)}}>
              <img className="w-4 mr-1" src="/assets/share-option.png" alt="share-option"/>
              <p className="text-xs text-white font-extrabold">Jira</p>
            </button>
-           <button className="w-6 p-1 mr-3 flex-center cursor-pointer rounded bg-red-600 transition duration-300 hover:bg-red-700 focus:outline-none" onClick={(e) => {handleDeleteState(id, errorStateTest)}}>
+           <button className={`${loading && "cursor-wait"} w-6 p-1 mr-3 flex-center cursor-pointer rounded bg-red-600 transition duration-300 hover:bg-red-700 focus:outline-none onClick`} onClick={(e) => {handleDeleteState(id, errorStateTest)}}>
              <img className="w-full" src="/assets/trash.png" alt="trash"/>
            </button>
           </div>
@@ -510,6 +536,9 @@ function Content() {
 }
 
 const LayoutState = () => {
+  // @ts-ignore
+  const { loading } = useLoading()
+
   const { query } = useRouter();
   const { run } = useRun(query.rid as string);
   const { project } = useProject(run?.project);
@@ -523,13 +552,18 @@ const LayoutState = () => {
   }, [name])
   
   return (
-    <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
-        <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
-          {errorState && <NavMenu errorState={errorState} />}
+    <div className={`${loading && "cursor-wait"}`}>
+      <Layout>
+        <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
+            <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border">
+              {errorState && <NavMenu errorState={errorState} />}
+            </div>
+            <div className="w-full h-full">
+              <Content />
+            </div>
+            <FormModal />
         </div>
-        <div className="w-full h-full">
-          <Content />
-        </div>
+      </Layout>
     </div>
   );
 };
@@ -639,10 +673,9 @@ function RunWithProvider() {
       <ErrorStateTestProvider>
         <ScrollProvider>
           <ModalProvider>
-            <Layout>
+            <LoadingProvider>
               <LayoutState />
-              <FormModal />
-            </Layout>
+            </LoadingProvider>
           </ModalProvider>
         </ScrollProvider>
       </ErrorStateTestProvider>
