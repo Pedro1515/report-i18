@@ -311,7 +311,7 @@ function TestCard({ id, name, errorStates, duration, steps, runName, featureId, 
         className="hidden"
         onChange={handleCheckbox}
         />
-      <div className="m-3 p-1 rounded border">
+      <div className="m-3 p-1 rounded border-t border-gray-200 shadow">
         <div>
           <span className="ml-2 text-sm font-medium">{name}</span>
           <div className="h-6 flex float-right">
