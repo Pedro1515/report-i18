@@ -768,13 +768,12 @@ function ButtonsFilters({errorState, asPath}) {
         </div>
         {errorState &&
           <div className="float-right">
-            <span className="cursor-pointer mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700">
-              <a 
-                href={`${asPath && asPath}/state`}
-              >
-                  Error States
-              </a>
-            </span>
+            <a
+              className="cursor-pointer mx-2 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700"
+              href={`${asPath && asPath}/state`}
+            >
+                Error States
+            </a>
           </div>
         }
     </div>
