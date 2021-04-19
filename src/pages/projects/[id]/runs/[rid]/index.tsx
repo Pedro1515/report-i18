@@ -520,21 +520,24 @@ function ScenarioCard({ scenario, featureName, featureId }) {
     errorStates,
   } = scenario;
   return (
-    <div className="rounded-md border px-4 mt-6">
-      <ScenarioHeader
-        {...{
-          id,
-          name,
-          duration,
-          status,
-          tags: categoryNameList,
-          errors: errorStates,
-          featureName
-        }}
-      />
-      <ScenarioOutlineContent {...{ bddType, nodes, description, featureName, featureId }} />
-      <ScenarioContent {...{ scenario, featureName, featureId }} />
-
+    <div className={`${!!featureName ? "px-6 py-4 " : ""}flex-auto`}>
+      <div className="space-y-8">
+        <div className="rounded-md border px-4 mt-6">
+          <ScenarioHeader
+            {...{
+              id,
+              name,
+              duration,
+              status,
+              tags: categoryNameList,
+              errors: errorStates,
+              featureName
+            }}
+          />
+          <ScenarioOutlineContent {...{ bddType, nodes, description, featureName, featureId }} />
+          <ScenarioContent {...{ scenario, featureName, featureId }} />
+        </div>
+      </div>
     </div>
   );
 }
@@ -602,14 +605,11 @@ function AllFeaturesContent({ features }) {
           </div>
         </div>
       ) : (
-        <div className="px-6 py-4 flex-auto">
-          {/* <FeatureHeading name={name} created={startTime} tags={categoryNameList} /> */}
-          <div className="space-y-8">
-              {child?.map((scenario) => {
-                return <ScenarioCard key={scenario.id} scenario={scenario} featureName={name} featureId={id}/>;
-              })}
-          </div>
-        </div>
+        <>
+          {child?.map((scenario) => {
+            return <ScenarioCard key={scenario.id} scenario={scenario} featureName={name} featureId={id}/>
+          })}
+        </>
       )}
     </>
   );
@@ -629,15 +629,13 @@ function AllFilterContent({ features, status }) {
           </div>
         </div>
       ) : (
-        <div className="px-6 py-4 flex-auto">
-          <div className="space-y-8">
-            {child?.map((scenario) => {
-              if (scenario?.status === status) {
-                return <ScenarioCard key={scenario.id} featureName={name} featureId={id} scenario={scenario} />
-              }
-            })}
-          </div>
-        </div>
+        <>
+          {child?.map((scenario) => {
+            if (scenario?.status === status) {
+              return <ScenarioCard key={scenario.id} featureName={name} featureId={id} scenario={scenario} />
+            }
+          })}
+        </>
       )}
     </>
   );
@@ -673,7 +671,7 @@ function OneFeatureContent({ feature }) {
   return (
     <div className="px-6 py-4 flex-auto">
       <FeatureHeading name={name} created={startTime} tags={categoryNameList} />
-      <div className="space-y-8">
+      <>
         {isLoading ? (
           <div className="flex-center mt-20">
             <Spinner className="h-10 w-10 text-gray-500" />
@@ -683,7 +681,7 @@ function OneFeatureContent({ feature }) {
             return <ScenarioCard key={scenario.id} scenario={scenario} featureName={null} featureId={id} />;
           })
         )}
-      </div>
+      </>
     </div>
   );
 }
