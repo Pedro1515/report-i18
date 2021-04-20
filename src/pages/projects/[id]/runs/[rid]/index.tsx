@@ -388,16 +388,16 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
         <div className="flex items-center">
           <div className="font-medium text-sm">{name}</div>
           <div className="mx-2 text-gray-500">&middot;</div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 text-gray-500 mr-2">
-              <ClockIcon />
-            </div>
-            {formattedDuration ? (
+          {formattedDuration ? (
+            <div className="flex items-center">
+              <div className="w-4 h-4 text-gray-500 mr-2">
+                <ClockIcon />
+              </div>
               <span className="block text-gray-500 text-sm" title="Duration">
                 {formattedDuration}
               </span>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
           {tags?.map((tag) => (
             <Badge
               key={tag}
