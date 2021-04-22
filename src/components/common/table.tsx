@@ -28,7 +28,7 @@ export function TableHeader({
   return (
     <th
       className={classNames(
-        "px-6",
+        "px-3",
         "py-3",
         "bg-gray-100",
         "text-left",
@@ -59,7 +59,7 @@ export function TableRow({ children, hover, ...props }: TableRowProps) {
 export function TableCell({ children, className, ...props }: TableCellProps) {
   return (
     <td
-      className={classNames("px-6", "py-4", "whitespace-no-wrap", className)}
+      className={classNames("px-3", "py-4", "whitespace-no-wrap", className)}
       {...props}
     >
       {children}
@@ -74,7 +74,7 @@ export function Table({ columns, data, sticky }) {
   });
 
   return (
-    <table className="w-full divide-y divide-gray-200" {...getTableProps()}>
+    <table className="table-fixed w-full divide-y divide-gray-200" {...getTableProps()}>
       <thead className="border-b">
         {headerGroups.map((headerGroup) => (
           <TableRow {...headerGroup.getHeaderGroupProps()}>

@@ -101,12 +101,15 @@ function RunsTable() {
       {
         Header: "Run",
         id: "name",
+        headerClassName: "w-1/4 pl-6",
+        className: "pl-6 pr-0",
         Cell: ({ row }) => {
           const { name, duration, id } = row.original;
           return (
             <div className="flex flex-col text-sm">
               <Link href={`${asPath}/runs/${id}`}>
-                <a className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+              {/* style={{width: "13rem"}} */}
+                <a className="overflow-hidden truncate whitespace-nowrap no-underline text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
                   {name}
                 </a>
               </Link>
@@ -130,6 +133,8 @@ function RunsTable() {
       {
         Header: "Status",
         id: "status",
+        headerClassName: "text-center",
+        className: "text-center",
         Cell: ({ row }) => (
           <Badge
             label={row.original.status}
@@ -140,6 +145,8 @@ function RunsTable() {
       {
         Header: "Start time",
         id: "start_time",
+        headerClassName: "w-40 text-center",
+        className: "text-center",
         Cell: ({ row }) => (
           <span
             className="text-sm leading-5 text-gray-500"
@@ -152,8 +159,8 @@ function RunsTable() {
       {
         Header: "Total features",
         id: "total_features",
-        headerClassName: "text-right",
-        className: "text-right",
+        headerClassName: "text-center",
+        className: "text-center",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
             {getTotalBy("feature", row.original)}
@@ -163,8 +170,8 @@ function RunsTable() {
       {
         Header: "Total scenarios",
         id: "total_scenarios",
-        headerClassName: "text-right",
-        className: "text-right",
+        headerClassName: "text-center",
+        className: "text-center",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
             {getTotalBy("scenario", row.original)}
@@ -174,22 +181,22 @@ function RunsTable() {
       {
         Header: "Passed",
         id: "passed",
-        headerClassName: "text-right",
-        className: "text-right text-sm leading-5 text-green-600",
+        headerClassName: "text-center",
+        className: "text-center text-sm leading-5 text-green-600",
         accessor: "passChildLength",
       },
       {
         Header: "Failed",
         id: "failed",
-        headerClassName: "text-right",
-        className: "text-right text-sm leading-5 text-red-600 text-center",
+        headerClassName: "text-center",
+        className: "text-center text-sm leading-5 text-red-600 text-center",
         accessor: "failChildLength",
       },
       {
         Header: "Skipped",
         id: "skipped",
-        headerClassName: "text-right",
-        className: "text-right text-sm leading-5 text-yellow-600 text-center",
+        headerClassName: "text-center",
+        className: "text-center text-sm leading-5 text-yellow-600 text-center",
         accessor: "skipChildLength",
       },
       {
