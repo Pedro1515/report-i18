@@ -147,7 +147,7 @@ function RunsTable() {
         Cell: ({ row }) => (
           <Badge
             label={row.original.status}
-            color={row.original.status === "pass" ? "green" : "red"}
+            color={row.original.status.toUpperCase() === "pass".toUpperCase() ? "green" : "red"}
           />
         ),
       },
