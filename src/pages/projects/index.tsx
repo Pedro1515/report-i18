@@ -147,7 +147,7 @@ export function Home() {
             lastRun: { status },
           } = row.original;
           return (
-            <Badge label={status} color={status === "pass" ? "green" : "red"} />
+            <Badge label={status} color={status.toUpperCase() === "pass".toUpperCase() ? "green" : "red"} />
           );
         },
       },
