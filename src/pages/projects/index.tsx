@@ -109,6 +109,8 @@ export function Home() {
       {
         Header: "Name",
         accessor: "name",
+        headerClassName: "px-6 w-1/3",
+        className: "px-6",
         Cell: ({ row }) => {
           const { name, runQuantity, testQuantity, id } = row.original;
           return (
@@ -131,11 +133,15 @@ export function Home() {
       {
         Header: "Usernames",
         id: "members",
+        headerClassName: "px-6",
+        className: "px-6",
         Cell: ({ row }) => <Members members={row.original.users} />,
       },
       {
         Header: "Last Build",
         id: "status",
+        headerClassName: "px-6",
+        className: "px-6",
         Cell: ({ row }) => {
           const {
             lastRun: { status },
@@ -148,6 +154,8 @@ export function Home() {
       {
         Header: "Created",
         id: "created",
+        headerClassName: "px-6",
+        className: "px-6",
         Cell: ({ row }) => (
           <span className="text-sm leading-5 text-gray-500">
             {format(new Date(row.original.createdAt), "dd/MM/yyyy HH:ss")}
