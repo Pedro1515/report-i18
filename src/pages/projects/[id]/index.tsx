@@ -27,6 +27,8 @@ import { ProtectRoute, useAlert, useNotification } from "src/context";
 import { usePagination, useProject, useRuns } from "src/utils/hooks";
 import { config } from "src/utils/tailwind";
 import { customFormatDuration, getTotalBy } from "src/utils";
+import Tooltip, { useTooltip, TooltipPopup } from "@reach/tooltip";
+import "@reach/tooltip/styles.css";
 
 function DataDisplayWrapper(props) {
   return <div className="flex flex-wrap -mx-6" {...props} />;
@@ -96,6 +98,10 @@ function RunsTable() {
     });
   };
 
+  const handleChange = (e) => {
+    console.log(e);
+  }
+
   const columns = React.useMemo(
     () => [
       {
@@ -106,12 +112,15 @@ function RunsTable() {
         Cell: ({ row }) => {
           const { name, duration, id } = row.original;
           return (
-            <div className="flex flex-col text-sm">
+            <div  className="flex flex-col text-sm">
               <Link href={`${asPath}/runs/${id}`}>
-              {/* style={{width: "13rem"}} */}
-                <a className="overflow-hidden truncate whitespace-nowrap no-underline text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
-                  {name}
-                </a>
+                  <a className="overflow-hidden truncate whitespace-nowrap no-underline text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline">
+                    <Tooltip style={{ background: "hsla(0, 0%, 0%, 0.75)", fontSize: "13px", fontWeight: "600", color: "white", border: "none", borderRadius: "4px",}} label={name}>
+                      <span>
+                        {name}
+                      </span>
+                    </Tooltip>
+                  </a>
               </Link>
               <div className="mt-2">
                 <div className="flex items-center">
