@@ -331,7 +331,7 @@ function Logs({logs}) {
   );
 }
 
-function TestCard({ id, name, steps = [], errors, featureName, featureId }) {
+function TestCard({ id, name, steps = [], errors, featureName, featureId, status }) {
   const { asPath } = useRouter();
   return (
     <div className="mt-4 border border-gray-300 rounded-md p-4">
@@ -342,7 +342,7 @@ function TestCard({ id, name, steps = [], errors, featureName, featureId }) {
             <div className="self-center">
               <a className="mx-3 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700" href={`${asPath && asPath}/compare/${name}`} >Compare</a>
             </div>
-            <span>{errors && <ErrorStateMenuIcon {...{ id, errors, featureId }} />}</span>
+            <span>{status.toUpperCase() === "fail".toUpperCase() && <ErrorStateMenuIcon {...{ id, errors, featureId }} />}</span>
           </div>
         </div>
         {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
@@ -447,9 +447,9 @@ function ScenarioOutlineContent({ bddType, nodes, description, featureName, feat
         <div className="text-sm font-medium mb-4">Datos iniciales</div>
         <div dangerouslySetInnerHTML={{ __html: description }} />
         {nodes?.map((test) => {
-          const { id, name, nodes: steps, errorStates } = test;
+          const { id, name, nodes: steps, errorStates, status } = test;
           return (
-            <TestCard key={id} {...{ id, name, steps, errors: errorStates, featureName, featureId }} />
+            <TestCard key={id} {...{ id, name, steps, errors: errorStates, featureName, featureId, status }} />
           );
         })}
       </div>
@@ -478,12 +478,13 @@ function ScenarioContent({ scenario, featureName, featureId }) {
     nodes,
     bddType,
     errorStates,
+    status,
   } = scenario;
   if (bddType === "Scenario") {
     return (
       <div className="py-6">
         <div dangerouslySetInnerHTML={{ __html: description }} />
-            <TestCard key={id} {...{ id, name, steps: nodes, errors: errorStates, featureId }} featureName={null} />
+            <TestCard key={id} {...{ id, name, steps: nodes, errors: errorStates, featureId, status, }} featureName={null} />
       </div>
     );
   }
