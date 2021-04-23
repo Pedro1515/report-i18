@@ -387,17 +387,19 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="font-medium text-sm">{name}</div>
-          {formattedDuration ? (
-            <div className="flex items-center">
-              <div className="w-4 h-4 text-gray-500 mr-2">
-                <ClockIcon />
+          <div className="ml-4">
+            {formattedDuration ? (
+              <div className="flex items-center">
+                <div className="w-4 h-4 text-gray-500 mr-1">
+                  <ClockIcon />
+                </div>
+                <span className="block text-gray-500 text-sm" title="Duration">
+                  {formattedDuration}
+                </span>
               </div>
-              <span className="block text-gray-500 text-sm" title="Duration">
-                {formattedDuration}
-              </span>
-            </div>
-          ) : null}
-          <div className="ml-2">
+            ) : null}
+          </div>
+          <div className="ml-4">
             {tags?.maap((tag) => (
               <Badge
                 key={tag}
