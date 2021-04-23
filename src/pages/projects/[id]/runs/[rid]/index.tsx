@@ -387,7 +387,6 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="font-medium text-sm">{name}</div>
-          <div className="mx-2 text-gray-500">&middot;</div>
           {formattedDuration ? (
             <div className="flex items-center">
               <div className="w-4 h-4 text-gray-500 mr-2">
@@ -398,20 +397,21 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
               </span>
             </div>
           ) : null}
-          {tags?.map((tag) => (
-            <Badge
-              key={tag}
-              IconComponent={
-                <div className="text-gray-700 w-3 h-3 mr-2">
-                  <TagSolidIcon />
-                </div>
-              }
-              className="m-2"
-              uppercase={false}
-              color="gray"
-              label={tag}
-            />
-          ))}
+          <div className="ml-2">
+            {tags?.maap((tag) => (
+              <Badge
+                key={tag}
+                IconComponent={
+                  <div className="text-gray-700 w-3 h-3 mr-2">
+                    <TagSolidIcon />
+                  </div>
+                }
+                uppercase={false}
+                color="gray"
+                label={tag}
+              />
+            ))}
+          </div>
           <StatusBadge status={status} />
         </div>
         {/* {errors && <ErrorStateMenuIcon {...{ id, errors }} />} */}
