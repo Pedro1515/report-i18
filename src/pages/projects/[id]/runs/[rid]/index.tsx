@@ -831,16 +831,16 @@ function Dropdown({run, runs}) {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <div style={{width:"355px", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
-            <nav style={{height: "70%"}} className="rounded-md border">
-            <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
+          <div style={{width:"max-content", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
+            <nav style={{height: "70%"}} className="shadow-lg rounded-md border">
+            {/* <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
               <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
-            </div>
+            </div> */}
               <ul className="h-full overflow-y-overlay rounded-md bg-white">
                 {runs?.content.map(run => {
                   return (
                   <a  className="w-full" key={run?.id} href={`${run?.id}`}>
-                    <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
+                    <li className={`${activedStyle ? "pr-8" : ""} px-4 py-2 text-sm leading-5 text-gray-800 transition duration-200 hover:text-gray-900  hover:bg-gray-100`}>{run?.name}</li>
                   </a>
                   )
                 })}
