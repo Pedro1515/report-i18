@@ -257,18 +257,18 @@ const Summary = React.memo(function Summary({ run }: SummaryProps) {
     <div className="leading-none">
       <span className="">
         <DataDisplay
-          label="Total features"
+          label="Features"
           value={getTotalBy("feature", run)}
         />
       </span>
       <span className="ml-6">
         <DataDisplay
-          label="Total scenarios"
+          label="Scenarios"
           value={getTotalBy("scenario", run)}
         />
       </span>
       <span className="ml-6">
-        <DataDisplay label="Total steps" value={getTotalBy("steps", run)} />
+        <DataDisplay label="Steps" value={getTotalBy("steps", run)} />
       </span>
     </div>
   );
