@@ -894,7 +894,7 @@ function Run() {
     <div className={`${uiData && 'cursor-wait'}`}>
       <Layout>
           <LayoutHeader>
-            <div style={{width:"56%"}} className="flex space-x-4">
+            <div className="flex space-x-4">
               {project?.name !== undefined && <Breadcrumd name={project.name} run={run} runs={runs}/>}
             </div>
             <Summary run={run} />
