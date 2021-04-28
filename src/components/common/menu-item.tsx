@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import Link from "next/link";
 
 export interface MenuItemProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -8,29 +9,30 @@ export interface MenuItemProps
 }
 
 export function MenuItem({ label, selected, ...props }: MenuItemProps) {
+  const styles = [
+    "block",
+    "px-4",
+    "py-2",
+    "text-sm",
+    "leading-5",
+    "text-gray-700",
+    "hover:bg-gray-100",
+    "hover:text-gray-900",
+    "focus:outline-none",
+    "focus:bg-gray-100",
+    "focus:text-gray-900",
+    "cursor-pointer",
+    { "border-l-2 border-indigo-600": selected }
+  ]
+
+  const url = props?.href
   return (
-    <a
-      // href="#"
-      className={classNames(
-        "block",
-        "px-4",
-        "py-2",
-        "text-sm",
-        "leading-5",
-        "text-gray-700",
-        "hover:bg-gray-100",
-        "hover:text-gray-900",
-        "focus:outline-none",
-        "focus:bg-gray-100",
-        "focus:text-gray-900",
-        "cursor-pointer",
-        { "border-l-2 border-indigo-600": selected }
-      )}
-      role="menuitem"
-      {...props}
-    >
-      {label}
-    </a>
+    <>
+      {url !== undefined
+        ? <Link href={url}><a className={classNames(styles)} role="menuitem" {...props}> {label} </a></Link>
+        : <a className={classNames(styles)} role="menuitem" {...props}> {label} </a>
+      }
+    </>
   );
 }
 
