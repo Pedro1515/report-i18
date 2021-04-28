@@ -35,6 +35,7 @@ import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "src/utils";
 import { Feature, Run as ApiRun, updateTest} from "src/api";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 
 interface FeatureItemProps {
   name: string;
@@ -805,12 +806,12 @@ function ButtonsWrapper({ children }) {
   );
 }
 
-function Breadcrumd({name, runName, runs}) {
+function Breadcrumd({project, runName, runs}) {
   return (
     <nav className="w-full">
       <ol className="flex w-full text-grey">
         <li className="flex self-center">
-          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../`}>{`${name}`}</a></button>
+          <button className="w-full font-semibold cursor-default focus:outline-none"><Link href={`/projects/${project?.id}`}><a>{`${project?.name}`}</a></Link></button>
           <span className="self-center w-3 mx-2">
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
@@ -855,7 +856,7 @@ function Run() {
       <Layout>
           <LayoutHeader>
             <div className="flex space-x-4">
-              {project?.name !== undefined && <Breadcrumd name={project.name} runName={run?.name} runs={runs}/>}
+              {project?.name !== undefined && <Breadcrumd project={project} runName={run?.name} runs={runs}/>}
             </div>
             <Summary run={run} />
           </LayoutHeader>

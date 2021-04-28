@@ -6,6 +6,7 @@ import { ProtectRoute } from "src/context";
 import { customFormatDuration, useFeatures, useProject, useRun, useRuns, useTests } from "src/utils";
 import format from "date-fns/format";
 import classNames from "classnames";
+import Link from "next/link";
 
 // @ts-ignore
 const Test1Context = createContext();
@@ -562,12 +563,12 @@ function NavMenu({runs, tname }) {
   );
 }
 
-function Breadcrumd({name, runName, runs}) {
+function Breadcrumd({project, runName, runs}) {
   return (
     <nav className="w-full">
       <ol className="flex w-full text-grey">
         <li className="flex self-center">
-          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../../`}>{`${name}`}</a></button>
+          <button className="w-full font-semibold cursor-default focus:outline-none"><Link href={`/projects/${project?.id}`}><a>{`${project?.name}`}</a></Link></button>
           <span className="self-center w-3 mx-2">
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
@@ -578,7 +579,7 @@ function Breadcrumd({name, runName, runs}) {
             runs?.content.map((run) => ({
               label: run?.name,
               style: {paddingRight:'3rem'},
-              href: `../../${run?.id}`,
+              href: `/projects/${project?.id}/runs/${run?.id}`,
               selected: run?.name ? run?.name.includes(runName) : false,
             })),
           ]}
@@ -605,7 +606,7 @@ function LayoutCompare() {
       <div className={`${loading && "cursor-wait"}`}>
         <Layout>
           <LayoutHeader>
-            {project?.name !== undefined && <Breadcrumd name={project.name} runName={run?.name} runs={runs}/>}
+            {project?.name !== undefined && <Breadcrumd project={project} runName={run?.name} runs={runs}/>}
           </LayoutHeader>
           <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
             <NavMenu tname={tname} runs={runs?.content.map(r => r )} />

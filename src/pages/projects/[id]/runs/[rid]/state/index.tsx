@@ -28,6 +28,7 @@ import { customFormatDuration } from "src/utils";
 import { Feature, Run as ApiRun, Test, updateTest } from "src/api";
 import { useRouter } from "next/router";
 import { Transition } from "@headlessui/react";
+import Link from "next/link";
 
 interface FeatureItemProps {
   name: string;
@@ -520,12 +521,12 @@ function Features({ feature }) {
   );
 }
 
-function Breadcrumd({name, runName, runs}) {
+function Breadcrumd({project, runName, runs}) {
   return (
     <nav className="w-full">
       <ol className="flex w-full text-grey">
         <li className="flex self-center">
-          <button className="w-full font-semibold cursor-default focus:outline-none"><a  href={`../../`}>{`${name}`}</a></button>
+          <button className="w-full font-semibold cursor-default focus:outline-none"><Link href={`/projects/${project?.id}`}><a>{`${project?.name}`}</a></Link></button>
           <span className="self-center w-3 mx-2">
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
@@ -536,7 +537,7 @@ function Breadcrumd({name, runName, runs}) {
             runs?.content.map((run) => ({
               label: run?.name,
               style: {paddingRight:'3rem'},
-              href: `../${run?.id}`,
+              href: `/projects/${project?.id}/runs/${run?.id}`,
               selected: run?.name ? run?.name.includes(runName) : false,
             })),
           ]}
@@ -588,7 +589,7 @@ const LayoutState = () => {
     <div className={`${loading && "cursor-wait"}`}>
       <Layout>
         <LayoutHeader>
-          {project?.name !== undefined && <Breadcrumd name={project.name} runName={run?.name} runs={runs}/>}
+          {project?.name !== undefined && <Breadcrumd project={project} runName={run?.name} runs={runs}/>}
         </LayoutHeader>
         <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
             <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border-r">
