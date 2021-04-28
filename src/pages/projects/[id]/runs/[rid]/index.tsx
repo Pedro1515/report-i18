@@ -822,7 +822,7 @@ function Breadcrumd({project, runName, runs}) {
             runs?.content.map((run) => ({
               label: run?.name,
               style: {paddingRight:'3rem'},
-              href: run?.id,
+              href: `/projects/${project?.id}/runs/${run?.id}`,
               selected: run?.name ? run?.name.includes(runName) : false,
             })),
           ]}
