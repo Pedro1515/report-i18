@@ -11,10 +11,11 @@ import {
   SearchBox,
   Button,
   Table,
-  MenuIcon,
+  MenuDropdown,
   Spinner,
   Title,
   useSearchBox,
+  DotsVerticalIcon,
 } from "src/components";
 import { ProtectRoute, useAlert, useNotification } from "src/context";
 import {
@@ -166,10 +167,17 @@ export function Home() {
         Header: () => null,
         id: "edit",
         Cell: ({ row }) => (
-          <MenuIcon
+          <MenuDropdown
             items={[
-              [{ label: "Eliminar", onClick: handleDeleteProject(row.original) }],
+              [{ label: "Eliminar", style: {paddingRight:'3rem', paddingBottom:'0.25rem', paddingTop:'0.25rem'}, onClick: handleDeleteProject(row.original) }],
             ]}
+            label={
+              <div className="h-5 w-5">
+                <DotsVerticalIcon />
+              </div>
+            }
+            className="text-gray-600 hover:bg-gray-300 hover:text-gray-700 py-2 rounded"
+            classNamePositionDrop="origin-top-right right-0 mt-2"
           />
         ),
       },

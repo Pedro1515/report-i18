@@ -9,7 +9,7 @@ export * from "./input";
 export * from "./layout";
 export * from "./media-modal"; 
 export * from "./member";
-export * from "./menu-icon";
+export * from "./menu-dropdown";
 export * from "./menu-item";
 export * from "./modal";
 export * from "./no-account";

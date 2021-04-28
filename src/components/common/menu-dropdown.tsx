@@ -7,32 +7,38 @@ import {
   Divider,
   MenuItemProps,
 } from "src/components/";
-import { DotsVerticalIcon } from "src/components/icons";
 import { useModal } from "src/utils/hooks";
 import { callAll } from "src/utils";
 
-export interface MenuIconProps {
+export interface MenuDropdownProps extends React.HTMLAttributes<HTMLButtonElement> {
+  label: any;
   items: MenuItemProps[][];
+  classNamePositionDrop: string; // example "origin-top-left left-0 mt-2" left, top, right or buttom
 }
 
-export function MenuIcon({ items }: MenuIconProps) {
+export function MenuDropdown({ items, label, className, classNamePositionDrop }: MenuDropdownProps) {
+  const [activedStyle, setActivedStyle] = React.useState(false)
   const popover = useModal();
+  const [item] = items
+  React.useEffect(() => {
+    if (item?.length >= 10) {
+      setActivedStyle(true)
+    }
+  }, [items])
 
   return (
     <div className="relative inline-block">
       <IconButton
         active={popover.visibility}
         onClick={popover.toggle}
-        IconComponent={
-          <div className="h-5 w-5">
-            <DotsVerticalIcon />
-          </div>
-        }
+        IconComponent={label}
+        className={className}
       />
       <PopOver
         visible={popover.visibility}
         onClose={popover.toggle}
-        className="origin-top-right right-0 mt-2"
+        className={classNamePositionDrop}
+        style={{ height: activedStyle ? "50vh" : "auto" }}
       >
         {items.map((group, index, arr) => {
           return (
@@ -41,6 +47,8 @@ export function MenuIcon({ items }: MenuIconProps) {
                 key={index}
                 aria-orientation="vertical"
                 aria-labelledby="options-menu"
+                className="h-full overflow-y-auto rounded-md bg-white shadow-xs"
+                style={{width:"max-content"}}
               >
                 {group?.map(({ label, onClick, ...props }) => (
                   <MenuItem

@@ -48,7 +48,6 @@ export function PopOver({
           variants={variants}
           className={classNames(
             "absolute",
-            "w-56",
             "rounded-md",
             "shadow-lg",
             "z-10",
@@ -57,7 +56,7 @@ export function PopOver({
           exit="exit"
           {...props}
         >
-          <div className="rounded-md bg-white shadow-xs">{children}</div>
+          {children}
         </motion.div>
       )}
     </AnimatePresence>

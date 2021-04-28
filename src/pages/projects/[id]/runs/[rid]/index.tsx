@@ -7,10 +7,11 @@ import {
   PopOver,
   Badge,
   MenuItemGroup,
-  MenuIcon,
+  MenuDropdown,
   Spinner,
   useSearchBox,
   MediaModal,
+  DotsVerticalIcon,
 } from "src/components";
 import classNames from "classnames";
 import {
@@ -34,7 +35,6 @@ import { format } from "date-fns";
 import { customFormatDuration, getTotalBy } from "src/utils";
 import { Feature, Run as ApiRun, updateTest} from "src/api";
 import { useRouter } from "next/router";
-import { Transition } from '@headlessui/react';
 
 interface FeatureItemProps {
   name: string;
@@ -144,7 +144,7 @@ function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
   );
 }
 
-function ErrorStateMenuIcon({ id, errors, featureId }) {
+function ErrorStateMenuDropdown({ id, errors, featureId }) {
   const { query } = useRouter();
   const { mutateTests:mutateAllTests } = useTests({ "deep-populate": true, id: featureId });
   // @ts-ignore
@@ -165,14 +165,22 @@ function ErrorStateMenuIcon({ id, errors, featureId }) {
   };
 
   return (
-    <MenuIcon
+    <MenuDropdown
       items={[
         errorState?.map((error) => ({
           label: error,
           onClick: handleErrorState(error),
           selected: errors ? errors.includes(error) : false,
+          style: {paddingRight:'3rem'},
         })),
       ]}
+      label={
+        <div className="h-5 w-5">
+          <DotsVerticalIcon />
+        </div>
+      }
+      className="text-gray-600 hover:bg-gray-300 hover:text-gray-700 py-2 rounded"
+      classNamePositionDrop="origin-top-right right-0 mt-2"
     />
   );
 }
@@ -216,7 +224,7 @@ function Search({ selectedFeatureId }) {
       />
       <PopOver
         visible={visible}
-        className="origin-top-left mt-2 w-full overflow-y-auto border"
+        className="bg-white origin-top-left mt-2 w-full overflow-y-auto border"
         style={{ maxHeight: 400 }}
         onClose={() => setVisible(false)}
       >
@@ -342,7 +350,7 @@ function TestCard({ id, name, steps = [], errors, featureName, featureId, status
             <div className="self-center">
               <a className="mx-3 px-3 py-1 rounded bg-blue-600 font-medium text-sm text-white tracking-tight transition duration-200 hover:bg-blue-700" href={`${asPath && asPath}/compare/${name}`} >Compare</a>
             </div>
-            <span>{status.toUpperCase() === "fail".toUpperCase() && <ErrorStateMenuIcon {...{ id, errors, featureId }} />}</span>
+            <span>{status.toUpperCase() === "fail".toUpperCase() && <ErrorStateMenuDropdown {...{ id, errors, featureId }} />}</span>
           </div>
         </div>
         {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
@@ -400,7 +408,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
             ) : null}
           </div>
           <div className="ml-4">
-            {tags?.maap((tag) => (
+            {tags?.map((tag) => (
               <Badge
                 key={tag}
                 IconComponent={
@@ -416,7 +424,7 @@ function ScenarioHeader({ id, name, duration, tags, status, errors, featureName 
           </div>
           <StatusBadge status={status} />
         </div>
-        {/* {errors && <ErrorStateMenuIcon {...{ id, errors }} />} */}
+        {/* {errors && <ErrorStateMenuDropdown {...{ id, errors }} />} */}
       </div>
       {featureName && <p className="px-2 inline-block rounded bg-gray-600 text-sm font-medium text-white">Feature: {featureName}</p>}
       {errors?.length > 0 && (
@@ -797,66 +805,7 @@ function ButtonsWrapper({ children }) {
   );
 }
 
-function Dropdown({run, runs}) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activedStyle, setActivedStyle] = useState(false)
-
-  useEffect(() => {
-    if (runs?.content.length >= 8) {
-      setActivedStyle(true)
-    }
-  }, [runs])
-
-  const handleFocus = (e) => {
-    setIsOpen(true)
-  }
-
-  const handleBlur = (e) => {
-    setIsOpen(false)
-  }
-
-  return (
-    <>
-      <li className="self-center relative">
-        <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
-          {run?.name}
-        </button>
-
-        <Transition
-          show={isOpen}
-          enter="transition ease-out duration-100 transform"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="transition ease-in duration-75 transform"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <div style={{width:"max-content", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
-            <nav style={{height: "70%"}} className="shadow-lg rounded-md border">
-            {/* <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
-              <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
-            </div> */}
-              <ul className="h-full py-1 overflow-y-overlay rounded-md bg-white">
-                {runs?.content.map(run => {
-                  return (
-                  <a  className="w-full" key={run?.id} href={`${run?.id}`}>
-                    <li className={`${activedStyle ? "pr-8" : ""} px-4 py-2 text-sm leading-5 text-gray-800 transition duration-200 hover:text-gray-900  hover:bg-gray-100`}>{run?.name}</li>
-                  </a>
-                  )
-                })}
-              </ul>
-            </nav>
-          </div>
-        </Transition>
-      </li>
-      <span className="self-center w-3 mx-2">
-        <img className="w-full cursor-pointer" src={isOpen ? "/assets/arrow-down.png" : "/assets/arrow-right.png" }  alt={isOpen ? "arrow-down" : "arrow-right"}/>
-      </span>
-    </>
-  )
-}
-
-function Breadcrumd({name, run, runs}) {
+function Breadcrumd({name, runName, runs}) {
   return (
     <nav className="w-full">
       <ol className="flex w-full text-grey">
@@ -866,7 +815,18 @@ function Breadcrumd({name, run, runs}) {
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
         </li>
-        <Dropdown run={run} runs={runs} />
+        <MenuDropdown
+          label={runName}
+          items={[
+            runs?.content.map((run) => ({
+              label: run?.name,
+              style: {paddingRight:'3rem'},
+              href: run?.id,
+              selected: run?.name ? run?.name.includes(runName) : false,
+            })),
+          ]}
+          classNamePositionDrop="origin-top-left left-0 mt-2"
+        />
       </ol>
     </nav>
   )
@@ -895,7 +855,7 @@ function Run() {
       <Layout>
           <LayoutHeader>
             <div className="flex space-x-4">
-              {project?.name !== undefined && <Breadcrumd name={project.name} run={run} runs={runs}/>}
+              {project?.name !== undefined && <Breadcrumd name={project.name} runName={run?.name} runs={runs}/>}
             </div>
             <Summary run={run} />
           </LayoutHeader>

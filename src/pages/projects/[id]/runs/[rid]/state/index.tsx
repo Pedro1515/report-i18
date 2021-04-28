@@ -6,6 +6,7 @@ import {
   MediaModal,
   Modal,
   LayoutHeader,
+  MenuDropdown,
 } from "src/components";
 import classNames from "classnames";
 import {
@@ -484,8 +485,7 @@ function Scenarios({ features }) {
         <Spinner className="h-10 w-10 text-gray-500" />
       </div>
     );
-  } else {
-    if (child) {
+  } else if (child) {
       return child?.map((scenario1) => {
         const { nodes: scenario2 } = scenario1;
         return (
@@ -505,8 +505,7 @@ function Scenarios({ features }) {
           </>
         );
       });
-    }
-  }
+    } else {return <></>}
 }
 
 function Features({ feature }) {
@@ -521,66 +520,7 @@ function Features({ feature }) {
   );
 }
 
-function Dropdown({run, runs}) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activedStyle, setActivedStyle] = useState(false)
-
-  useEffect(() => {
-    if (runs?.content.length >= 8) {
-      setActivedStyle(true)
-    }
-  }, [runs])
-
-  const handleFocus = (e) => {
-    setIsOpen(true)
-  }
-
-  const handleBlur = (e) => {
-    setIsOpen(false)
-  }
-
-  return (
-    <>
-      <li className="self-center relative">
-        <button type="button" onFocus={handleFocus} onBlur={handleBlur} className="transition duration-200 hover:color-gray-900 focus:outline-none">
-          {run?.name}
-        </button>
-
-        <Transition
-          show={isOpen}
-          enter="transition ease-out duration-100 transform"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="transition ease-in duration-75 transform"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <div style={{width:"355px", height: activedStyle ? "80vh" : "auto"}} className={`absolute left-0 mt-2 origin-top-right`}>
-            <nav style={{height: "70%"}} className="rounded-md border">
-            <div style={{right: "-38px"}} className="inline-block bg-white absolute border py-1 px-2 shadow-sm rounded-md cursor-pointer transition duration-200 hover:bg-gray-100">
-              <span className="leading-none text-xl font-medium" aria-hidden="true">&times;</span>
-            </div>
-              <ul className="h-full overflow-y-overlay rounded-md bg-white">
-                {runs?.content.map(run => {
-                  return (
-                  <a  className="w-full" key={run?.id} href={`../${run?.id}`}>
-                    <li className={`p-2 text-sm transition duration-200 hover:bg-gray-200`}>{run?.name}</li>
-                  </a>
-                  )
-                })}
-              </ul>
-            </nav>
-          </div>
-        </Transition>
-      </li>
-      <span className="self-center w-3 mx-2">
-        <img className="w-full cursor-pointer" src={isOpen ? "/assets/arrow-down.png" : "/assets/arrow-right.png" }  alt={isOpen ? "arrow-down" : "arrow-right"}/>
-      </span>
-    </>
-  )
-}
-
-function Breadcrumd({name, run, runs}) {
+function Breadcrumd({name, runName, runs}) {
   return (
     <nav className="w-full">
       <ol className="flex w-full text-grey">
@@ -590,7 +530,18 @@ function Breadcrumd({name, run, runs}) {
             <img className="w-full" src={"/assets/arrow-right.png" }  alt={"arrow-right"}/>
           </span>
         </li>
-        <Dropdown run={run} runs={runs} />
+        <MenuDropdown
+          label={runName}
+          items={[
+            runs?.content.map((run) => ({
+              label: run?.name,
+              style: {paddingRight:'3rem'},
+              href: `../${run?.id}`,
+              selected: run?.name ? run?.name.includes(runName) : false,
+            })),
+          ]}
+          classNamePositionDrop="origin-top-left left-0 mt-2"
+        />
       </ol>
     </nav>
   )
@@ -637,7 +588,7 @@ const LayoutState = () => {
     <div className={`${loading && "cursor-wait"}`}>
       <Layout>
         <LayoutHeader>
-          {project?.name !== undefined && <Breadcrumd name={project.name} run={run} runs={runs}/>}
+          {project?.name !== undefined && <Breadcrumd name={project.name} runName={run?.name} runs={runs}/>}
         </LayoutHeader>
         <div className="md:flex lg:flex xl:flex h-screen bg-white overflow-hidden">
             <div className="w-100 md:w-64 lg:w-64 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border-r">
