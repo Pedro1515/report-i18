@@ -352,7 +352,7 @@ function LastRunCard() {
               <Badge
                 className="ml-2"
                 label={status}
-                color={status === "pass" ? "green" : "red"}
+                color={status.toUpperCase() === "pass".toUpperCase() ? "green" : "red"}
               />
             </div>
             <div className="w-1/3">

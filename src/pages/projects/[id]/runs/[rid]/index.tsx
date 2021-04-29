@@ -114,7 +114,7 @@ function useScrollable() {
 }
 
 function StatusBadge({ status }) {
-  return <Badge label={status} color={status === "pass" ? "green" : "red"} />;
+  return <Badge label={status} color={status.toUpperCase() === "pass".toUpperCase() ? "green" : "red"} />;
 }
 
 function FeatureItem({ name, status, isActive, onClick }: FeatureItemProps) {
@@ -296,14 +296,14 @@ function Step({ status, name, logs }) {
       <li className="flex items-center text-sm">
         <div
           className={classNames(
-            { "text-red-600": status === "fail" },
-            { "text-green-600": status === "pass" },
+            { "text-red-600": status.toUpperCase() === "fail".toUpperCase() },
+            { "text-green-600": status.toUpperCase() === "pass".toUpperCase() },
             "w-5",
             "h-5",
             "mr-2"
           )}
         >
-          {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
+          {status.toUpperCase() === "pass".toUpperCase() ? <CheckCircleIcon /> : <CrossCircleIcon />}
         </div>     
         <div className="w-full">{name}</div>
       </li>
