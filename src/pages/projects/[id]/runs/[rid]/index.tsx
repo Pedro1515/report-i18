@@ -160,6 +160,8 @@ function ErrorStateMenuDropdown({ id, errors, featureId }) {
     updateTest({ id, errorStates: [error] });
     
     const done = await mutateAllTests()
+    console.log(done);
+    
     if (done) {
       setUiData(false)
     }
@@ -303,7 +305,7 @@ function Step({ status, name, logs }) {
         >
           {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
         </div>     
-        {name}  
+        <div className="w-full">{name}</div>
       </li>
       
       {logs.length > 0 ? 

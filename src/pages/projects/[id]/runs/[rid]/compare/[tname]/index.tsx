@@ -137,7 +137,7 @@ function Step({ id, status, name, logs }) {
         >
           {status === "pass" ? <CheckCircleIcon /> : <CrossCircleIcon />}
         </div>
-        {name}
+        <div className="w-full">{name}</div>
       </li>
 
       {logs.length > 0 ? <Logs {...{ logs }} /> : ""}
