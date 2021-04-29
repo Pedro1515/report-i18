@@ -27,7 +27,6 @@ import {
 import { customFormatDuration } from "src/utils";
 import { Feature, Run as ApiRun, Test, updateTest } from "src/api";
 import { useRouter } from "next/router";
-import { Transition } from "@headlessui/react";
 import Link from "next/link";
 
 interface FeatureItemProps {

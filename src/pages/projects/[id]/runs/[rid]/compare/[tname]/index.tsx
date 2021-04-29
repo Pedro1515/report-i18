@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Badge, CheckCircleIcon, CrossCircleIcon, Layout, LayoutHeader, MediaModal, ClockIcon, TagSolidIcon, ExclamationSolidIcon, MenuDropdown } from "src/components";
@@ -268,28 +267,8 @@ function Content() {
   
   return (
     <div className={`w-full h-full overflow-y-auto`}>
-      <Transition
-          show={!!test1?.id}
-          enter="transition ease-out duration-100 transform"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="transition ease-in duration-75 transform"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-        <Test1 test={test1}/>
-      </Transition>
-      <Transition
-        show={!!test2?.id}
-        enter="transition ease-out duration-100 transform"
-        enterFrom="opacity-0 scale-95"
-        enterTo="opacity-100 scale-100"
-        leave="transition ease-in duration-75 transform"
-        leaveFrom="opacity-100 scale-100"
-        leaveTo="opacity-0 scale-95"
-      >
-        <Test2 test={test2}/>
-      </Transition>
+        {!!test1?.id && <Test1 test={test1}/>}
+        {!!test2?.id && <Test2 test={test2}/>}
     </div>
   )
 }
