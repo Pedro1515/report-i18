@@ -348,7 +348,7 @@ function LastRunCard() {
         <div className="flex flex-col">
           <div className="inline-flex justify-between">
             <div>
-              <Title className="text-gray-700 font-semibold">Ultimo run</Title>
+              <Title className="text-gray-700 font-semibold">Last run</Title>
               <Badge
                 className="ml-2"
                 label={status}
