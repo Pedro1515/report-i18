@@ -532,11 +532,11 @@ function RunItem({ i1, i2, rid, tname, name, status, startTime, }) {
 function NavMenu({runs, tname }) {
   return (
     <div className="w-100 xl:w-64 overflow-y-auto flex-shrink-0 overflow-x-hidden border-r border-gray-300">
-      <div className="p-2">
-        <span>{tname}</span>
-        <div className="float-right">
+      <div className="flex p-2 items-center">
+        <span className="w-full text-sm font-medium">{tname}</span>
+        <span className="ml-2">
           <button className="cursor-default text-white text-sm bg-blue-500 px-2 font-semibold rounded focus:outline-none">{runs?.length}</button>
-        </div>
+        </span>
       </div>
       <nav>
           <ul>
