@@ -30,6 +30,7 @@ import { config } from "src/utils/tailwind";
 import { customFormatDuration, getTotalBy } from "src/utils";
 import Tooltip, { useTooltip, TooltipPopup } from "@reach/tooltip";
 import "@reach/tooltip/styles.css";
+import { useTranslation } from "react-i18next";
 
 function DataDisplayWrapper(props) {
   return <div className="flex flex-wrap -mx-6" {...props} />;
@@ -51,6 +52,7 @@ function Caption(props) {
 }
 
 function RunsTable() {
+  const [t, i18n] = useTranslation("global")
   const { query, route, asPath } = useRouter();
   const { mutateProject } = useProject(query.id as string);
   const [filters, setFilters] = React.useState({
@@ -320,6 +322,7 @@ function GeneralCard() {
 }
 
 function LastRunCard() {
+  const [t, i18n] = useTranslation("global")
   const { query } = useRouter();
   const { project } = useProject(query.id as string);
   const [runFilter, setRunFilter] = React.useState<Option>({
@@ -348,7 +351,7 @@ function LastRunCard() {
         <div className="flex flex-col">
           <div className="inline-flex justify-between">
             <div>
-              <Title className="text-gray-700 font-semibold">Last run</Title>
+              <Title className="text-gray-700 font-semibold">{t("projects.headerTable.last_build")}</Title>
               <Badge
                 className="ml-2"
                 label={status}

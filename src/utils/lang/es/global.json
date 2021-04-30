@@ -1,0 +1,16 @@
+{
+    "projects":{
+        "header.project": "Proyectos",
+        "title.filters": "Filtros",
+        "input.search": "Buscar",
+        "headerTable.name": "Nombre",
+        "headerTable.users": "Usuarios",
+        "headerTable.last_build": "Ultimo build",
+        "headerTable.created": "Creado",
+        "iconDropTable.delete": "Eliminar"
+        
+    },
+    "layout":{
+        "": ""
+    }
+}
