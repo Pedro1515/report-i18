@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { Project, removeProject } from "src/api";
@@ -28,6 +28,7 @@ import {
 } from "src/utils/hooks";
 import { useRouter } from "next/router";
 import { useTranslation } from 'react-i18next'
+import { LocationContext } from "src/context/location-context";
 
 function Search({ onSearch }) {
   const { value, getInputProps, getResetterProps } = useSearchBox("");
@@ -57,7 +58,7 @@ function Search({ onSearch }) {
 
 // Principal
 export function Home() {
-  const [t, i18n] = useTranslation("global")
+  const [t] = useTranslation("global")
   const [filters, setFilters] = React.useState({
     page: 0,
     size: 5,
@@ -72,6 +73,13 @@ export function Home() {
   const { PaginationComponent, currentPage } = usePagination<Project[]>({
     paginatedObject: projects,
   });
+
+  //@ts-ignore
+  const { handleLocation } = useContext(LocationContext)
+  const location = localStorage.getItem('location')
+  useEffect(() => {
+    handleLocation(location)
+  }, [])
 
   React.useEffect(() => {
     setFilters({ ...filters, page: currentPage });
@@ -107,86 +115,6 @@ export function Home() {
       action: "Eliminar",
     });
   };
-
-  // const column = useMemo(
-  //   () => [
-  //     {
-  //       Header: "Name",
-  //       accessor: "name",
-  //       headerClassName: "px-6 w-1/3",
-  //       className: "px-6",
-  //       Cell: ({ row }) => {
-  //         const { name, runQuantity, testQuantity, id } = row.original;
-  //         return (
-  //           <div className="flex flex-col">
-  //             <Link href={`/projects/${id}`}>
-  //               <a
-  //                 className="text-sm leading-5 font-medium text-gray-900 hover:text-gray-700 underline"
-  //                 onMouseEnter={() => prefetchProject(id)}
-  //               >
-  //                 {name}
-  //               </a>
-  //             </Link>
-  //             <div className="text-sm leading-8 text-gray-600">
-  //               {runQuantity} Runs &middot; {testQuantity} Tests
-  //             </div>
-  //           </div>
-  //         );
-  //       },
-  //     },
-  //     {
-  //       Header: "Usernames",
-  //       id: "members",
-  //       headerClassName: "px-6",
-  //       className: "px-6",
-  //       Cell: ({ row }) => <Members members={row.original.users} />,
-  //     },
-  //     {
-  //       Header: "Last Build",
-  //       id: "status",
-  //       headerClassName: "px-6",
-  //       className: "px-6",
-  //       Cell: ({ row }) => {
-  //         const {
-  //           lastRun: { status },
-  //         } = row.original;
-  //         return (
-  //           <Badge label={status} color={status.toUpperCase() === "pass".toUpperCase() ? "green" : "red"} />
-  //         );
-  //       },
-  //     },
-  //     {
-  //       Header: "Created",
-  //       id: "created",
-  //       headerClassName: "px-6",
-  //       className: "px-6",
-  //       Cell: ({ row }) => (
-  //         <span className="text-sm leading-5 text-gray-500">
-  //           {format(new Date(row.original.createdAt), "dd/MM/yyyy HH:ss")}
-  //         </span>
-  //       ),
-  //     },
-  //     {
-  //       Header: () => null,
-  //       id: "edit",
-  //       Cell: ({ row }) => (
-  //         <MenuDropdown
-  //           items={[
-  //             [{ label: "Eliminar", style: {paddingRight:'3rem', paddingBottom:'0.25rem', paddingTop:'0.25rem'}, onClick: handleDeleteProject(row.original) }],
-  //           ]}
-  //           label={
-  //             <div className="h-5 w-5">
-  //               <DotsVerticalIcon />
-  //             </div>
-  //           }
-  //           className="text-gray-600 hover:bg-gray-300 hover:text-gray-700 py-2 rounded"
-  //           classNamePositionDrop="origin-top-right right-0 mt-2"
-  //         />
-  //       ),
-  //     },
-  //   ],
-  //   []
-  // );
 
   const columns = [{
     Header: t("projects.headerTable.name"),
@@ -262,13 +190,14 @@ export function Home() {
       />
     ),
   },]
+
   return (
     <Layout>
       <LayoutHeader>
         <span className="font-medium text-lg">{t("projects.header.project")}</span>
         <div className="float-right">
-          <button onClick={()=>{i18n.changeLanguage("en")}}>us</button>
-          <button className="ml-4" onClick={()=>{i18n.changeLanguage("es")}}>mx</button>
+          <button onClick={()=>{handleLocation("us")}}>us</button>
+          <button className="ml-4" onClick={()=>{handleLocation("ar")}}>ar</button>
           {/* <Button label="Crear proyecto" variant="primary" color="indigo" /> */}
         </div>
       </LayoutHeader>

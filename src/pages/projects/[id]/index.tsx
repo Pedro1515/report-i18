@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import format from "date-fns/format";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -31,6 +31,7 @@ import { customFormatDuration, getTotalBy } from "src/utils";
 import Tooltip, { useTooltip, TooltipPopup } from "@reach/tooltip";
 import "@reach/tooltip/styles.css";
 import { useTranslation } from "react-i18next";
+import { LocationContext } from "src/context/location-context";
 
 function DataDisplayWrapper(props) {
   return <div className="flex flex-wrap -mx-6" {...props} />;
@@ -432,8 +433,16 @@ function FailuresCard() {
 }
 
 function Project() {
+  const [t] = useTranslation("global")
   const { query } = useRouter();
   const { project } = useProject(query.id as string);
+  
+  //@ts-ignore
+  const { handleLocation } = useContext(LocationContext)
+  const location = localStorage.getItem('location')
+  useEffect(() => {
+    handleLocation(location)
+  }, [])
 
   return (
     <Layout>
