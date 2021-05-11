@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AlertProvider>
           <AuthProvider>
             <LocationProvider>
-            <Component {...pageProps} />
+//             <Component {...pageProps} />
             </LocationProvider>
           </AuthProvider>
         </AlertProvider>
